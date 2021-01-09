@@ -1,4 +1,4 @@
-from __init__ import __version__
+from pytreedb.__init__ import __version__
 import json
 import glob
 import os
@@ -13,8 +13,8 @@ import collections
 from operator import lt, le, eq, ne, ge, gt  # operator objects
 
 # import own sub-modules
-from treedb_ufuncs import *
-from treedb_format import *
+from pytreedb.treedb_ufuncs import *
+from pytreedb.treedb_format import *
 
 """ 
 ---------------------
@@ -65,8 +65,8 @@ class PyTreeDB:
         self.stats = {"n_trees": None,
                       "n_species": None}  # dictionary holding summary statistics about database (default variables are defined here)
         self.i = 0  # needed for iterator
-        if self.db is None:
-            self.load_db(dbfile)
+        #if self.db is None:
+         #   self.load_db(dbfile)
 
     def __getitem__(self, item):
         """Allow index(int) subscription on the database, list(int) and slicing access with int"""
@@ -110,7 +110,7 @@ class PyTreeDB:
 
     def import_data(self, path, overwrite=False):
         """Read data from local file or from ZIP file provided as URL with filename like *.*json"""
-        if self.db is None or overwrite == True:
+        if self.db is None or overwrite is True:
             self.db = collections.OrderedDict()  # indexed.IndexedOrderedDict()  #https://pypi.org/project/indexed/
         self.data = path  # URL or local directory used as data storage
         # Check if data is local path or URL
@@ -131,10 +131,10 @@ class PyTreeDB:
 
     def import_db(self, path, overwrite=False):
         """Import other database via pytreedb REST interface and optionally also download all files and re-link to new location"""
-        raise Exception("Not implemented yes.")
+        raise Exception("Not implemented yet.")
 
     def add_tree_file(self, filenamepath):
-        """Add signle tree object from JSON file to db and add meta info"""
+        """Add single tree object from JSON file to db and add meta info"""
 
         # Validate input file first
         if self.validate_json(filenamepath) is not True:
@@ -192,18 +192,19 @@ class PyTreeDB:
             return []
 
     def query(self, key, value, regex=True):
-        """ Returns trees(list) fulfilling the regex or exact matching of value for a given key. Keys must written exactly the same."""
+        """ Returns trees (list) fulfilling the regex or exact matching of value for a given key. Keys must written exactly the same."""
         try:
-            if regex == True:
+            if regex is True:
                 idx = [i for i in self.db if len(list(gen_dict_extract_regex(key, self.db[i], value)))]
             else:
                 idx = [i for i in self.db if len(list(gen_dict_extract_exact(key, self.db[i], value)))]
-            return list(self.db[key] for key in idx)
+            return list(self.db[key]['_json'] for key in idx) #returning input json for now because of error "Object of type Point is not JSON serializable"; might need to implement custom serialization
         except Exception as ex:
+            print(ex)
             return []
 
     def query_by_numeric_comparison(self, key, value, comp_op):
-        """ Returns trees(list) fulfilling the numeric comparison of values for given key"""
+        """ Returns trees (list) fulfilling the numeric comparison of values for given key"""
         if comp_op not in [lt, le, eq, ne, ge, gt]:
             raise Exception("Operator must be one of the module operator: lt, le, eq, ne, ge, gt")
         else:
@@ -287,6 +288,8 @@ class PyTreeDB:
         for k in keys_template:
             if k in keys_json:
                 fnd += 1
+            else:
+                print(k)
         if len(keys_template) == fnd:
             return True  # valid
         return False  # not valid

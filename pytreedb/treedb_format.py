@@ -7,8 +7,7 @@ TEMPLATE_GEOJSON = """{
         "measurements": [
           {
             "source": "FI",
-            "date": "2019-01-01",
-            "DBH_m": 0.4
+            "date": "2019-01-01"
           }
         ],
         "measurements_metadata": [

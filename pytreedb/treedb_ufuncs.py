@@ -47,10 +47,13 @@ def gen_dict_extract(key_, dict_):
                         yield result
 
 def gen_dict_extract_regex(key_, dict_, regex_):
-    """ Returns all values for the provided key and a value search string provided as regular expression in dict """ 
+    """ Returns all values for the provided key and a value search string provided as regular expression in dict """
+    #print(dict_)
     if hasattr(dict_,'items'):
         for k, v in dict_.items():
-            if k == key_ and re.search(regex_, v, re.IGNORECASE) is not None:    
+            if v is None:
+                continue
+            if k == key_ and re.search(regex_, v, re.IGNORECASE) is not None:
                 yield v
             if isinstance(v, dict):
                 for result in gen_dict_extract_regex(key_, v, regex_):
@@ -148,6 +151,6 @@ def download_extract_zip_tempdir(url):
     # unzip dataset
     zip_ref = zipfile.ZipFile(zip_temp_file, 'r')
     zip_ref.extractall(zip_temp_dir)
-    zip_ref.close()    
+    zip_ref.close()
     return zip_temp_dir
     

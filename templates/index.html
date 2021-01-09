@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>pytreedb</title>
+    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="H:/pytreedb_server/templates/jqtree.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="H:/pytreedb_server/templates/tree.jquery.js"></script>
+    <script type="text/javascript">
+
+        window.onload = function() {
+            $.get('/stats', function (data) {
+                $("#num_trees").html(data["n_trees"]);
+                $("#num_species").html(data["n_species"]);
+            });
+
+            $.get('/listspecies', function (data) {
+                for (spec of data['species']){
+                    $("#listspecies").append('<li>' + spec + '</li>');
+                }
+            });
+
+            $.get('/sharedproperties', function (data) {
+                for (prop of data['properties']){
+                    $("#sharedproperties").append('<li>' + prop + '</li>');
+                    $("#sharedproperties_datalist").append('<option>' + prop + '</option>');
+                }
+            });
+
+        };
+
+        function searchDB() {
+            var property = $("#property").val();
+            var value = $("#value").val();
+            if (property != '' && value != ''){
+
+                $("#results").html("loading...");
+
+                $.get("/trees?field=" + property + "&value=" + value, function (data) {
+                    $("#results").html("");
+                    $("#num_found").html(data["query"].length);
+                    for (tree of data["query"]){
+                        $("#results").append(`<br /><div> ${JSON.stringify(tree)} </div>`);
+                        //$("#results").append(`<br /> <div> ${jqtree.tree({data: [tree]})} </div>`);
+                    }
+
+                });
+
+            } else {
+                $("#results").html(""); // empty list
+            }
+        }
+
+        function getItem() {
+            var idx = $("#idx").val();
+            if (idx != ''){
+
+                $("#results_tree").html("loading...");
+
+                $.get("/getitem?index=" + idx, function (data) {
+                    $("#results_tree").html(data["item"]);
+                    //$("#results_tree").html("");
+                    //$("#results_tree").tree({
+                    //    data: [data["item"]]
+                    //});
+                });
+
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>Welcome to pytreedb</h1>
+<p>Here you can query the pytreedb running on {{ server }}</p>
+
+<div><b>Statistics:</b><br />
+Number of trees: <div id="num_trees"></div> <br />
+Number of species: <div id="num_species"></div> <br />
+List of species:
+    <ul id="listspecies">
+    </ul>
+List of shared properties:
+    <ul id="sharedproperties">
+    </ul>
+</div>
+<br />
+
+<h2>Get item by index!</h2>
+<div>
+    <label for="idx">Index:</label><input type="text" id="idx"> <br />
+    <button onclick="getItem();">Get</button>
+</div>
+
+<div id="results_tree">
+
+</div> <br/>
+
+<h2>Search the DB!</h2>
+<div>
+    <label for="property">Field:</label><input type="text" id="property" oninput="searchDB()" list="sharedproperties_datalist"> <br />
+    <datalist id="sharedproperties_datalist">
+    </datalist>
+    <label for="value">Value:</label><input type="text" id="value" oninput="searchDB()"> <br />
+    <button onclick="searchDB();">Search</button>
+    <br />
+    <div id="num_found">0</div> trees found.
+</div>
+
+<div id="results">
+
+</div>
+
+</body>
+</html>

@@ -4,12 +4,24 @@
     <meta charset="UTF-8">
     <title>pytreedb</title>
     <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="H:/pytreedb_server/templates/jqtree.css" />
+    <link rel="stylesheet" href="file:///H:/pytreedb_server/templates/jqtree.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="H:/pytreedb_server/templates/tree.jquery.js"></script>
+    <script src="file:///H:/pytreedb_server/templates/tree.jquery.js"></script>
     <script type="text/javascript">
 
         window.onload = function() {
+
+            $('<img/>').attr("src","https://heibox.uni-heidelberg.de/f/d9a593a4dc2049d99bca/?dl=1").width("100px")
+                        .height("45.6px").appendTo("#logo_3dgeo");
+            $('#logo_3dgeo').parent().css({position:'relative'});
+            $('#logo_3dgeo').css({top: 10, left: 480, position:'absolute'});
+
+            $('<img/>').attr("src","https://www.ifgg.kit.edu/img/logos/IFGG_short_fat3.svg").width("250px")
+                        .height("114px").appendTo("#logo_ifgg");
+            $('#logo_ifgg').parent().css({position:'relative'});
+            $('#logo_ifgg').css({top: 10, left: 300, position:'absolute'});
+
+
             $.get('/stats', function (data) {
                 $("#num_trees").html(data["n_trees"]);
                 $("#num_species").html(data["n_species"]);
@@ -59,9 +71,9 @@
                 $("#results_tree").html("loading...");
 
                 $.get("/getitem?index=" + idx, function (data) {
-                    $("#results_tree").html(data["item"]);
+                    //$("#results_tree").html(data["item"]);
                     //$("#results_tree").html("");
-                    //$("#results_tree").tree({
+                    //$("#results_tree").html.tree({
                     //    data: [data["item"]]
                     //});
                 });
@@ -72,6 +84,10 @@
 </head>
 <body>
 <h1>Welcome to pytreedb</h1>
+
+<div id="logo_3dgeo"> </div>
+<div id="logo_ifgg"> </div>
+
 <p>Here you can query the pytreedb running on {{ server }}</p>
 
 <div><b>Statistics:</b><br />

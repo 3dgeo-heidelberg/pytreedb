@@ -198,7 +198,8 @@ class PyTreeDB:
                 idx = [i for i in self.db if len(list(gen_dict_extract_regex(key, self.db[i], value)))]
             else:
                 idx = [i for i in self.db if len(list(gen_dict_extract_exact(key, self.db[i], value)))]
-            return list(self.db[key]['_json'] for key in idx) #returning input json for now because of error "Object of type Point is not JSON serializable"; might need to implement custom serialization
+            #returning input json for now because of error "Object of type Point is not JSON serializable"; might need to implement custom serialization
+            return list(json.loads(self.db[key]["_json"]) for key in idx)
         except Exception as ex:
             print(ex)
             return []

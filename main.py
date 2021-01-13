@@ -4,6 +4,7 @@
 """
 description
 """
+import json
 
 from flask import Flask
 from flask import request
@@ -48,5 +49,5 @@ def getItem():
     if index == '':
         return dict()
     #print(mydb[int(index)])
-    return {'item': mydb[int(index)]['_json']}
+    return {'item': json.loads(mydb[int(index)]['_json'])}
 

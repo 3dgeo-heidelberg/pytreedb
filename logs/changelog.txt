@@ -1,0 +1,4 @@
+#17-04-2021# #main.py# open browser tab on start
+#17-04-2021# #main.py# instantiate pytreedb as empty (remove absolute path)
+#17-04-2021# #pytreedb.py# os.path.join making problems on windows system: fixed for import_data(): use pathlib.Path and rglob()
+#17-04-2021# add git ignore

@@ -3,13 +3,13 @@ import json
 import glob
 import os
 import datetime
-import pathlib
 import shapely.geometry
 import urllib
 import urllib.request
 import _pickle as cpickle
 import numpy
 import collections
+from pathlib import Path
 from operator import lt, le, eq, ne, ge, gt  # operator objects
 
 # import own sub-modules
@@ -117,10 +117,11 @@ class PyTreeDB:
         if urllib.parse.urlparse(path).scheme in ('http', 'https',):
             print("Download and use data from: {}".format(path))
             data_dir = download_extract_zip_tempdir(path)
+            print("Downloading to local temp: ", data_dir)
         else:
             # local data
             data_dir = path
-        for f in glob.glob(os.path.join(data_dir, "*.*json")):
+        for f in Path(data_dir).rglob('*.*json'):
             try:
                 self.add_tree_file(f)
             except Exception as err:
@@ -150,7 +151,7 @@ class PyTreeDB:
         # Add additional columns used for db handling and quick searching
         tree_dict['id'] = new_idx  # Store object ID additionally also in object
         tree_dict['_date'] = datetime.datetime.now().isoformat()  # Get insertion date
-        tree_dict['_file'] = pathlib.Path(filenamepath).name  # Get filename
+        tree_dict['_file'] = Path(filenamepath).name  # Get filename
         tree_dict['_geometry'] = shapely.geometry.shape(
             json_string['geometry'])  # Generate Shapely geometry object of position
         tree_dict['_json'] = json.dumps(json_string)  # Store original input json string
@@ -326,7 +327,7 @@ class PyTreeDB:
     def start_server(self, host="127.0.0.1", port=5000):
         self.host = host
         self.port = port
-        raise Exception("Not implemented yes.")
+        raise Exception("Not implemented yet.")
         """
         from fastapi import FastAPI
         import uvicorn

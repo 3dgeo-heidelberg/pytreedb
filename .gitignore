@@ -1,0 +1,4 @@
+*/__pycache__
+__pycache__/
+_pytree.db
+*/.pylint.d/

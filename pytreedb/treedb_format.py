@@ -20,8 +20,7 @@ TEMPLATE_GEOJSON = """{
             "mode": "TLS",
             "file": "http://jjljljlj",
             "date": "2020-08-11",
-            "season": "leaf-on",
-            "pointCount": 1234567,
+            "point-count": 1234567,
             "metadata-url": "http://doi",
             "crs": "epsg:25832",
             "quality": 1

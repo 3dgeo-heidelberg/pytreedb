@@ -2,3 +2,5 @@
 #17-04-2021# #main.py# instantiate pytreedb as empty (remove absolute path)
 #17-04-2021# #pytreedb.py# os.path.join making problems on windows system: fixed for import_data(): use pathlib.Path and rglob()
 #17-04-2021# add git ignore
+#25-04-2021# #pytreedb.py# "not True" changed to "False" in line 141
+#25-04-2021# #treedb_format.py# Removed line 23 "season": "leaf-on", changed "pointCount" to "point-count" to corresponde to .geojson

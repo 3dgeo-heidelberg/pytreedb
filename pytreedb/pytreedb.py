@@ -138,7 +138,7 @@ class PyTreeDB:
         """Add single tree object from JSON file to db and add meta info"""
 
         # Validate input file first
-        if self.validate_json(filenamepath) is not True:
+        if self.validate_json(filenamepath) is False:
             print("File '%s' is not a valid format for pydtreedb. See template in treedb_format.py" % filenamepath)
             return
 

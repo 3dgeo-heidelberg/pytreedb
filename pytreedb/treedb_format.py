@@ -8,7 +8,15 @@ TEMPLATE_GEOJSON = """{
           {
             "source": "FI",
             "date": "2019-01-01"
-          }
+          },
+          {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    478717.0065,
+                    5427029.739,
+                    291.779968
+                ]
+            }
         ],
         "measurements_metadata": [
           {
@@ -20,7 +28,8 @@ TEMPLATE_GEOJSON = """{
             "mode": "TLS",
             "file": "http://jjljljlj",
             "date": "2020-08-11",
-            "point-count": 1234567,
+            "canopy_condition": "leaf-on",
+            "point_count": 1234567,
             "metadata-url": "http://doi",
             "crs": "epsg:25832",
             "quality": 1
@@ -28,6 +37,12 @@ TEMPLATE_GEOJSON = """{
         ]
     },
     "geometry": {
+    "type": "Point",
+        "coordinates": [
+            8.709045,
+            48.995801,
+            291.779968
+        ]
     }   
 }"""
 

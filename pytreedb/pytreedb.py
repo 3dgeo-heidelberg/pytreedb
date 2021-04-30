@@ -270,7 +270,7 @@ class PyTreeDB:
             # in case only single tree is provided
             trees = [trees]
         if len(trees) >= 1:
-            return [k['id'] for k in trees]
+            return [k['properties']['id'] for k in trees]
         else:
             return []
 

@@ -8,15 +8,7 @@ TEMPLATE_GEOJSON = """{
           {
             "source": "FI",
             "date": "2019-01-01"
-          },
-          {
-                "crs": "epsg:25832",
-                "position_xyz": [
-                    478717.0065,
-                    5427029.739,
-                    291.779968
-                ]
-            }
+          }
         ],
         "measurements_metadata": [
           {

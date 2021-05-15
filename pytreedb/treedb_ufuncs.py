@@ -1,4 +1,5 @@
 import re
+import sys
 import hashlib      # importing the hashlib module
 import tempfile
 import ssl
@@ -154,3 +155,21 @@ def download_extract_zip_tempdir(url):
     zip_ref.close()
     return zip_temp_dir
     
+def query_yes_no(question, default="yes"):
+    """Ask a yes/no question via raw_input() and return their answer.
+    - question: String is the query that's shown to the user in shell
+    - default:String is the presumed answer if the user just hits <Enter>
+    The return value is True for "yes" or False for "no".
+    """
+    valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
+    prompt = " [Y/n] "
+
+    while True:
+        sys.stdout.write(question + prompt)
+        choice = input().lower()
+        if default is not None and choice == "":
+            return valid[default]
+        elif choice in valid:
+            return valid[choice]
+        else:
+            sys.stdout.write("Please respond with 'yes' or 'no' " "(or 'y' or 'n').\n")

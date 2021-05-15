@@ -4,3 +4,5 @@
 #17-04-2021# add git ignore
 #25-04-2021# #pytreedb.py# "not True" changed to "False" in line 141
 #25-04-2021# #treedb_format.py# Removed line 23 "season": "leaf-on", changed "pointCount" to "point-count" to corresponde to .geojson
+#15-05-2021# #pytreedb.py# function import_data first checks if self.dbfile is a valid path before downloading/importing data. If path doesn't exists yet, users receive query to create the file.
+#15-05-2021# #treedb_ufuncs.py# add query_yes_no function to query user in shell. e.g. usage: "create file? [y/n]"

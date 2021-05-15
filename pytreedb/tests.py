@@ -1,26 +1,26 @@
 #load module
-import pytreedb
+import pytreedb.pytreedb as pytreedb
 
 #Test import from ZIP web resource
-db = pytreedb.PyTreeDB(dbfile=r'D:\tmp\SYSSIFOSS\syssifoss.db')
+db = pytreedb.PyTreeDB()
 db.import_data(r'https://heibox.uni-heidelberg.de/f/fc5e3cc8d93d4e0ca53b/?dl=1', overwrite=True)
 print(db.get_stats())
 
 # Create or load db from previous import
-mydb = pytreedb.PyTreeDB(dbfile=r'D:\tmp\SYSSIFOSS\syssifoss.db')
+mydb = pytreedb.PyTreeDB(dbfile=r'E:\tmp\SYSSIFOSS\syssifoss.db')
 
 
 
 #Validate input GEOJSON if all mandatory keys are present
-mydb.validate_json('C:/Users/bhoefle/Downloads/geojsons/B_BR01_01.geojson')
+# mydb.validate_json('C:/Users/bhoefle/Downloads/geojsons/B_BR01_01.geojson')
+mydb.validate_json(r'C:\Users\Anna\AppData\Local\Temp\tmpf52gu1pn\AbiAlb_BR03_01.geojson')
 
 #Import data: append or create
-mydb.import_data(r'C:\Users\bhoefle\Downloads\geojsons', overwrite=True)
+mydb.import_data(r'E:\work\heidelberg\geojsons', overwrite=True)
 #mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True)
 
 #mydb.import_data(r'C:\Users\bhoefle\Downloads')
 print(mydb.get_stats())
-
 
 """
 # Run performance test with large import

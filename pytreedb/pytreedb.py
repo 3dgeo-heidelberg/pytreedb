@@ -110,6 +110,15 @@ class PyTreeDB:
 
     def import_data(self, path, overwrite=False):
         """Read data from local file or from ZIP file provided as URL with filename like *.*json"""
+        # Check if self.dbfile is a valid path, if not, query users if the file shall be created
+        if not os.path.exists(self.dbfile):
+            if query_yes_no("The given dbfile <%s> does not exist. Create file now?" % self.dbfile):
+                # Create the directory first if the dir does not exist
+                if not os.path.exists(os.path.dirname(self.dbfile)):
+                    os.makedirs(os.path.dirname(self.dbfile))
+                open(self.dbfile, 'w').close()
+
+        # Read data
         if self.db is None or overwrite is True:
             self.db = collections.OrderedDict()  # indexed.IndexedOrderedDict()  #https://pypi.org/project/indexed/
         self.data = path  # URL or local directory used as data storage

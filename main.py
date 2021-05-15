@@ -20,7 +20,8 @@ def hello_world():
     return render_template(r'index.html', server=request.remote_addr)
 
 mydb = pytreedb.PyTreeDB() # instantiate pytreedb
-mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True) # download data
+mydb.load_db(r'E:\tmp\SYSSIFOSS\syssifoss.db') # Jiani: loading local db file
+# mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True) # download data
 
 # automatically open in a new browser tab on start
 if __name__ == 'main':
@@ -51,6 +52,7 @@ def getItem():
     index = request.args.get('index')
     if index == '':
         return dict()
-    #print(mydb[int(index)])
+    # print(mydb[int(index)])
+    print({'item': json.loads(mydb[int(index)]['_json'])})
     return {'item': json.loads(mydb[int(index)]['_json'])}
 

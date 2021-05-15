@@ -116,7 +116,7 @@ class PyTreeDB:
                 # Create the directory first if the dir does not exist
                 if not os.path.exists(os.path.dirname(self.dbfile)):
                     os.makedirs(os.path.dirname(self.dbfile))
-                open(self.dbfile, 'w').close()
+                open(self.dbfile, 'w').close() # Create empty file
 
         # Read data
         if self.db is None or overwrite is True:

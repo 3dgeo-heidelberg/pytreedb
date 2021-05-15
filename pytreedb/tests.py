@@ -56,15 +56,15 @@ print([k['id'] for k in mydb[:]])           # get list[ids] of subset provided b
 print("Query result <tree id>:", len(mydb.query('species', 'Fagus s')) )#get subset of db fufilling query
 print("Query species result <tree id>:", len(mydb.query_by_species('Lari'))) #get subset of db fufilling query
 print("Query results for trees with quality=3 (on any dataset): ", len(mydb.query('quality', '3', regex=False))) #query in exact manner
-print("Query result 'leaf-on' :", len(mydb.query('season', 'leaf-on')))  # get subset of db fufilling query
-print("Query result 'leaf-off':", len(mydb.query('season', 'leaf-off')))  # get subset of db fufilling query
-print("Query result 'leaf-on' (exact value search):", len(mydb.query('season', 'leaf-on', False)))  # get subset of db fufilling query in exact manner
+print("Query result 'leaf-on' :", len(mydb.query('canopy_condition', 'leaf-on')))  # get subset of db fufilling query
+print("Query result 'leaf-off':", len(mydb.query('canopy_condition', 'leaf-off')))  # get subset of db fufilling query
+print("Query result 'leaf-on' (exact value search):", len(mydb.query('canopy_condition', 'leaf-on', False)))  # get subset of db fufilling query in exact manner
 
 print("Query by numeric comparison - quality == 3(eq): ", len(mydb.query_by_numeric_comparison('quality', 3, pytreedb.eq)))
 print("Query by numeric comparison - quality <= 3 (le): ", len(mydb.query_by_numeric_comparison('quality', 3, pytreedb.le)))
 print("Query by numeric comparison - pointCount < 5000 : ", len(mydb.query_by_numeric_comparison('pointCount', 5000, pytreedb.lt)))
 print("Query result 'ALS' :", len(mydb.query('mode', 'ALS', regex=False)))  # get subset of db fufilling query
-print("Query if key exists: season: ", len(mydb.query_by_key_exists('season')))
+print("Query if key exists: season: ", len(mydb.query_by_key_exists('canopy_condition')))
 print("Query if key exists: crown_diameter_1_m: ", len(mydb.query_by_key_exists('crown_diameter_1_m')))
 
 #Query by date
@@ -102,9 +102,11 @@ for t in res_fi:
 print(pytreedb.hash_file(mydb.dbfile))
 
 # Get original JSON(str) of a tree
-json_of_first_tree = mydb.get_tree_as_json(mydb[1])
-#print(json_of_first_tree)
+json_of_first_tree = mydb.get_tree_as_json(mydb[0])
+print(json_of_first_tree)
 
 # Export data
 mydb.export_data('d:/tmp/test')                   # Export all, = reverse of import_data()
 mydb.export_data('d:/tmp/test2', trees=[1,5])     # Export only subset
+mydb.export_data(r'E:\tmp\test')
+mydb.export_data(r'E:\tmp\test2', trees=[1,5])

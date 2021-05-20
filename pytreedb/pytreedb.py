@@ -53,10 +53,10 @@ PYPI PACKAGE
 
 
 class PyTreeDB:
-    def __init__(self, dbfile="_pytree.db"):
+    def __init__(self, dbfile = None):
         if __name__ == "__main__":
             print("pyTreeDB (version {}), (c) 3DGeo Research Group, Heidelberg University (2020+)".format(__version__))
-        self.dbfile = dbfile  # pickle file holding the entire database
+        self.dbfile = None  # pickle file holding the entire database
         self.db = None  # dictionary central db file
         self.data = None  # path do input data imported with import
         self.host = None
@@ -65,8 +65,21 @@ class PyTreeDB:
         self.stats = {"n_trees": None,
                       "n_species": None}  # dictionary holding summary statistics about database (default variables are defined here)
         self.i = 0  # needed for iterator
-        #if self.db is None:
-         #   self.load_db(dbfile)
+        
+        if dbfile is not None:
+            # Check if dbfile is a valid path, if not, query users if an empty file shall be created
+            if not os.path.exists(dbfile):
+                if query_yes_no("The given path of dbfile <%s> does not exist. Create an empty file now?" % dbfile):
+                    print("Note that you might want to import data into this empty .db file.")
+                    # Create the directory first if the dir does not exist
+                    if not os.path.exists(os.path.dirname(dbfile)):
+                        os.makedirs(os.path.dirname(dbfile))
+                    open(dbfile, 'w').close() # Create empty file
+                    self.dbfile = dbfile; # Set number variable
+                else:
+                    raise Exception("No such file or directory: %s" % self.dbfile)
+            else:
+                self.load_db(dbfile)
 
     def __getitem__(self, item):
         """Allow index(int) subscription on the database, list(int) and slicing access with int"""
@@ -103,22 +116,12 @@ class PyTreeDB:
     def load_db(self, dbfile):
         """Loads existing database file from pickle"""
         try:
-            if os.path.exists(dbfile):
-                self.db = cpickle.load(open(dbfile, "rb"))
+            self.db = cpickle.load(open(dbfile, "rb"))
         except:
             raise Exception("Could not read db file %s" % (dbfile))
 
     def import_data(self, path, overwrite=False):
         """Read data from local file or from ZIP file provided as URL with filename like *.*json"""
-        # Check if self.dbfile is a valid path, if not, query users if the file shall be created
-        if not os.path.exists(self.dbfile):
-            if query_yes_no("The given dbfile <%s> does not exist. Create file now?" % self.dbfile):
-                # Create the directory first if the dir does not exist
-                if not os.path.exists(os.path.dirname(self.dbfile)):
-                    os.makedirs(os.path.dirname(self.dbfile))
-                open(self.dbfile, 'w').close() # Create empty file
-
-        # Read data
         if self.db is None or overwrite is True:
             self.db = collections.OrderedDict()  # indexed.IndexedOrderedDict()  #https://pypi.org/project/indexed/
         self.data = path  # URL or local directory used as data storage

@@ -2,13 +2,13 @@
 import pytreedb.pytreedb as pytreedb
 
 #Test import from ZIP web resource
-db = pytreedb.PyTreeDB()
+db = pytreedb.PyTreeDB(dbfile=r'E:\tmp\SYSSIFOSS\syssifoss.db')
 db.import_data(r'https://heibox.uni-heidelberg.de/f/fc5e3cc8d93d4e0ca53b/?dl=1', overwrite=True)
 print(db.get_stats())
 
 # Create or load db from previous import
 mydb = pytreedb.PyTreeDB(dbfile=r'E:\tmp\SYSSIFOSS\syssifoss.db')
-
+mydb = pytreedb.PyTreeDB(dbfile=r'E:\work\heidelberg\syssifoss.db')
 
 
 #Validate input GEOJSON if all mandatory keys are present
@@ -87,13 +87,13 @@ res_fagus = mydb.query('species', 'Fagus s')
 res_ALS = mydb.query('mode', 'ALS')
 res_fagus_ALS =  mydb.join([res_fagus, res_ALS], operator='and')
 print("Fagus with ALS data: ",res_fagus_ALS)
-print(mydb[res_fagus_ALS])
+# print(mydb[res_fagus]) res_fagus is a list of strings (tree ids). 
 
 #Query example: Get trees with Field Inventory measurements (FI)
 res_fi = mydb.query('source', 'FI')
 print(mydb.get_ids(res_fi))
 for t in res_fi:
-    print("Measurements for tree (id=%i)" % (t["id"]))
+    print("Measurements for tree (id=%s)" % (t['properties']['id']))
     print("----------------------------------------")
     print (t['properties']['measurements'])
 

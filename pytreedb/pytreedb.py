@@ -53,10 +53,10 @@ PYPI PACKAGE
 
 
 class PyTreeDB:
-    def __init__(self, dbfile = None):
+    def __init__(self, dbfile):
         if __name__ == "__main__":
             print("pyTreeDB (version {}), (c) 3DGeo Research Group, Heidelberg University (2020+)".format(__version__))
-        self.dbfile = None  # pickle file holding the entire database
+        self.dbfile = dbfile  # pickle file holding the entire database
         self.db = None  # dictionary central db file
         self.data = None  # path do input data imported with import
         self.host = None
@@ -70,7 +70,7 @@ class PyTreeDB:
             # Check if dbfile is a valid path, if not, query users if an empty file shall be created
             if not os.path.exists(dbfile):
                 if query_yes_no("The given path of dbfile <%s> does not exist. Create an empty file now?" % dbfile):
-                    print("Note that you might want to import data into this empty .db file.")
+                    print("File is created successfully. Note that you might want to import data into this empty .db file.")
                     # Create the directory first if the dir does not exist
                     if not os.path.exists(os.path.dirname(dbfile)):
                         os.makedirs(os.path.dirname(dbfile))
@@ -213,6 +213,8 @@ class PyTreeDB:
                 idx = [i for i in self.db if len(list(gen_dict_extract_exact(key, self.db[i], value)))]
             #returning input json for now because of error "Object of type Point is not JSON serializable"; might need to implement custom serialization
             return list(json.loads(self.db[key]["_json"]) for key in idx)
+            # Directly return the indexes
+            # return idx
         except Exception as ex:
             print(ex)
             return []

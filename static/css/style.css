@@ -1,0 +1,130 @@
+.navbar {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+.nav-link {
+    font-weight: 700;
+}
+
+.navbar-brand {
+    font-weight: 700; 
+    font-size: x-large; 
+    font-family: 'Poppins', sans-serif; 
+    color: #505050;
+}
+
+.dropdown-toggle::after {
+    pointer-events: none;
+    content: "";
+    display: inline-flex;
+    position: relative;
+    z-index: 1;
+    border: solid #606060;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(45deg);
+    margin: 0 auto 0 5px;
+}
+
+.dropdown-menu {
+    min-width: 3rem;
+}
+
+#showSpecies {
+    margin-top: 50px; 
+    vertical-align: middle; 
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+}
+
+#showSpecies:hover {
+    color: #ffffff;
+}
+
+#showSpecies::after, #showSpecies:hover::after {
+    content: "";
+    display: inline-block;
+    z-index: 1;
+    border: solid rgba(255, 255, 255, 0.7);
+    border-width: 0 15px 15px 0;
+    padding: 15px;
+    margin-left: 5px;
+    transform: rotate(-45deg) translateX(-50%) translateY(0.35rem);
+}
+
+#showSpecies:hover::after {
+    border: solid rgba(255, 255, 255, 1);
+    border-width: 0 15px 15px 0;
+}
+
+#picDiv {
+    display: block;
+    height: 500px;
+    background-color: #206623;
+    background-image: url('../img/EjbXdeCWsAMUEZ9.jpg');
+    background-size: cover;
+    filter: blur(3px);
+    -webkit-filter: blur(3px);
+    margin: -15px -20px;
+    z-index: -1;
+}
+
+#gradientOverlay {
+    position: absolute;
+    min-height: 100%;
+    min-width: 100%;
+    left: 0;
+    top: 0;
+    background-image: linear-gradient(rgba(83, 172, 42, 0.5), rgba(34, 83, 14, 1));
+    z-index: -1;
+}
+
+#welcome {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: #ffffff;
+    z-index: 2;
+}
+
+p {
+    font-size: large;
+}
+
+label {
+    color: #808080;
+}
+
+b.func {
+    font-size: large;
+}
+
+input {
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+button {
+    float: right;
+}
+
+
+
+/* lg */
+@media (min-width: 992px) {
+    .navbar-expand-lg .navbar-nav .nav-link {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }  
+}
+
+/* md-sm */
+@media (max-width: 992px) {
+    #verticalSplitter {
+        width: 0;
+    }
+}

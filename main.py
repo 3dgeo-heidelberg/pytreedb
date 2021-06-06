@@ -17,9 +17,9 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return render_template(r'index.html', server=request.remote_addr)
+    return render_template(r'newIndex.html', server=request.remote_addr)
 
-mydb = pytreedb.PyTreeDB() # instantiate pytreedb
+mydb = pytreedb.PyTreeDB(dbfile=r'E:\tmp\SYSSIFOSS\syssifoss.db') # instantiate pytreedb
 mydb.load_db(r'E:\tmp\SYSSIFOSS\syssifoss.db') # Jiani: loading local db file
 # mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True) # download data
 

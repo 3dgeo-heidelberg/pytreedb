@@ -81,14 +81,36 @@
     z-index: -1;
 }
 
+.clearfix{ 
+    position: relative;
+    display: inline-block;
+    width: 200%;
+    height: 420px;
+    overflow: hidden;
+ }
+
 #welcome {
-    position: absolute;
-    top: 25%;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    width: 50%;
+    padding-top: 6rem;
     text-align: center;
     color: #ffffff;
     z-index: 2;
+    white-space: nowrap;
+    float: left;
+}
+
+#speciesContainer {
+    width: 50%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    float: left;
+}
+
+#species {
+    color: #ffffff; 
+    margin-top: 6rem;
+    margin-left: 3rem;
 }
 
 p {
@@ -126,5 +148,20 @@ button {
 @media (max-width: 992px) {
     #verticalSplitter {
         width: 0;
+    }
+}
+
+
+
+.moveWelcomeLeft {
+    animation: moveWelcomeLeft 1.0s 1 forwards;
+}
+
+@keyframes moveWelcomeLeft {
+    from {
+        transform: translateX();
+    }
+    to {
+        transform: translateX(-50%);
     }
 }

@@ -1,3 +1,8 @@
+html, body
+{
+    height: 100%;
+}
+
 .navbar {
     padding-right: 0.5rem;
     padding-left: 0.5rem;
@@ -134,6 +139,21 @@ button {
     float: right;
 }
 
+pre {
+    border: solid; 
+    border-width: 1px; 
+    border-color: #808080; 
+    width: 70%; 
+    height: 100%;
+    position: relative; 
+    margin: 0 auto;
+    overflow-y: scroll;
+    background-color: #ffffff;
+}
+
+#jsonSnippetContainer {
+    display: none;
+}
 
 
 /* lg */

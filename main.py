@@ -52,7 +52,8 @@ def getItem():
     index = request.args.get('index')
     if index == '':
         return dict()
-    # print(mydb[int(index)])
-    print({'item': json.loads(mydb[int(index)]['_json'])})
-    return {'item': json.loads(mydb[int(index)]['_json'])}
+    print(mydb[int(index)]['_json'])
+    return {'item': mydb[int(index)]['_json']}
+    # print({'item': json.loads(mydb[int(index)]['_json'])})
+    # return {'item': json.loads(mydb[int(index)]['_json'])}
 

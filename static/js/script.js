@@ -7,6 +7,8 @@ window.onload = () => {
 
 }
 
+var jsonOutput;
+
 // Show all species in the databank
 showSpecies = () => {
     $.get('/listspecies', data => {
@@ -26,6 +28,7 @@ getItem = () => {
     if (idx != ''){
         $.get("/getitem?index=" + idx, data => {
             var jsonStr = data['item'];
+            jsonOutput = jsonStr;
             var jsonObj = JSON.parse(jsonStr);
             // External widget to enbale advanced json viewing.
             $('#jsonViewerTarget').jsonViewer(jsonObj, {rootCollapsable: false});
@@ -43,6 +46,27 @@ $('#idx').keydown(e => {
         getItem();
     }
 });
+$('#property').keydown(e => {
+    if (e.which == 13) {
+        searchDB();
+    }
+});
+$('#value').keydown(e => {
+    if (e.which == 13) {
+        searchDB();
+    }
+});
+
+// Save the search result to file
+saveContent = (fileContents, fileName) => {
+    var link = document.createElement('a');
+    link.download = fileName;
+    link.href = 'data:,' + fileContents;
+    link.click();
+}
+saveJsonOutput = () => {
+    saveContent(jsonOutput, "out.json");
+}
 
 // Slide back to welcome
 slideBack = () => {

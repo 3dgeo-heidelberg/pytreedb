@@ -100,7 +100,7 @@
                                     <input type="text" id="property" placeholder="Property: e.g. species"/>
                                     <input type="text" id="value" placeholder="Value: e.g. "/>
                                     <br>
-                                    <button type="button" class="btn btn-success float-end">Go</button>
+                                    <button type="button" class="btn btn-success float-end" onclick="searchDB()">Go</button>
                                 </div>
                             </div>
                         </div>
@@ -108,9 +108,12 @@
                 </div>
             </div>
         </div>
-        <div id="jsonSnippetContainer" style="width: 100%; height: 100%; padding-top: 3rem; padding-bottom: 3rem; background-color: #fff;">
-            <pre id="jsonViewerTarget">
-            </pre>
+        <div id="jsonSnippetContainer" style="width: 100%; height: 100%; padding-top: 3rem; padding-bottom: 5rem; background-color: #fff;">
+            <pre id="jsonViewerTarget"></pre>
+            <div style="position: relative; width: 70%; margin: 1rem auto;">
+                <button type="button" class="btn btn-outline-success ms-2" onclick="saveJsonOutput()">Save</button>
+                <!-- <button type="button" class="btn btn-outline-success" onclick="copyJsonOutput()">Copy</button> -->
+            </div>
         </div>
         
         

@@ -43,62 +43,66 @@
                 </div>  
             </div>
         </nav>
-        <div class="wrapper" style="overflow: hidden;">
-            <div class="clearfix">
-                <div>
-                    <div style="position: absolute; width: 100%; height: 420px; overflow: hidden; z-index: -1;">
+        <div class="wrapper" style="overflow-x: hidden; height: calc(100% - 62px);">
+            <div style="height: 100%; ">
+                <div class="clearfix" style="height: 70%; overflow: hidden;">
+                    <div style="position: absolute; width: 100%; height: 100%; overflow: hidden; z-index: -1;">
                         <div id="picDiv">
                             <div id="gradientOverlay">
                             </div>
                         </div>
                     </div>
-                </div>
-                <div id="animAnchor" style="height: 420px;">
-                    <div id="welcome">
-                        <div style="position: relative; ">
-                            <h1>Welcome to PyTreeDB</h1>
-                            <p> Here comes the description... </p>
-                            <p style="margin-top: 20px;"> 
-                                Currently, PyTreeDB has <span id="numTrees"></span> trees of <span id="numSpecies"></span> species.</p>
-                            <div id="showSpecies" onclick="showSpecies()">
-                                <b>Show species</b>
+                    <div id="animAnchor" style="height: 100%;">
+                        <div id="welcome" style="height: 100%;">
+                            <div style="position: relative; ">
+                                <h1>Welcome to PyTreeDB</h1>
+                                <p> Here comes the description... </p>
+                                <p style="margin-top: 20px;"> 
+                                    Currently, PyTreeDB has <span id="numTrees"></span> trees of <span id="numSpecies"></span> species.</p>
+                                <div id="showSpecies" onclick="showSpecies()">
+                                    <b>Show species</b>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="speciesContainer">
+                            <div id="species">
+                                <ul id="speciesList">
+                                    <li>Pseudotsuga menziesii</li>
+                                    <li>Betula pendula</li>
+                                    <li>Acer campestre</li>
+                                </ul>
+                                <span id="backToWelcome" onclick="slideBack()"></span>
                             </div>
                         </div>
                     </div>
-                    <div id="speciesContainer">
-                        <div id="species">
-                            <ul id="speciesList"></ul>
-                            <span id="backToWelcome" onclick="slideBack()"></span>
-                        </div>
-                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="container" id="querySectionWrappper" style="width: 90%; margin-top: 30px;">
-            <div class="row justify-content-center">
-                <div class="col-lg-5 col-md-5 col-sm-12" style="margin-bottom: 4rem;">
-                    <div class="row justify-content-start">
-                        <div class="col col-lg-5 col-md-10 col-sm-6" style="margin-bottom: 1rem;">
-                            <b class="func">Get tree by index</b>
+                <div class="container" id="querySectionWrappper" style="width: 90%; margin-top: 30px;">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-5 col-md-5 col-sm-12" style="margin-bottom: 4rem;">
+                            <div class="row justify-content-start">
+                                <div class="col col-lg-5 col-md-10 col-sm-6" style="margin-bottom: 1rem;">
+                                    <b class="func">Get tree by index</b>
+                                </div>
+                                <div class="col col-lg-6 col-md-10 col-sm-6">
+                                    <input type="text" id="idx" placeholder="Index: e.g. 0" />
+                                    <br>
+                                    <button type="button" class="btn btn-success float-end" onclick="getItem()">Go</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col col-lg-6 col-md-10 col-sm-6">
-                            <input type="text" id="idx" placeholder="Index: e.g. 0" />
-                            <br>
-                            <button type="button" class="btn btn-success float-end" onclick="getItem()">Go</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-1 col-md-0 col-sm-0" id="verticalSplitter"></div>
-                <div class="col-lg-5 col-md-5 col-sm-12">
-                    <div class="row justify-content-start">
-                        <div class="col col-lg-5 col-md-10 col-sm-6" style="margin-bottom: 1rem;">
-                            <b class="func">Search the DB</b>
-                        </div>
-                        <div class="col-lg-6 col-md-10 col-sm-6">
-                            <input type="text" id="property" placeholder="Property: e.g. species"/>
-                            <input type="text" id="value" placeholder="Value: e.g. "/>
-                            <br>
-                            <button type="button" class="btn btn-success float-end">Go</button>
+                        <div class="col-lg-1 col-md-0 col-sm-0" id="verticalSplitter"></div>
+                        <div class="col-lg-5 col-md-5 col-sm-12">
+                            <div class="row justify-content-start">
+                                <div class="col col-lg-5 col-md-10 col-sm-6" style="margin-bottom: 1rem;">
+                                    <b class="func">Search the DB</b>
+                                </div>
+                                <div class="col-lg-6 col-md-10 col-sm-6">
+                                    <input type="text" id="property" placeholder="Property: e.g. species"/>
+                                    <input type="text" id="value" placeholder="Value: e.g. "/>
+                                    <br>
+                                    <button type="button" class="btn btn-success float-end">Go</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

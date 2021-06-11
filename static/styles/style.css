@@ -89,7 +89,7 @@ html, body
 
 #picDiv {
     display: block;
-    height: 500px;
+    height: calc(100% + 50px);
     background-color: #206623;
     background-image: url('../img/EjbXdeCWsAMUEZ9.jpg');
     background-size: cover;
@@ -120,7 +120,7 @@ html, body
 #welcome {
     position: relative;
     width: 50%;
-    padding-top: 6rem;
+    top: 25%;
     text-align: center;
     color: #ffffff;
     z-index: 2;

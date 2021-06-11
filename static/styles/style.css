@@ -64,6 +64,29 @@ html, body
     border-width: 0 15px 15px 0;
 }
 
+#backToWelcome {
+    position: absolute;
+    bottom: 3rem;
+    right: 2rem;
+}
+
+#backToWelcome::after, #backToWelcome:hover::after {
+    content: "";
+    display: inline-block;
+    z-index: 1;
+    border: solid rgba(255, 255, 255, 0.7);
+    border-width: 10px 0 0 10px;
+    padding: 10px;
+    margin-left: 5px;
+    transform: rotate(-45deg) translateX(-50%) translateY(0.35rem);
+    cursor: pointer;
+}
+
+#backToWelcome:hover::after {
+    border: solid rgba(255, 255, 255, 1);
+    border-width: 10px 0 0 10px;
+}   
+
 #picDiv {
     display: block;
     height: 500px;
@@ -183,5 +206,18 @@ pre {
     }
     to {
         transform: translateX(-50%);
+    }
+}
+
+.moveWelcomeBack {
+    animation: moveWelcomeBack 1.0s 1 forwards;
+}
+
+@keyframes moveWelcomeBack {
+    from {
+        transform: translateX(-50%);
+    }
+    to {
+        transform: translateX(0);
     }
 }

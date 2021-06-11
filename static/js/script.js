@@ -37,9 +37,14 @@ getItem = () => {
         }
 }
 
-// Trigger search when key enter is pressed
+// Trigger search when key enter is pressed in the search input bar
 $('#idx').keydown(e => {
     if (e.which == 13) {
         getItem();
     }
 });
+
+// Slide back to welcome
+slideBack = () => {
+    $('#animAnchor').attr('class', 'moveWelcomeBack'); 
+}

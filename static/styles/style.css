@@ -145,7 +145,7 @@ p {
     font-size: large;
 }
 
-label {
+::placeholder {
     color: #808080;
 }
 
@@ -174,9 +174,42 @@ pre {
     background-color: #ffffff;
 }
 
+.btn-light {
+    padding: 2px .5rem;
+}
+
 #jsonSnippetContainer {
     display: none;
 }
+
+#searchField, #fieldValue {
+    color: #aaa;
+}
+
+#searchField, #searchField + ul,
+#fieldValue, #fieldValue + ul {
+    width: 100%;
+    text-align: left;
+}
+
+#searchField::after,
+#fieldValue::after {
+    position: absolute;
+    right: .5rem;
+    border-width: 0 1px 1px 0;
+    margin-top: 7px;
+}
+
+.searchbar {
+    min-width: 225px;
+}
+
+ul#availableValues {
+    max-height: 200px;
+    overflow: auto;
+}
+
+
 
 
 /* lg */

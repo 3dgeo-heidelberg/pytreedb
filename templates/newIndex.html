@@ -83,7 +83,7 @@
                         <div class="col col-lg-5 col-md-10 col-sm-6" style="margin-bottom: 1rem;">
                             <b class="func">Get tree by index</b>
                         </div>
-                        <div class="col col-lg-6 col-md-10 col-sm-6">
+                        <div class="searchbar col col-lg-6 col-md-10 col-sm-6">
                             <input type="text" id="idx" placeholder="Index: e.g. 0" />
                             <br>
                             <button type="button" class="btn btn-success float-end" onclick="getItem()">Go</button>
@@ -96,9 +96,26 @@
                         <div class="col col-lg-5 col-md-10 col-sm-6" style="margin-bottom: 1rem;">
                             <b class="func">Search the DB</b>
                         </div>
-                        <div class="col-lg-6 col-md-10 col-sm-6">
-                            <input type="text" id="property" placeholder="Property: e.g. species"/>
-                            <input type="text" id="value" placeholder="Value: e.g. "/>
+                        <div class="searchbar col-lg-6 col-md-10 col-sm-6">
+                            <div class="dropdown">
+                                <a class="btn btn-light dropdown-toggle" href="#" id="searchField" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Select search field
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="searchField">
+                                    <li><a class="dropdown-item" href="#" onclick="searchFieldSelected(this)">Species</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="searchFieldSelected(this)">Mode</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="searchFieldSelected(this)">Canopy Condition</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="searchFieldSelected(this)">Quality</a></li>
+                                </ul>
+                            </div>
+                            <div class="dropdown" style="margin-top: 0.5rem; ">
+                                <a class="btn btn-light dropdown-toggle" href="#" id="fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Please select a field first
+                                </a>
+                                <ul class="dropdown-menu" id="availableValues" aria-labelledby="fieldValue"></ul>
+                            </div>
+                            <!-- <input type="text" id="property" placeholder="Property: e.g. species"/>
+                            <input type="text" id="value" placeholder="Value: e.g. "/> -->
                             <br>
                             <button type="button" class="btn btn-success float-end" onclick="searchDB()">Go</button>
                         </div>

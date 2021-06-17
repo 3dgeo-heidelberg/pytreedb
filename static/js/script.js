@@ -58,12 +58,17 @@ searchDB = () => {
             $('#numRes').html(trees.length);
             $('#numResContainer').show();
             // Show tabs if results > 1
-            if (trees.length > 3) {
+            if (trees.length >= 3) {
                 num = 3;
                 $('#previewLabel').attr('style', 'display: inline;');
                 $('.treeTab').removeClass('active');
             } else {
                 num = trees.length;
+                $('#previewLabel').hide();
+                if (num == 1) {
+                    $('#treeTab1').hide();
+                }
+                $('#treeTab2').hide();
             }
             // Show json data of maximal 3 trees
             for (let i = 0; i < num; i++) {

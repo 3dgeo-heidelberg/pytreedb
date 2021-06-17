@@ -166,10 +166,8 @@ pre {
     border: solid; 
     border-width: 1px; 
     border-color: #808080; 
-    width: 70%; 
     height: 100%;
     position: relative; 
-    margin: 0 auto;
     overflow-y: scroll;
     background-color: #ffffff;
 }
@@ -178,7 +176,7 @@ pre {
     padding: 2px .5rem;
 }
 
-#jsonSnippetContainer {
+#jsonSnippetContainer, #numResContainer {
     display: none;
 }
 

@@ -39,20 +39,32 @@ getItem = () => {
         }
 }
 
+// Trigger search when key enter is pressed in the search input bar
+$('#idx').keydown(e => {
+    if (e.which == 13) {
+        getItem();
+    }
+});
+
 // Query trees via property and value
 searchDB = () => {
-    var property = $('#searchField').val();
-    var value = $('#value').val();
+    var property = $('#searchField').text().toLowerCase();
+    var value = $('#fieldValue').text();
     if (property != '' && value != ''){
         $.get('/trees?field=' + property + '&value=' + value, data => {
             $('#results').html("");
-            $('#num_found').html(data['query'].length);
+            $('#numRes').html(data['query'].length);
+            $('#numResContainer').show();
             data['query'].forEach((tree, id) => {
                 if(id < 10) {
                     $('#results').append('<pre id="results-' + id + '"></pre>');
                     $('#results-' + id).jsonViewer(tree);
                 }
             });
+            $('#jsonSnippetContainer').show();
+            $('html,body').animate({
+                scrollTop: $('#jsonViewerTarget').offset().top},
+                'slow');
         });
 
     } else {
@@ -70,7 +82,7 @@ searchFieldSelected = e => {
     switch (e.text) {
         case "Species":
             $.get('/listspecies', data => {
-                data["species"].forEach(specie => {
+                data["species"].sort().forEach(specie => {
                     $('#availableValues').append(
                         '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + specie + '</a></li>'
                     );
@@ -105,30 +117,20 @@ searchFieldSelected = e => {
     }
 }
 
+// Update dropdown text when users selects a value
 fieldValueSelected = e => {
     $('#fieldValue').html(e.text);
     $('#fieldValue').attr('style', 'color: #000');
 }
 
-// Trigger search when key enter is pressed in the search input bar
-$('#idx').keydown(e => {
-    if (e.which == 13) {
-        getItem();
-    }
-});
-$('#value').keydown(e => {
-    if (e.which == 13) {
-        searchDB();
-    }
-});
-
-// Save the search result to file
+// Utility function: save a string to a file that will pop up for the user to download
 saveContent = (fileContents, fileName) => {
     var link = document.createElement('a');
     link.download = fileName;
     link.href = 'data:,' + fileContents;
     link.click();
 }
+// Save jsonoutput to a json file
 saveJsonOutput = () => {
     saveContent(jsonOutput, "out.json");
 }

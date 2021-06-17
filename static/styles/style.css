@@ -8,8 +8,9 @@ html, body
     padding-left: 0.5rem;
 }
 
-.nav-link {
+.nav-link, .nav-link:focus {
     font-weight: 700;
+    color: #198754;
 }
 
 .navbar-brand {
@@ -165,7 +166,7 @@ button {
 pre {
     border: solid; 
     border-width: 1px; 
-    border-color: #808080; 
+    border-color: #dee2e6; 
     height: 100%;
     position: relative; 
     overflow-y: scroll;
@@ -176,7 +177,8 @@ pre {
     padding: 2px .5rem;
 }
 
-#jsonSnippetContainer, #numResContainer {
+#jsonSnippetContainer, #numResContainer, 
+#treeTabs, #previewLabel {
     display: none;
 }
 
@@ -207,6 +209,10 @@ ul#availableValues {
     overflow: auto;
 }
 
+ul#treeTabs > li {
+    display: none;
+    cursor: pointer;
+}
 
 
 

@@ -7,17 +7,19 @@ window.onload = () => {
 
 }
 
-var jsonOutput;
+var species, jsonOutput;
 
 // Show all species in the databank
 showSpecies = () => {
-    $.get('/listspecies', data => {
-        var species = data["species"];
-        $('#speciesList').attr('style', 'columns:' + parseInt(species.length / 11 + 1));
-        species.forEach(specie => {
-            $('#speciesList').append($('<li>' + specie + '</li>'));
-        });
-    })
+    if (typeof species == 'undefined') { // Avoid unnessesary calls on backend
+        $.get('/listspecies', data => {
+            species = data["species"];
+            $('#speciesList').attr('style', 'columns:' + parseInt(species.length / 11 + 1));
+            species.forEach(specie => {
+                $('#speciesList').append($('<li>' + specie + '</li>'));
+            });
+        })
+    }
     $('#animAnchor').attr('class', 'moveWelcomeLeft');        
 }
 
@@ -30,21 +32,16 @@ getItem = () => {
             jsonOutput = jsonStr;
             var jsonObj = JSON.parse(jsonStr);
             // External widget to enbale advanced json viewing.
-            $('#jsonViewerTarget').jsonViewer(jsonObj, {rootCollapsable: false, withLinks: false});
+            $('#jsonViewerContainer').empty();
+            $('#jsonViewerContainer').html('<pre id="idSearchRes"></pre>');
+            $('#idSearchRes').jsonViewer(jsonObj, {rootCollapsable: false, withLinks: false});
         });
         $('#jsonSnippetContainer').show();
         $('html,body').animate({
-            scrollTop: $('#jsonViewerTarget').offset().top},
+            scrollTop: $('#jsonSnippetContainer').offset().top},
             'slow');
         }
 }
-
-// Trigger search when key enter is pressed in the search input bar
-$('#idx').keydown(e => {
-    if (e.which == 13) {
-        getItem();
-    }
-});
 
 // Query trees via property and value
 searchDB = () => {
@@ -52,23 +49,53 @@ searchDB = () => {
     var value = $('#fieldValue').text();
     if (property != '' && value != ''){
         $.get('/trees?field=' + property + '&value=' + value, data => {
-            $('#results').html("");
-            $('#numRes').html(data['query'].length);
+            var trees = data['query'];
+            var num;
+            $('#jsonViewerContainer').empty(); // Clear previous search results
+            // Show number of results
+            $('#numRes').html(trees.length);
             $('#numResContainer').show();
-            data['query'].forEach((tree, id) => {
-                if(id < 10) {
-                    $('#results').append('<pre id="results-' + id + '"></pre>');
-                    $('#results-' + id).jsonViewer(tree);
+            // Show tabs if results > 1
+            if (trees.length > 3) {
+                num = 3;
+                $('#previewLabel').attr('style', 'display: inline;');
+                // toggleTab($('#treeTab0').get(0));
+            } else {
+                num = trees.length;
+            }
+            // Show json data of maximal 3 trees
+            for (let i = 0; i < num; i++) {
+                // Show tabs
+                $('#treeTabs').attr('style', 'display: flex;');
+                $('#treeTab' + i).show();
+                // Load data into html
+                $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + i + '"></pre>');
+                $('#tree-' + i).jsonViewer(trees[i]);
+                // Show only one code block
+                if (i > 0) {
+                    $('#tree-' + i).hide();
                 }
-            });
-            $('#jsonSnippetContainer').show();
-            $('html,body').animate({
-                scrollTop: $('#jsonViewerTarget').offset().top},
-                'slow');
+            }
         });
+        $('#jsonSnippetContainer').show();
+        $('html,body').animate({
+            scrollTop: $('#jsonSnippetContainer').offset().top},
+            'slow');
 
     } else {
         $("#results").html(""); // empty list
+    }
+}
+
+// Toggle shown (active) tree data
+toggleTab = e => {
+    if (!e.classList.contains('active')) {
+        // Toggle active tabs
+        $('.treeTab').removeClass('active');
+        $(e).addClass('active');
+        // Toggle shown data
+        $('.previewTree').hide();
+        $('#tree-' + (e.text - 1)).show();
     }
 }
 
@@ -139,3 +166,10 @@ saveJsonOutput = () => {
 slideBack = () => {
     $('#animAnchor').attr('class', 'moveWelcomeBack'); 
 }
+
+// Trigger search when key enter is pressed in the search input bar
+$('#idx').keydown(e => {
+    if (e.which == 13) {
+        getItem();
+    }
+});

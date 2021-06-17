@@ -60,16 +60,19 @@ searchDB = () => {
     }
 }
 
+// After selecting a field, the available values will be updated in the second dropdown
 searchFieldSelected = e => {
     $('#searchField').html(e.text);
     $('#searchField').attr('style', 'color: #000');
     $('#fieldValue').html('Choose a value');
+    $('#fieldValue').attr('style', 'color: #aaa');
+    $('#availableValues').empty();
     switch (e.text) {
         case "Species":
             $.get('/listspecies', data => {
                 data["species"].forEach(specie => {
                     $('#availableValues').append(
-                        '<li><a class="dropdown-item" href="#" onclick="fieldValueSelected(this)">' + specie + '</a></li>'
+                        '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + specie + '</a></li>'
                     );
                 });
             })
@@ -78,7 +81,7 @@ searchFieldSelected = e => {
             var modes = ['TLS', 'ALS', 'ULS'];
             modes.forEach(mode => {
                 $('#availableValues').append(
-                    '<li><a class="dropdown-item" href="#" onclick="fieldValueSelected(this)">' + mode + '</a></li>'
+                    '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + mode + '</a></li>'
                 );
             })
             break;
@@ -86,14 +89,14 @@ searchFieldSelected = e => {
             var canopy_conditions = ['leaf-on', 'leaf-off'];
             canopy_conditions.forEach(cond => {
                 $('#availableValues').append(
-                    '<li><a class="dropdown-item" href="#" onclick="fieldValueSelected(this)">' + cond + '</a></li>'
+                    '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + cond + '</a></li>'
                 );
             })
             break;
         case "Quality":
             for (let i = 1; i <= 5; i++) {
                 $('#availableValues').append(
-                    '<li><a class="dropdown-item" href="#" onclick="fieldValueSelected(this)">' + i + '</a></li>'
+                    '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + i + '</a></li>'
                 );
             }
             break;

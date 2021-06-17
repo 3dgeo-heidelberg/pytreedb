@@ -36,6 +36,8 @@ getItem = () => {
             $('#jsonViewerContainer').html('<pre id="idSearchRes"></pre>');
             $('#idSearchRes').jsonViewer(jsonObj, {rootCollapsable: false, withLinks: false});
         });
+        $('#numResContainer').hide();
+        $('#treeTabs').hide();
         $('#jsonSnippetContainer').show();
         $('html,body').animate({
             scrollTop: $('#jsonSnippetContainer').offset().top},
@@ -59,7 +61,7 @@ searchDB = () => {
             if (trees.length > 3) {
                 num = 3;
                 $('#previewLabel').attr('style', 'display: inline;');
-                // toggleTab($('#treeTab0').get(0));
+                $('.treeTab').removeClass('active');
             } else {
                 num = trees.length;
             }
@@ -76,6 +78,7 @@ searchDB = () => {
                     $('#tree-' + i).hide();
                 }
             }
+            $('#treeTab0').children().addClass('active');
         });
         $('#jsonSnippetContainer').show();
         $('html,body').animate({
@@ -89,14 +92,12 @@ searchDB = () => {
 
 // Toggle shown (active) tree data
 toggleTab = e => {
-    if (!e.classList.contains('active')) {
-        // Toggle active tabs
-        $('.treeTab').removeClass('active');
-        $(e).addClass('active');
-        // Toggle shown data
-        $('.previewTree').hide();
-        $('#tree-' + (e.text - 1)).show();
-    }
+    // Toggle active tabs
+    $('.treeTab').removeClass('active');
+    $(e).addClass('active');
+    // Toggle shown data
+    $('.previewTree').hide();
+    $('#tree-' + (e.text - 1)).show();
 }
 
 // After selecting a field, the available values will be updated in the second dropdown

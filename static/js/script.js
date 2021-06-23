@@ -27,10 +27,13 @@ showSpecies = () => {
 // Get tree item by index
 getItem = () => {
     var idx = $('#idx').val();
-    if (idx >= n_trees) {
-        alert("Index out of range! Please enter a number between 0 and " + (n_trees-1));
+    if (idx >= n_trees || idx < 0) {
+        $('#idx').addClass('warning').next().show();
     }
-    if (idx != '' && idx < n_trees){
+    if (idx != '' && idx < n_trees && idx > -1){
+        // Remove warning
+        $('#idx').removeClass('warning').next().hide();
+        // Do get
         $.get('/getitem?index=' + idx, data => {
             var jsonStr = data['item'];
             jsonOutput = jsonStr;

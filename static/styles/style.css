@@ -173,6 +173,17 @@ pre {
     background-color: #ffffff;
 }
 
+label.warning {
+    display: none;
+    color: rgb(255, 0, 0);
+    font-size: small;
+    margin-top: -1rem;
+}
+
+input.warning {
+    border: solid 2px #FF0000;
+}
+
 .btn-light {
     padding: 2px .5rem;
 }

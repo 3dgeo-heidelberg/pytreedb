@@ -5,6 +5,11 @@ html, body
 
 a {
     text-decoration: none;
+    color: inherit;
+}
+
+a:hover {
+    color: inherit;
 }
 
 .navbar {
@@ -43,7 +48,7 @@ a {
 }
 
 #showSpecies {
-    margin-top: 50px; 
+    margin-top: 20px; 
     vertical-align: middle; 
     color: rgba(255, 255, 255, 0.7);
     cursor: pointer;

@@ -16,8 +16,12 @@ import pytreedb.pytreedb as pytreedb
 app = Flask(__name__)
 
 @app.route('/')
-def hello_world():
+def index():
     return render_template(r'newIndex.html', server=request.remote_addr)
+
+@app.route('/about')
+def about():
+    return render_template(r'about.html')
 
 mydb = pytreedb.PyTreeDB(dbfile=r'E:\tmp\SYSSIFOSS\syssifoss.db') # instantiate pytreedb
 mydb.load_db(r'E:\tmp\SYSSIFOSS\syssifoss.db') # Jiani: loading local db file

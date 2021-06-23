@@ -20,15 +20,15 @@
                     <a target="_blank" rel="noopener noreferrer" href="https://www.geog.uni-heidelberg.de/3dgeo/index.html" style="padding-right: 10px; text-decoration: none">
                         <img src="{{ url_for('static', filename='img/3dgeo_logo.jpg') }}" alt="3DGEO" height="30" class="d-inline-block align-text-middle">
                     </a>
-                    PyTreeDB
+                    <a href="/">PyTreeDB</a>
                 </div>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#hamburgerContent" aria-controls="hamburgerContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-end flex-grow-0" id="hamburgerContent">
                     <div class="navbar-nav text-end">
-                        <a class="nav-item nav-link" aria-current="page" href="#">HOME</a>
-                        <a class="nav-item nav-link" href="#">ABOUT</a>
+                        <a class="nav-item nav-link" aria-current="page" href="/" >HOME</a>
+                        <a class="nav-item nav-link" href="/about">ABOUT</a>
                         <a class="nav-item nav-link" href="#">CONTACT</a>
                         <div class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -56,7 +56,7 @@
                     <div id="welcome" style="height: 100%;">
                         <div style="position: relative; ">
                             <h1>Welcome to PyTreeDB</h1>
-                            <p> Here comes the description... </p>
+                            <p style="margin-top: 30px;"> Database of single tree laser scanning and forest inventory data </p>
                             <p style="margin-top: 20px;"> 
                                 Currently, PyTreeDB has <span id="numTrees"></span> trees of <span id="numSpecies"></span> species.</p>
                             <div id="showSpecies" onclick="showSpecies()">

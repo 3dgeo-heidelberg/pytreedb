@@ -3,9 +3,10 @@ var species, n_trees, jsonOutput;
 window.onload = () => {
     // Load stats on start
     $.get('/stats', (data) => {
-        n_trees = data["n_trees"];
-        $('#numTrees').html(data["n_trees"]);
-        $('#numSpecies').html(data["n_species"]);
+        n_trees = data['n_trees'];
+        $('#numTrees').html(n_trees);
+        $('#numSpecies').html(data['n_species']);
+        $('#nTrees').html(n_trees-1);
     });
 
 }

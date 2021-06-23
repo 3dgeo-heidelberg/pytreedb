@@ -1,13 +1,14 @@
+var species, n_trees, jsonOutput;
+
 window.onload = () => {
     // Load stats on start
     $.get('/stats', (data) => {
+        n_trees = data["n_trees"];
         $('#numTrees').html(data["n_trees"]);
         $('#numSpecies').html(data["n_species"]);
     });
 
 }
-
-var species, jsonOutput;
 
 // Show all species in the databank
 showSpecies = () => {
@@ -26,13 +27,17 @@ showSpecies = () => {
 // Get tree item by index
 getItem = () => {
     var idx = $('#idx').val();
-    if (idx != ''){
+    if (idx >= n_trees) {
+        alert("Index out of range! Please enter a number between 0 and " + (n_trees-1));
+    }
+    if (idx != '' && idx < n_trees){
         $.get('/getitem?index=' + idx, data => {
             var jsonStr = data['item'];
             jsonOutput = jsonStr;
             var jsonObj = JSON.parse(jsonStr);
-            // External widget to enbale advanced json viewing.
+            // Clear previous results
             $('#jsonViewerContainer').empty();
+            // Write new result
             $('#jsonViewerContainer').html('<pre id="idSearchRes"></pre>');
             $('#idSearchRes').jsonViewer(jsonObj, {rootCollapsable: false, withLinks: false});
         });
@@ -42,7 +47,7 @@ getItem = () => {
         $('html,body').animate({
             scrollTop: $('#jsonSnippetContainer').offset().top},
             'slow');
-        }
+    }
 }
 
 // Query trees via property and value
@@ -52,42 +57,48 @@ searchDB = () => {
     if (property == 'canopy condition') {
         property = 'canopy_condition';
     }
-
-    if (property != '' && value != ''){
+    // Do get
+    if (property != '' && property != 'select search field' 
+        && value != '' && value != 'Please select a field first'
+        && value != 'Choose a value') {
         $.get('/trees?field=' + property + '&value=' + value, data => {
             var trees = data['query'];
             var num;
-            $('#jsonViewerContainer').empty(); // Clear previous search results
+            // Clear previous results
+            $('#jsonViewerContainer').empty(); 
             // Show number of results
             $('#numRes').html(trees.length);
-            $('#numResContainer').show();
-            // Show tabs if results > 1
-            if (trees.length >= 3) {
-                num = 3;
-                $('#previewLabel').attr('style', 'display: inline;');
-                $('.treeTab').removeClass('active');
-            } else {
-                num = trees.length;
-                $('#previewLabel').hide();
-                if (num == 1) {
-                    $('#treeTab1').hide();
+            // Show json code snippets if trees found
+            if (trees.length != 0) {
+                $('#numResContainer').show();
+                // Show tabs if results > 1
+                if (trees.length >= 3) {
+                    num = 3;
+                    $('#previewLabel').attr('style', 'display: inline;');
+                    $('.treeTab').removeClass('active');
+                } else {
+                    num = trees.length;
+                    $('#previewLabel').hide();
+                    if (num == 1) {
+                        $('#treeTab1').hide();
+                    }
+                    $('#treeTab2').hide();
                 }
-                $('#treeTab2').hide();
-            }
-            // Show json data of maximal 3 trees
-            for (let i = 0; i < num; i++) {
-                // Show tabs
-                $('#treeTabs').attr('style', 'display: flex;');
-                $('#treeTab' + i).show();
-                // Load data into html
-                $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + i + '"></pre>');
-                $('#tree-' + i).jsonViewer(trees[i]);
-                // Show only one code block
-                if (i > 0) {
-                    $('#tree-' + i).hide();
+                // Show json data of maximal 3 trees
+                for (let i = 0; i < num; i++) {
+                    // Show tabs
+                    $('#treeTabs').attr('style', 'display: flex;');
+                    $('#treeTab' + i).show();
+                    // Load data into html
+                    $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + i + '"></pre>');
+                    $('#tree-' + i).jsonViewer(trees[i]);
+                    // Show only one code block
+                    if (i > 0) {
+                        $('#tree-' + i).hide();
+                    }
                 }
+                $('#treeTab0').children().addClass('active');
             }
-            $('#treeTab0').children().addClass('active');
         });
         $('#jsonSnippetContainer').show();
         $('html,body').animate({

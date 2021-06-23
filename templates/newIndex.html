@@ -86,7 +86,7 @@
                             <b class="func">Get tree by index</b>
                         </div>
                         <div class="searchbar col col-lg-6 col-md-10 col-sm-6">
-                            <input type="text" id="idx" placeholder="Index: e.g. 0" />
+                            <input type="text" id="idx" placeholder="Index: starts with 0" />
                             <br>
                             <button type="button" class="btn btn-success float-end" onclick="getItem()">Go</button>
                         </div>
@@ -100,9 +100,7 @@
                         </div>
                         <div class="searchbar col-lg-6 col-md-10 col-sm-6">
                             <div class="dropdown">
-                                <a class="btn btn-light dropdown-toggle" id="searchField" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Select search field
-                                </a>
+                                <a class="btn btn-light dropdown-toggle" id="searchField" role="button" data-bs-toggle="dropdown" aria-expanded="false">Select search field</a>
                                 <ul class="dropdown-menu" aria-labelledby="searchField">
                                     <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Species</a></li>
                                     <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Mode</a></li>
@@ -111,13 +109,9 @@
                                 </ul>
                             </div>
                             <div class="dropdown" style="margin-top: 0.5rem; ">
-                                <a class="btn btn-light dropdown-toggle" id="fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Please select a field first
-                                </a>
+                                <a class="btn btn-light dropdown-toggle" id="fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">Please select a field first</a>
                                 <ul class="dropdown-menu" id="availableValues" aria-labelledby="fieldValue"></ul>
                             </div>
-                            <!-- <input type="text" id="property" placeholder="Property: e.g. species"/>
-                            <input type="text" id="value" placeholder="Value: e.g. "/> -->
                             <br>
                             <button type="button" class="btn btn-success float-end" onclick="searchDB()">Go</button>
                         </div>
@@ -137,8 +131,8 @@
                     <li id="treeTab1" class="nav-item"><a class="nav-link treeTab" onclick="toggleTab(this)">2</a></li>
                     <li id="treeTab2" class="nav-item"><a class="nav-link treeTab" onclick="toggleTab(this)">3</a></li>
                 </ul>
+                <button type="button" class="btn btn-success ms-2" onclick="saveJsonOutput()">Save</button>
                 <div id="jsonViewerContainer" class="wrapper" style="height: 100%; margin-bottom: 1rem;"></div>
-                <button type="button" class="btn btn-outline-success ms-2" onclick="saveJsonOutput()">Save</button>
             </div>
         </div>
         

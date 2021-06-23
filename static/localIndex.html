@@ -86,7 +86,7 @@
                             <b class="func">Get tree by index</b>
                         </div>
                         <div class="searchbar col col-lg-6 col-md-10 col-sm-6">
-                            <input type="text" id="idx" placeholder="Index: e.g. 0" />
+                            <input type="text" id="idx" placeholder="Index: starts with 0" />
                             <br>
                             <button type="button" class="btn btn-success float-end" onclick="getItem()">Go</button>
                         </div>
@@ -128,17 +128,32 @@
 
         <div id="jsonSnippetContainer" style="width: 100%; height: 100%; padding-top: 1.5rem; padding-bottom: 10rem; background-color: #fff;">
             <div class="wrapper" style="width: 70%; height: 100%; margin: 0 auto;">
-                <p id="numResContainer" style="color: #198754;">
+                <p id="numResContainer" style="color: #198754; display: inline-block;">
                     <span id="numRes"></span> trees found 
-                    <span id="previewLabel">. Preview of the first three trees:</span>
+                    <span id="previewLabel" style="display: inline;">. Preview of the first three trees:</span>
                 </p>
-                <ul id="treeTabs" class="nav nav-tabs">
-                    <li id="treeTab0" class="nav-item"><a class="nav-link treeTab" onclick="toggleTab(this)">1</a></li>
-                    <li id="treeTab1" class="nav-item"><a class="nav-link treeTab" onclick="toggleTab(this)">2</a></li>
-                    <li id="treeTab2" class="nav-item"><a class="nav-link treeTab" onclick="toggleTab(this)">3</a></li>
+                <ul id="treeTabs" class="nav nav-tabs" style="display: flex;">
+                    <li id="treeTab0" class="nav-item" style="display: inline-block;"><a class="nav-link treeTab" onclick="toggleTab(this)">1</a></li>
+                    <li id="treeTab1" class="nav-item" style="display: inline-block;"><a class="nav-link treeTab" onclick="toggleTab(this)">2</a></li>
+                    <li id="treeTab2" class="nav-item" style="display: inline-block;"><a class="nav-link treeTab" onclick="toggleTab(this)">3</a></li>
                 </ul>
-                <div id="jsonViewerContainer" class="wrapper" style="height: 100%; margin-bottom: 1rem;"></div>
-                <button type="button" class="btn btn-outline-success ms-2" onclick="saveJsonOutput()">Save</button>
+                <button type="button" class="btn btn-success ms-2" onclick="saveJsonOutput()">Save</button>
+                <div id="jsonViewerContainer" class="wrapper" style="height: 100%; margin-bottom: 1rem;">
+                    <pre id="idSearchRes">
+                        {
+                            canopy_condition: "leaf-on",
+                            crs: "epsg:25832",
+                            date: "2019-06-04",
+                            file: "http://jjljljlj",
+                            metadata-url: "http://doi",
+                            mode: "TLS",
+                            point_count: 140272,
+                            quality: "5",
+                            sensor: "RIEGL VZ-400",
+                            type: "pointcloud"
+                        },
+                    </pre>
+                </div>
             </div>
         </div>
         

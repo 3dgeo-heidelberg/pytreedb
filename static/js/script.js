@@ -49,7 +49,8 @@ getItem = () => {
         });
         $('#numResContainer').hide();
         $('#treeTabs').hide();
-        $('#jsonSnippetContainer').show();
+        $('#saveAllButton').hide();
+        $('#jsonSnippetContainer').css('padding-bottom', '2rem').show();
         $('html,body').animate({
             scrollTop: $('#jsonSnippetContainer').offset().top},
             'slow');
@@ -78,6 +79,7 @@ searchDB = () => {
             // Show json code snippets if trees found
             if (trees.length != 0) {
                 $('#numResContainer').show();
+                $('#saveAllButton').show();
                 // Update for output
                 jsonOutput = JSON.stringify(trees[0]);
                 // Show tabs if results > 1
@@ -109,7 +111,7 @@ searchDB = () => {
                 $('#treeTab0').children().addClass('active');
             }
         });
-        $('#jsonSnippetContainer').show();
+        $('#jsonSnippetContainer').css('padding-bottom', '7rem').show();
         $('html,body').animate({
             scrollTop: $('#jsonSnippetContainer').offset().top},
             'slow');

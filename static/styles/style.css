@@ -3,6 +3,10 @@ html, body
     height: 100%;
 }
 
+a {
+    text-decoration: none;
+}
+
 .navbar {
     padding-right: 0.5rem;
     padding-left: 0.5rem;
@@ -121,7 +125,7 @@ html, body
 #welcome {
     position: relative;
     width: 50%;
-    top: 25%;
+    top: 20%;
     text-align: center;
     color: #ffffff;
     z-index: 2;

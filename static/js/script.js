@@ -132,14 +132,14 @@ saveContent = (fileContents, fileName) => {
 }
 // Save single jsonOutput to a json file
 saveJsonOutput = () => {
-    saveContent(jsonOutput, 'currentJson.json');
+    saveContent(jsonOutput, 'current_tree_json.json');
 }
 // Save all result jsons into one json file
 saveAllJsons = () => {
     var outString = '{"type": "FeatureCollection", "features":';
     $.get(currReq, data => {
         outString += JSON.stringify(data['query']) + '}';
-        saveContent(outString, 'allJsonResults.json');
+        saveContent(outString, 'res_feature_collection.json');
     })
 }
 

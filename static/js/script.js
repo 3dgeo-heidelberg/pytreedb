@@ -37,6 +37,7 @@ getItem = () => {
         // Do get
         $.get('/getitem?index=' + idx, data => {
             var jsonStr = data['item'];
+            // Update jsonOutput
             jsonOutput = jsonStr;
             var jsonObj = JSON.parse(jsonStr);
             // Clear previous results
@@ -102,6 +103,8 @@ searchDB = () => {
                     }
                 }
                 $('#treeTab0').children().addClass('active');
+                // Update the first tree ready for output
+                jsonOutput = $('#tree-0').text();
             }
         });
         $('#jsonSnippetContainer').show();
@@ -122,6 +125,8 @@ toggleTab = e => {
     // Toggle shown data
     $('.previewTree').hide();
     $('#tree-' + (e.text - 1)).show();
+    // Update jsonOutput
+    jsonOutput = $('#tree-' + (e.text - 1)).text();
 }
 
 // After selecting a field, the available values will be updated in the second dropdown

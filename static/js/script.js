@@ -49,6 +49,10 @@ getItem = () => {
 searchDB = () => {
     var property = $('#searchField').text().toLowerCase();
     var value = $('#fieldValue').text();
+    if (property == 'canopy condition') {
+        property = 'canopy_condition';
+    }
+
     if (property != '' && value != ''){
         $.get('/trees?field=' + property + '&value=' + value, data => {
             var trees = data['query'];

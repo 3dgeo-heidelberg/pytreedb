@@ -80,20 +80,6 @@
         
         <div class="container" id="querySectionWrappper" style="width: 90%; margin-top: 30px;">
             <div class="row justify-content-center">
-                <div class="col-lg-5 col-md-5 col-sm-12" style="margin-bottom: 4rem;">
-                    <div class="row justify-content-start">
-                        <div class="col col-lg-5 col-md-10 col-sm-6" style="margin-bottom: 1rem;">
-                            <b class="func">Get tree by index</b>
-                        </div>
-                        <div class="searchbar col col-lg-6 col-md-10 col-sm-6">
-                            <input type="text" id="idx" placeholder="Index: starts with 0" />
-                            <label class="warning">Index out of range! Please enter a number between 0 and <span id="nTrees"></span></label>
-                            <br>
-                            <button type="button" class="btn btn-success float-end" onclick="getItem()">Go</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-1 col-md-0 col-sm-0" id="verticalSplitter"></div>
                 <div class="col-lg-5 col-md-5 col-sm-12">
                     <div class="row justify-content-start">
                         <div class="col col-lg-5 col-md-10 col-sm-6" style="margin-bottom: 1rem;">
@@ -115,6 +101,20 @@
                             </div>
                             <br>
                             <button type="button" class="btn btn-success float-end" onclick="searchDB()">Go</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-1 col-md-0 col-sm-0" id="verticalSplitter"></div>
+                <div class="col-lg-5 col-md-5 col-sm-12" style="margin-bottom: 4rem;">
+                    <div class="row justify-content-start">
+                        <div class="col col-lg-5 col-md-10 col-sm-6" style="margin-bottom: 1rem;">
+                            <b class="func">Get tree by index</b>
+                        </div>
+                        <div class="searchbar col col-lg-6 col-md-10 col-sm-6">
+                            <input type="text" id="idx" placeholder="Index: starts with 0" />
+                            <label class="warning">Index out of range! Please enter a number between 0 and <span id="nTrees"></span></label>
+                            <br>
+                            <button type="button" class="btn btn-success float-end" onclick="getItem()">Go</button>
                         </div>
                     </div>
                 </div>

@@ -78,6 +78,8 @@ searchDB = () => {
             // Show json code snippets if trees found
             if (trees.length != 0) {
                 $('#numResContainer').show();
+                // Update for output
+                jsonOutput = JSON.stringify(trees[0]);
                 // Show tabs if results > 1
                 if (trees.length >= 3) {
                     num = 3;
@@ -105,8 +107,6 @@ searchDB = () => {
                     }
                 }
                 $('#treeTab0').children().addClass('active');
-                // Update the first tree ready for output
-                jsonOutput = $('#tree-0').text();
             }
         });
         $('#jsonSnippetContainer').show();
@@ -119,17 +119,7 @@ searchDB = () => {
     }
 }
 
-// Toggle shown (active) tree data
-toggleTab = e => {
-    // Toggle active tabs
-    $('.treeTab').removeClass('active');
-    $(e).addClass('active');
-    // Toggle shown data
-    $('.previewTree').hide();
-    $('#tree-' + (e.text - 1)).show();
-    // Update jsonOutput
-    jsonOutput = $('#tree-' + (e.text - 1)).text();
-}
+
 
 // Utility function: save a string to a file that will pop up for the user to download
 saveContent = (fileContents, fileName) => {
@@ -149,6 +139,20 @@ saveAllJsons = () => {
         outString += JSON.stringify(data['query']) + '}';
         saveContent(outString, 'allJsonResults.json');
     })
+}
+
+
+
+// Toggle shown (active) tree data
+toggleTab = e => {
+    // Toggle active tabs
+    $('.treeTab').removeClass('active');
+    $(e).addClass('active');
+    // Toggle shown data
+    $('.previewTree').hide();
+    $('#tree-' + (e.text - 1)).show();
+    // Update jsonOutput
+    jsonOutput = $('#tree-' + (e.text - 1)).text();
 }
 
 // After selecting a field, the available values will be updated in the second dropdown

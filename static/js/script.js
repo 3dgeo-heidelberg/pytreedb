@@ -1,4 +1,4 @@
-var species, n_trees, jsonOutput;
+var species, n_trees, jsonOutput, currReq;
 
 window.onload = () => {
     // Load stats on start
@@ -36,6 +36,7 @@ getItem = () => {
         $('#idx').removeClass('warning').next().hide();
         // Do get
         $.get('/getitem?index=' + idx, data => {
+            currReq = '/getitem?index=' + idx;
             var jsonStr = data['item'];
             // Update jsonOutput
             jsonOutput = jsonStr;
@@ -67,6 +68,7 @@ searchDB = () => {
         && value != '' && value != 'Please select a field first'
         && value != 'Choose a value') {
         $.get('/trees?field=' + property + '&value=' + value, data => {
+            currReq = '/trees?field=' + property + '&value=' + value;
             var trees = data['query'];
             var num;
             // Clear previous results
@@ -92,7 +94,7 @@ searchDB = () => {
                 // Show json data of maximal 3 trees
                 for (let i = 0; i < num; i++) {
                     // Show tabs
-                    $('#treeTabs').attr('style', 'display: flex;');
+                    $('#treeTabs').css('display', 'flex');
                     $('#treeTab' + i).show();
                     // Load data into html
                     $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + i + '"></pre>');
@@ -127,6 +129,26 @@ toggleTab = e => {
     $('#tree-' + (e.text - 1)).show();
     // Update jsonOutput
     jsonOutput = $('#tree-' + (e.text - 1)).text();
+}
+
+// Utility function: save a string to a file that will pop up for the user to download
+saveContent = (fileContents, fileName) => {
+    var link = document.createElement('a');
+    link.download = fileName;
+    link.href = 'data:,' + fileContents;
+    link.click();
+}
+// Save single jsonOutput to a json file
+saveJsonOutput = () => {
+    saveContent(jsonOutput, 'currentJson.json');
+}
+// Save all result jsons into one json file
+saveAllJsons = () => {
+    var outString = '{"type": "FeatureCollection", "features":';
+    $.get(currReq, data => {
+        outString += JSON.stringify(data['query']) + '}';
+        saveContent(outString, 'allJsonResults.json');
+    })
 }
 
 // After selecting a field, the available values will be updated in the second dropdown
@@ -180,17 +202,7 @@ fieldValueSelected = e => {
     $('#fieldValue').attr('style', 'color: #000');
 }
 
-// Utility function: save a string to a file that will pop up for the user to download
-saveContent = (fileContents, fileName) => {
-    var link = document.createElement('a');
-    link.download = fileName;
-    link.href = 'data:,' + fileContents;
-    link.click();
-}
-// Save jsonoutput to a json file
-saveJsonOutput = () => {
-    saveContent(jsonOutput, "out.json");
-}
+
 
 // Slide back to welcome
 slideBack = () => {

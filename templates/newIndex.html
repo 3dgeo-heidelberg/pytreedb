@@ -127,12 +127,24 @@
                     <span id="numRes"></span> trees found 
                     <span id="previewLabel">. Preview of the first three trees:</span>
                 </p>
-                <ul id="treeTabs" class="nav nav-tabs">
+                <ul id="treeTabs" class="nav nav-tabs" style="width: calc(100% - 150px);">
                     <li id="treeTab0" class="nav-item"><a class="nav-link treeTab active" onclick="toggleTab(this)">1</a></li>
                     <li id="treeTab1" class="nav-item"><a class="nav-link treeTab" onclick="toggleTab(this)">2</a></li>
                     <li id="treeTab2" class="nav-item"><a class="nav-link treeTab" onclick="toggleTab(this)">3</a></li>
                 </ul>
-                <button type="button" class="btn btn-success ms-2" onclick="saveJsonOutput()">Save</button>
+                <div style="float: right; padding-left: 3rem; margin-left: -3rem; white-space: nowrap;">
+                    <button type="button" class="btn btn-success ms-2" onclick="saveJsonOutput()" style="float: none;">
+                        Save JSON
+                    </button>
+                    <br>
+                    <button type="button" class="btn btn-outline-success ms-2" onclick="saveAllJsons()" style="float: none; margin-top: .5rem;">
+                        Save all JSON
+                    </button>
+                    <br>
+                    <button type="button" class="btn btn-outline-success ms-2" onclick="savePointClouds()" style="float: none; margin-top: .5rem;">
+                        Zip Point Clouds
+                    </button>
+                </div>
                 <div id="jsonViewerContainer" class="wrapper" style="height: 100%; margin-bottom: 1rem;"></div>
             </div>
         </div>

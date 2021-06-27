@@ -6,16 +6,21 @@ description
 """
 import json
 import webbrowser
+import requests
 
 from flask import Flask
 from flask import request
 from flask import render_template
+from flask_cors import CORS, cross_origin
 
 import pytreedb.pytreedb as pytreedb
 
 app = Flask(__name__)
+CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/')
+@cross_origin(origin='*',headers=['Content- Type'])
 def index():
     return render_template(r'newIndex.html', server=request.remote_addr)
 
@@ -61,3 +66,10 @@ def getItem():
     # print({'item': json.loads(mydb[int(index)]['_json'])})
     # return {'item': json.loads(mydb[int(index)]['_json'])}
 
+@app.route('/getpointclouds')
+def getPointClouds():
+    url = 'https://heibox.uni-heidelberg.de/f/ad707892be7e41dcabe3/?dl=1'  
+    res = requests.get(url)
+    return res.content
+    
+    

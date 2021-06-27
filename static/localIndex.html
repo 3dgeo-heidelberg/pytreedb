@@ -63,7 +63,7 @@
                                 <b style="margin-left: 2rem;">Show species</b>
                             </div>
                             <div style="position: absolute;left: 50%;transform: translateX(-50%);margin-top: 3rem;">
-                                <button type="button" class="btn btn-success ms-2" onclick="savePointClouds()" style="float: none; display: block; margin-top: .5rem;">
+                                <button type="button" class="btn btn-success ms-2" style="float: none; display: block; margin-top: .5rem;">
                                     <a href="https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1" style="color: #fff;">
                                         Download all data
                                     </a>
@@ -144,12 +144,15 @@
                     <li id="treeTab1" class="nav-item" style="display: inline-block;"><a class="nav-link treeTab" onclick="toggleTab(this)">2</a></li>
                     <li id="treeTab2" class="nav-item" style="display: inline-block;"><a class="nav-link treeTab" onclick="toggleTab(this)">3</a></li>
                 </ul>
-                <div style="float: right; padding-left: 3rem; margin-left: -3rem; white-space: nowrap;">
+                <div style="float: right; padding-left: 3rem; margin-left: -3rem; width: 210px; white-space: nowrap;">
                     <button type="button" class="btn btn-success ms-2" onclick="saveJsonOutput()" style="float: none; display: block;">
                         Save JSON
                     </button>
                     <button type="button" class="btn btn-outline-success ms-2" onclick="saveAllJsons()" style="float: none; display: block; margin-top: .5rem;">
                         Save all JSON
+                    </button>
+                    <button id="savePointCButton" type="button" class="btn btn-outline-success ms-2" onclick="savePointClouds()" style="float: none; display: block; margin-top: .5rem;">
+                        Save Point Clouds
                     </button>
                 </div>
                 <div id="jsonViewerContainer" class="wrapper" style="height: 100%; margin-bottom: 1rem;">

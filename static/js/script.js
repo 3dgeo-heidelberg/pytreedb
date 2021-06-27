@@ -50,6 +50,7 @@ getItem = () => {
         $('#numResContainer').hide();
         $('#treeTabs').hide();
         $('#saveAllButton').hide();
+        $('#savePointCButton').hide();
         $('#jsonSnippetContainer').css('padding-bottom', '2rem').show();
         $('html,body').animate({
             scrollTop: $('#jsonSnippetContainer').offset().top},
@@ -80,6 +81,7 @@ searchDB = () => {
             if (trees.length != 0) {
                 $('#numResContainer').show();
                 $('#saveAllButton').show();
+                $('#savePointCButton').show();
                 // Update for output
                 jsonOutput = JSON.stringify(trees[0]);
                 // Show tabs if results > 1
@@ -115,6 +117,13 @@ searchDB = () => {
         $('html,body').animate({
             scrollTop: $('#jsonSnippetContainer').offset().top},
             'slow');
+        
+        // dummy partial implementation Point Clouds download
+        if (value == 'Pinus sylvestris') {
+            $('#savePointCButton').removeAttr('disabled');
+        } else {
+            $('#savePointCButton').attr('disabled', 'disabled');
+        }
 
     } else {
         $("#results").html(""); // empty list
@@ -142,6 +151,55 @@ saveAllJsons = () => {
         saveContent(outString, 'res_feature_collection.json');
     })
 }
+// Save point clouds of all results into a zip
+//!!!!\\ ONLY A DUMMY!!!!
+savePointClouds = () => {
+    var zip = new JSZip();
+    $.get('/getpointclouds', data => {
+        for (let i = 0; i < 2; i++) {
+            if (i == 0) {
+                zip.file('PinSyl_KA10_01_2019-07-30_q4_ALS-on.laz', data);
+            } else {
+                zip.file('PinSyl_KA10_01_2019-07-30_q4_TLS-on.laz', data);
+            }
+        }
+        zip.generateAsync({type : "blob"})
+            .then(content => {
+                var link = document.createElement('a');
+                link.download = 'pointclouds';
+                link.href = URL.createObjectURL(content);
+                link.click();
+            });
+    })
+}
+    // Promise.all(urls.map(function(url) {
+    //     return request(url)
+    //   }))
+    //   .then(function() {
+    //     console.log(zip);
+    //     zip.generateAsync({
+    //         type: "blob"
+    //       })
+    //       .then(function(content) {
+    //         a.download = "folder" + new Date().getTime();
+    //         a.href = URL.createObjectURL(content);
+    //         a.innerHTML = "download " + a.download;
+    //       });
+    //   })
+// function request(url) {
+//     return new Promise(function(resolve) {
+//       var httpRequest = new XMLHttpRequest();
+//       httpRequest.open("GET", url);
+//       httpRequest.withCredentials = false;
+//       httpRequest.onload = function() {
+//         var arr = url.split("/");
+//         // zip.file(arr[arr.length - 1], this.responseText);
+//         zip.file('file', this.responseText);
+//         resolve()
+//       }
+//       httpRequest.send()
+//     })
+//   }
 
 
 

@@ -19,7 +19,7 @@ import pytreedb.pytreedb as pytreedb
 
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
-dl_progress = 0
+dl_progress = {'currItem': 0, 'numAllItems': 0}
 # downloading_thread = None
 
 # class DownloadingThread(threading.Thread):
@@ -40,7 +40,6 @@ dl_progress = 0
 #         self.data.seek(0)
 
 @app.route('/')
-#@cross_origin(origin='*',headers=['Content- Type'])
 def index():
     return render_template(r'newIndex.html', server=request.remote_addr)
 
@@ -97,13 +96,16 @@ def downloadPointClouds():
             'https://heibox.uni-heidelberg.de/f/0ad8e4ff417148d0a6c6/?dl=1',
             'https://heibox.uni-heidelberg.de/f/4305958abd184a328883/?dl=1',
             'https://heibox.uni-heidelberg.de/f/bcb95a59940e46a4ab49/?dl=1']
+    dl_progress['numAllItems'] = len(urls)
+    dl_progress['currItem'] = 0
     
+    # send requests and add to zip    
     o = io.BytesIO()
     with ZipFile(o, 'w') as zf:
             for i in range(len(urls)):
                 res = requests.get(urls[i]).content
                 zf.writestr('file_{:02d}.laz'.format(i), res)
-                dl_progress += 1/len(urls)
+                dl_progress['currItem'] += 1
     zf.close()
     o.seek(0)
     
@@ -117,5 +119,4 @@ def downloadPointClouds():
 @app.route('/progress')
 def progress():
     global dl_progress
-
-    return str(dl_progress)
+    return dl_progress

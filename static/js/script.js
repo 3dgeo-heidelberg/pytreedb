@@ -1,4 +1,4 @@
-var species, n_trees, jsonOutput, currReq;
+var species, n_trees, jsonOutput, currReq, getEverySec;
 
 window.onload = () => {
     // Load stats on start
@@ -130,7 +130,26 @@ searchDB = () => {
     }
 }
 
-
+// Show download progress
+showDlProgress = () => {
+    $('#downLoadProgressSection').show();
+    getEverySec = setInterval(getDlProgress, 1000);
+}
+// Get download progress
+getDlProgress = () => {
+    $.get('/progress', response => {
+        console.log(response['currItem']);
+        $('#dlState').text(response['currItem'] + ' of ' + response['numAllItems'] + ' files zipped');
+        var percentage = Math.round(response['currItem']/response['numAllItems']*100);
+        $('#progressBar').attr('aria-valuenow', percentage).css('width', percentage + '%');
+        if (response['currItem'] == response['numAllItems']) {
+            clearInterval(getEverySec);
+            $('#downLoadProgressSection').hide();
+            $('#dlState').text('');
+            $('#progressBar').attr('aria-valuenow', 0).css('width', '0%');
+        }
+    })
+}
 
 // Utility function: save a string to a file that will pop up for the user to download
 saveContent = (fileContents, fileName) => {
@@ -236,10 +255,6 @@ fieldValueSelected = e => {
     $('#fieldValue').attr('style', 'color: #000');
 }
 
-// Show download progress
-showDlProgress = () => {
-
-}
 
 
 

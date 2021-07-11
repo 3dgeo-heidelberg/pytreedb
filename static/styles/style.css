@@ -206,7 +206,7 @@ input.warning {
 }
 
 #jsonSnippetSection, #numResContainer, 
-#treeTabs, #previewLabel {
+#treeTabs, #previewLabel, #downLoadProgressSection {
     display: none;
 }
 

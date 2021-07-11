@@ -4,23 +4,40 @@
 """
 description
 """
-#import json
 import webbrowser
 import requests
 import io
 import flask
+import threading
 
 from zipfile import ZipFile
 from flask import Flask
 from flask import request
 from flask import render_template
-#from flask_cors import CORS, cross_origin
 
 import pytreedb.pytreedb as pytreedb
 
 app = Flask(__name__)
-#CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
+dl_progress = 0
+# downloading_thread = None
+
+# class DownloadingThread(threading.Thread):
+#     def __init__(self, urls, o):
+#         self.progress = 0
+#         self.urls = urls
+#         self.num_urls = len(urls)
+#         self.data = o
+#         super().__init__()
+
+#     def run(self):
+#         with ZipFile(self.data, 'w') as zf:
+#             for i in range(self.num_urls):
+#                 res = requests.get(self.urls[i]).content
+#                 zf.writestr('file_{:02d}.laz'.format(i), res)
+#                 # self.progress += 1/self.num_urls
+#         # zf.close()
+#         self.data.seek(0)
 
 @app.route('/')
 #@cross_origin(origin='*',headers=['Content- Type'])
@@ -71,16 +88,22 @@ def getItem():
 
 @app.route('/downloadpointclouds')
 def downloadPointClouds():
+    global dl_progress
+    
     # urls = ['https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/2021-05-07-raspios-buster-armhf-lite.zip']
     urls = ['https://heibox.uni-heidelberg.de/f/3e52b2c164b247fe85ec/?dl=1',
             'https://heibox.uni-heidelberg.de/f/ad707892be7e41dcabe3/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/7d45579bd93d4b6080c2/?dl=1']
-    o = io.BytesIO()
+            'https://heibox.uni-heidelberg.de/f/7d45579bd93d4b6080c2/?dl=1',
+            'https://heibox.uni-heidelberg.de/f/0ad8e4ff417148d0a6c6/?dl=1',
+            'https://heibox.uni-heidelberg.de/f/4305958abd184a328883/?dl=1',
+            'https://heibox.uni-heidelberg.de/f/bcb95a59940e46a4ab49/?dl=1']
     
+    o = io.BytesIO()
     with ZipFile(o, 'w') as zf:
-        for i in range(len(urls)):
-            res = requests.get(urls[i]).content
-            zf.writestr('file_{:02d}.laz'.format(i), res)
+            for i in range(len(urls)):
+                res = requests.get(urls[i]).content
+                zf.writestr('file_{:02d}.laz'.format(i), res)
+                dl_progress += 1/len(urls)
     zf.close()
     o.seek(0)
     
@@ -91,4 +114,8 @@ def downloadPointClouds():
         attachment_filename='pointcloud.zip'
     )
     
-    
+@app.route('/progress')
+def progress():
+    global dl_progress
+
+    return str(dl_progress)

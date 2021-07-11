@@ -73,7 +73,8 @@ def getItem():
 def downloadPointClouds():
     # urls = ['https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/2021-05-07-raspios-buster-armhf-lite.zip']
     urls = ['https://heibox.uni-heidelberg.de/f/3e52b2c164b247fe85ec/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/ad707892be7e41dcabe3/?dl=1']
+            'https://heibox.uni-heidelberg.de/f/ad707892be7e41dcabe3/?dl=1',
+            'https://heibox.uni-heidelberg.de/f/7d45579bd93d4b6080c2/?dl=1']
     o = io.BytesIO()
     
     with ZipFile(o, 'w') as zf:

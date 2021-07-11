@@ -183,10 +183,17 @@ pre {
     background-color: #ffffff;
 }
 
+label {
+    font-size: small;
+}
+
+label.lh-base {
+    display: block;
+}
+
 label.warning {
     display: none;
     color: rgb(255, 0, 0);
-    font-size: small;
     margin-top: -1rem;
 }
 

@@ -85,7 +85,7 @@
             </div>
         </section>
 
-        <section class="container" id="queryInputSection" style="width: 90%; margin-top: 30px;">
+        <section id="queryInputSection" class="container" style="width: 90%; margin-top: 30px;">
             <div class="row justify-content-center">
                 <div class="col-lg-5 col-md-5 col-sm-12" style="margin-bottom: 4rem;">
                     <div class="row justify-content-start">
@@ -176,7 +176,12 @@
 
         <section id="downLoadProgressSection" style="width: 100%; position: fixed; bottom: 0; background-color: #fff; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);">
             <div id="progressContainer" class="container" style="padding: 1rem 0;">
-                <div class="progress" style="margin: 0 auto;">
+                <!-- <label class="lh-base">Download progress: </label> -->
+                <label class="lh-base" id="dlState">
+                    Preparing Point Clouds on server...
+                    <span>2 of 5 files downloaded</span>
+                </label>
+                <div class="progress" style="margin: 0 auto; margin-top: 0.35rem;">
                     <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>

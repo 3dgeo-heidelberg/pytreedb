@@ -11,7 +11,7 @@
         <title>PyTreeDB</title>
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light justify-content-end">
+        <nav id="navbar" class="navbar navbar-expand-lg navbar-light justify-content-end">
             <div class="container-fluid">
                 <div class="navbar-brand">
                     <a target="_blank" rel="noopener noreferrer" href="https://www.ifgg.kit.edu/" style="padding-right: 10px; text-decoration: none">
@@ -44,7 +44,7 @@
             </div>
         </nav>
 
-        <div class="wrapper" style="overflow: hidden; min-height: 450px; height: 70%;">
+        <section id="bannerSection" class="wrapper" style="overflow: hidden; min-height: 450px; height: 70%;">
             <div class="clearfix" style="overflow: hidden; height: 100%;">
                 <div style="position: absolute; width: 100%; height: 100%; overflow: hidden; z-index: -1;">
                     <div id="picDiv">
@@ -83,9 +83,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="container" id="querySectionWrappper" style="width: 90%; margin-top: 30px;">
+        <section class="container" id="queryInputSection" style="width: 90%; margin-top: 30px;">
             <div class="row justify-content-center">
                 <div class="col-lg-5 col-md-5 col-sm-12" style="margin-bottom: 4rem;">
                     <div class="row justify-content-start">
@@ -131,27 +131,27 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div id="jsonSnippetContainer" style="width: 100%; height: 100%; padding-top: 1.5rem; padding-bottom: 7rem; background-color: #fff;">
+        <section id="jsonSnippetSection" style="display:block; width: 100%; height: 100%; padding-top: 1.5rem; padding-bottom: 7rem; background-color: #fff;">
             <div class="wrapper" style="width: 70%; height: 100%; margin: 0 auto;">
-                <p id="numResContainer" style="color: #198754; display: inline-block;">
+                <p id="numResContainer" style="color: #198754;">
                     <span id="numRes"></span> trees found 
-                    <span id="previewLabel" style="display: inline;">. Preview of the first three trees:</span>
+                    <span id="previewLabel">. Preview of the first three trees:</span>
                 </p>
-                <ul id="treeTabs" class="nav nav-tabs" style="display: flex; width: 90%;">
-                    <li id="treeTab0" class="nav-item" style="display: inline-block;"><a class="nav-link treeTab" onclick="toggleTab(this)">1</a></li>
-                    <li id="treeTab1" class="nav-item" style="display: inline-block;"><a class="nav-link treeTab" onclick="toggleTab(this)">2</a></li>
-                    <li id="treeTab2" class="nav-item" style="display: inline-block;"><a class="nav-link treeTab" onclick="toggleTab(this)">3</a></li>
+                <ul id="treeTabs" class="nav nav-tabs" style="width: calc(100% - 150px);">
+                    <li id="treeTab0" class="nav-item"><a class="nav-link treeTab active" onclick="toggleTab(this)">1</a></li>
+                    <li id="treeTab1" class="nav-item"><a class="nav-link treeTab" onclick="toggleTab(this)">2</a></li>
+                    <li id="treeTab2" class="nav-item"><a class="nav-link treeTab" onclick="toggleTab(this)">3</a></li>
                 </ul>
                 <div style="float: right; padding-left: 3rem; margin-left: -3rem; width: 210px; white-space: nowrap;">
                     <button type="button" class="btn btn-success ms-2" onclick="saveJsonOutput()" style="float: none; display: block;">
                         Save JSON
                     </button>
-                    <button type="button" class="btn btn-outline-success ms-2" onclick="saveAllJsons()" style="float: none; display: block; margin-top: .5rem;">
+                    <button id="saveAllButton" type="button" class="btn btn-outline-success ms-2" onclick="saveAllJsons()" style="float: none; display: block; margin-top: .5rem;">
                         Save all JSON
                     </button>
-                    <button id="savePointCButton" type="button" class="btn btn-outline-success ms-2" onclick="savePointClouds()" style="float: none; display: block; margin-top: .5rem;">
+                    <button id="savePointCButton" type="button" class="btn btn-outline-success ms-2" onclick="showDlProgress()" style="float: none; display: block; margin-top: .5rem;">
                         <a href="/downloadpointclouds">Save Point Clouds</a>
                     </button>
                 </div>
@@ -172,7 +172,15 @@
                     </pre>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <section id="downLoadProgressSection" style="width: 100%; position: fixed; bottom: 0; background-color: #fff; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);">
+            <div id="progressContainer" class="container" style="padding: 1rem 0;">
+                <div class="progress" style="margin: 0 auto;">
+                    <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </section>
         
         <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>

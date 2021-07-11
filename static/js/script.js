@@ -51,9 +51,9 @@ getItem = () => {
         $('#treeTabs').hide();
         $('#saveAllButton').hide();
         $('#savePointCButton').hide();
-        $('#jsonSnippetContainer').css('padding-bottom', '2rem').show();
+        $('#jsonSnippetSection').css('padding-bottom', '2rem').show();
         $('html,body').animate({
-            scrollTop: $('#jsonSnippetContainer').offset().top},
+            scrollTop: $('#jsonSnippetSection').offset().top},
             'slow');
     }
 }
@@ -113,9 +113,9 @@ searchDB = () => {
                 $('#treeTab0').children().addClass('active');
             }
         });
-        $('#jsonSnippetContainer').css('padding-bottom', '7rem').show();
+        $('#jsonSnippetSection').css('padding-bottom', '7rem').show();
         $('html,body').animate({
-            scrollTop: $('#jsonSnippetContainer').offset().top},
+            scrollTop: $('#jsonSnippetSection').offset().top},
             'slow');
         
         // dummy partial implementation Point Clouds download
@@ -234,6 +234,11 @@ searchFieldSelected = e => {
 fieldValueSelected = e => {
     $('#fieldValue').html(e.text);
     $('#fieldValue').attr('style', 'color: #000');
+}
+
+// Show download progress
+showDlProgress = () => {
+
 }
 
 

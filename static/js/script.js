@@ -172,45 +172,6 @@ saveAllJsons = () => {
 //             });
 //     })
 // }
-savePointClouds = () => {
-    $.get('/downloadpointclouds', data => {
-        console.log(typeof(data));
-        var link = document.createElement('a');
-        link.download = "pointclouds";
-        link.href = window.URL.createObjectURL(data);
-        link.click();
-    })
-}
-    // Promise.all(urls.map(function(url) {
-    //     return request(url)
-    //   }))
-    //   .then(function() {
-    //     console.log(zip);
-    //     zip.generateAsync({
-    //         type: "blob"
-    //       })
-    //       .then(function(content) {
-    //         a.download = "folder" + new Date().getTime();
-    //         a.href = URL.createObjectURL(content);
-    //         a.innerHTML = "download " + a.download;
-    //       });
-    //   })
-// function request(url) {
-//     return new Promise(function(resolve) {
-//       var httpRequest = new XMLHttpRequest();
-//       httpRequest.open("GET", url);
-//       httpRequest.withCredentials = false;
-//       httpRequest.onload = function() {
-//         var arr = url.split("/");
-//         // zip.file(arr[arr.length - 1], this.responseText);
-//         zip.file('file', this.responseText);
-//         resolve()
-//       }
-//       httpRequest.send()
-//     })
-//   }
-
-
 
 // Toggle shown (active) tree data
 toggleTab = e => {

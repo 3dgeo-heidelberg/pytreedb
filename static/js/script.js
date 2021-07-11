@@ -153,23 +153,32 @@ saveAllJsons = () => {
 }
 // Save point clouds of all results into a zip
 //!!!!\\ ONLY A DUMMY!!!!
+// savePointClouds = () => {
+//     var zip = new JSZip();
+//     $.get('/downloadpointclouds', data => {
+//         for (let i = 0; i < 2; i++) {
+//             if (i == 0) {
+//                 zip.file('PinSyl_KA10_01_2019-07-30_q4_ALS-on.laz', data);
+//             } else {
+//                 zip.file('PinSyl_KA10_01_2019-07-30_q4_TLS-on.laz', data);
+//             }
+//         }
+//         zip.generateAsync({type : "blob"})
+//             .then(content => {
+//                 var link = document.createElement('a');
+//                 link.download = 'pointclouds';
+//                 link.href = URL.createObjectURL(content);
+//                 link.click();
+//             });
+//     })
+// }
 savePointClouds = () => {
-    var zip = new JSZip();
-    $.get('/getpointclouds', data => {
-        for (let i = 0; i < 2; i++) {
-            if (i == 0) {
-                zip.file('PinSyl_KA10_01_2019-07-30_q4_ALS-on.laz', data);
-            } else {
-                zip.file('PinSyl_KA10_01_2019-07-30_q4_TLS-on.laz', data);
-            }
-        }
-        zip.generateAsync({type : "blob"})
-            .then(content => {
-                var link = document.createElement('a');
-                link.download = 'pointclouds';
-                link.href = URL.createObjectURL(content);
-                link.click();
-            });
+    $.get('/downloadpointclouds', data => {
+        console.log(typeof(data));
+        var link = document.createElement('a');
+        link.download = "pointclouds";
+        link.href = window.URL.createObjectURL(data);
+        link.click();
     })
 }
     // Promise.all(urls.map(function(url) {

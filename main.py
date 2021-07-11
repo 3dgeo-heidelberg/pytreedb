@@ -4,23 +4,26 @@
 """
 description
 """
-import json
+#import json
 import webbrowser
 import requests
+import io
+import flask
 
+from zipfile import ZipFile
 from flask import Flask
 from flask import request
 from flask import render_template
-from flask_cors import CORS, cross_origin
+#from flask_cors import CORS, cross_origin
 
 import pytreedb.pytreedb as pytreedb
 
 app = Flask(__name__)
-CORS(app)
+#CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/')
-@cross_origin(origin='*',headers=['Content- Type'])
+#@cross_origin(origin='*',headers=['Content- Type'])
 def index():
     return render_template(r'newIndex.html', server=request.remote_addr)
 
@@ -66,10 +69,25 @@ def getItem():
     # print({'item': json.loads(mydb[int(index)]['_json'])})
     # return {'item': json.loads(mydb[int(index)]['_json'])}
 
-@app.route('/getpointclouds')
-def getPointClouds():
-    url = 'https://heibox.uni-heidelberg.de/f/ad707892be7e41dcabe3/?dl=1'  
-    res = requests.get(url)
-    return res.content
+@app.route('/downloadpointclouds')
+def downloadPointClouds():
+    # urls = ['https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/2021-05-07-raspios-buster-armhf-lite.zip']
+    urls = ['https://heibox.uni-heidelberg.de/f/3e52b2c164b247fe85ec/?dl=1',
+            'https://heibox.uni-heidelberg.de/f/ad707892be7e41dcabe3/?dl=1']
+    o = io.BytesIO()
+    
+    with ZipFile(o, 'w') as zf:
+        for i in range(len(urls)):
+            res = requests.get(urls[i]).content
+            zf.writestr('file_{:02d}.laz'.format(i), res)
+    zf.close()
+    o.seek(0)
+    
+    return flask.send_file(
+        o,
+        mimetype='application/zip',
+        as_attachment=True,
+        attachment_filename='pointcloud.zip'
+    )
     
     

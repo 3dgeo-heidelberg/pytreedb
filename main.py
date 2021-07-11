@@ -95,7 +95,16 @@ def downloadPointClouds():
             'https://heibox.uni-heidelberg.de/f/7d45579bd93d4b6080c2/?dl=1',
             'https://heibox.uni-heidelberg.de/f/0ad8e4ff417148d0a6c6/?dl=1',
             'https://heibox.uni-heidelberg.de/f/4305958abd184a328883/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/bcb95a59940e46a4ab49/?dl=1']
+            'https://heibox.uni-heidelberg.de/f/bcb95a59940e46a4ab49/?dl=1',
+            'https://heibox.uni-heidelberg.de/f/2c596eb6a9994219b7da/?dl=1',
+            'https://heibox.uni-heidelberg.de/f/8bb1148aa07148c19a62/?dl=1',
+            'https://heibox.uni-heidelberg.de/f/6f747477a00446478909/?dl=1',
+            'https://heibox.uni-heidelberg.de/f/68a9caba76104a3488ce/?dl=1',
+            'https://heibox.uni-heidelberg.de/f/15ea8cd53f274a3a87a7/?dl=1',
+            'https://heibox.uni-heidelberg.de/f/9f60b9dd8c074c70bb4d/?dl=1',
+            'https://heibox.uni-heidelberg.de/f/dafe73a0e66f4433a023/?dl=1',
+            'https://heibox.uni-heidelberg.de/f/5140fb024f6c46e484ae/?dl=1',
+            'https://heibox.uni-heidelberg.de/f/60a912c9e83a46e780ea/?dl=1']
     dl_progress['numAllItems'] = len(urls)
     dl_progress['currItem'] = 0
     
@@ -113,7 +122,7 @@ def downloadPointClouds():
         o,
         mimetype='application/zip',
         as_attachment=True,
-        attachment_filename='pointcloud.zip'
+        attachment_filename='pointclouds.zip'
     )
     
 @app.route('/progress')

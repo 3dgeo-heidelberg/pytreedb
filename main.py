@@ -124,6 +124,14 @@ def downloadPointClouds():
         as_attachment=True,
         attachment_filename='pointclouds.zip'
     )
+
+@app.route('/list_pointclouds')
+def listPointClouds():
+    # urls = ['https://nodejs.org/dist/v16.5.0/node-v16.5.0-x64.msi']
+    urls = ['https://3dweb.geog.uni-heidelberg.de/database_sample/PinSyl_KA10_01_2019-07-05_q2_ALS-on.laz']
+            # 'https://3dweb.geog.uni-heidelberg.de/database_sample/PinSyl_KA10_01_2019-07-30_q4_TLS-on.laz',
+            # 'https://3dweb.geog.uni-heidelberg.de/database_sample/PinSyl_KA10_01_2019-09-13_q2_ULS-on.laz']
+    return {'urls': urls}
     
 @app.route('/progress')
 def progress():

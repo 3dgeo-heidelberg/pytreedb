@@ -171,26 +171,40 @@ saveAllJsons = () => {
     })
 }
 // Save point clouds of all results into a zip
-//!!!!\\ ONLY A DUMMY!!!!
-// savePointClouds = () => {
-//     var zip = new JSZip();
-//     $.get('/downloadpointclouds', data => {
-//         for (let i = 0; i < 2; i++) {
-//             if (i == 0) {
-//                 zip.file('PinSyl_KA10_01_2019-07-30_q4_ALS-on.laz', data);
-//             } else {
-//                 zip.file('PinSyl_KA10_01_2019-07-30_q4_TLS-on.laz', data);
-//             }
-//         }
-//         zip.generateAsync({type : "blob"})
-//             .then(content => {
-//                 var link = document.createElement('a');
-//                 link.download = 'pointclouds';
-//                 link.href = URL.createObjectURL(content);
-//                 link.click();
-//             });
-//     })
-// }
+savePointClouds = () => {
+    var zip = new JSZip();
+    var cntFilesDownloaded = 0;
+
+    $.get('/list_pointclouds', data => {
+        // Send get request to each url in the response list
+        data['urls'].forEach((url, idx, array) => {
+            var filename = url.split('/')[4];
+            $.ajax({
+                url: 'https://afternoon-springs-55339.herokuapp.com/' + url,
+                beforeSend: jqXHR => {
+                    jqXHR.setRequestHeader('Accept-Encoding', 'gzip');
+                },
+                xhrFields:{
+                    responseType: 'blob'
+                }
+            }).done(file => {
+                // Add each file to the zip
+                zip.file(filename, file, {binary: true, compression : "DEFLATE"});
+                cntFilesDownloaded += 1;
+                // Create the zip file for download
+                if (cntFilesDownloaded === array.length) {
+                    zip.generateAsync({type : "blob", compression : "DEFLATE"})
+                        .then(content => {
+                            var link = document.createElement('a');
+                            link.download = 'pointclouds';
+                            link.href = URL.createObjectURL(content);
+                            link.click();
+                        });
+                }
+            })
+        });
+    })
+}
 
 // Toggle shown (active) tree data
 toggleTab = e => {

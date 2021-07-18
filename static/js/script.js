@@ -138,7 +138,6 @@ showDlProgress = () => {
 // Get download progress
 getDlProgress = () => {
     $.get('/progress', response => {
-        console.log(response['currItem']);
         $('#dlState').text(response['currItem'] + ' of ' + response['numAllItems'] + ' files zipped');
         var percentage = Math.round(response['currItem']/response['numAllItems']*100);
         $('#progressBar').attr('aria-valuenow', percentage).css('width', percentage + '%');
@@ -176,9 +175,12 @@ savePointClouds = () => {
     var cntFilesDownloaded = 0;
 
     $.get('/list_pointclouds', data => {
-        // Send get request to each url in the response list
+        // Show progress bar if request successful
+        $('#downLoadProgressSection').show();
+        // Iterate through the list of urls
         data['urls'].forEach((url, idx, array) => {
             var filename = url.split('/')[4];
+            // Get request
             $.ajax({
                 url: 'https://afternoon-springs-55339.herokuapp.com/' + url,
                 beforeSend: jqXHR => {
@@ -191,15 +193,27 @@ savePointClouds = () => {
                 // Add each file to the zip
                 zip.file(filename, file, {binary: true, compression : "DEFLATE"});
                 cntFilesDownloaded += 1;
-                // Create the zip file for download
+                // Update progress
+                $('#dlState').text(cntFilesDownloaded + ' of ' + array.length + ' files zipped');
+                var percentage = Math.round(cntFilesDownloaded / array.length * 100);
+                $('#progressBar').attr('aria-valuenow', percentage).css('width', percentage + '%');
+                // After all files zipped
                 if (cntFilesDownloaded === array.length) {
+                    // Show zipping status
+                    $('#pcState').text('Zipping...');
+                    $('#dlState').text('');
+                    // Create the zip file for download
                     zip.generateAsync({type : "blob", compression : "DEFLATE"})
                         .then(content => {
                             var link = document.createElement('a');
                             link.download = 'pointclouds';
                             link.href = URL.createObjectURL(content);
                             link.click();
-                        });
+                            // Hide progress bar and reset 
+                            $('#downLoadProgressSection').hide();
+                            $('#dlState').text('');
+                            $('#progressBar').attr('aria-valuenow', 0).css('width', '0%');
+                    });
                 }
             })
         });

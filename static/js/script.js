@@ -173,7 +173,6 @@ saveAllJsons = () => {
 savePointClouds = () => {
     var zip = new JSZip();
     var cntFilesDownloaded = 0;
-
     $.get('/list_pointclouds', data => {
         // Show progress bar if request successful
         $('#downLoadProgressSection').show();
@@ -182,7 +181,7 @@ savePointClouds = () => {
             var filename = url.split('/')[4];
             // Get request
             $.ajax({
-                url: 'https://afternoon-springs-55339.herokuapp.com/' + url,
+                url: url,
                 beforeSend: jqXHR => {
                     jqXHR.setRequestHeader('Accept-Encoding', 'gzip');
                 },

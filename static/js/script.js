@@ -65,6 +65,9 @@ searchDB = () => {
     if (property == 'canopy condition') {
         property = 'canopy_condition';
     } else if (property == 'quality') {
+        if (!checkQBounds()) {
+            return;
+        }
         value = $('#qualityFrom').text() + ',' + $('#qualityTo').text();
     }
     // Do get
@@ -287,9 +290,25 @@ fieldValueSelected = e => {
 }
 qualityFrom = e => {
     $('#qualityFrom').html(e.text).attr('style', 'color: #000');
+    checkQBounds();
 }
 qualityTo = e => {
     $('#qualityTo').html(e.text).attr('style', 'color: #000');
+    checkQBounds();
+}
+// Check if the quality lower bound is greater than upper bound 
+checkQBounds = () => {
+    if ($('#qualityFrom').text() > $('#qualityTo').text()) {
+        $('#qualityFrom').addClass('warning');
+        $('#qualityTo').addClass('warning');
+        $('#qErr').show();
+        return false;
+    } else {
+        $('#qualityFrom').removeClass('warning');
+        $('#qualityTo').removeClass('warning');
+        $('#qErr').hide();
+        return true;
+    }
 }
 
 

@@ -197,7 +197,8 @@ label.warning {
     margin-top: -1rem;
 }
 
-input.warning {
+input.warning,
+a.warning {
     border: solid 2px #FF0000;
 }
 

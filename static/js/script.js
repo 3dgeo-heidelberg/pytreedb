@@ -64,6 +64,8 @@ searchDB = () => {
     var value = $('#fieldValue').text();
     if (property == 'canopy condition') {
         property = 'canopy_condition';
+    } else if (property == 'quality') {
+        value = $('#qualityFrom').text() + ',' + $('#qualityTo').text();
     }
     // Do get
     if (property != '' && property != 'select search field' 
@@ -240,6 +242,8 @@ searchFieldSelected = e => {
     $('#availableValues').empty();
     switch (e.text) {
         case "Species":
+            $('#normalValUI').show();
+            $('#qualityUI').hide();
             $.get('/listspecies', data => {
                 data["species"].sort().forEach(specie => {
                     $('#availableValues').append(
@@ -248,7 +252,9 @@ searchFieldSelected = e => {
                 });
             })
             break;
-        case "Mode": 
+        case "Mode":
+            $('#normalValUI').show();
+            $('#qualityUI').hide(); 
             var modes = ['TLS', 'ALS', 'ULS'];
             modes.forEach(mode => {
                 $('#availableValues').append(
@@ -257,6 +263,8 @@ searchFieldSelected = e => {
             })
             break;
         case "Canopy Condition":
+            $('#normalValUI').show();
+            $('#qualityUI').hide();
             var canopy_conditions = ['leaf-on', 'leaf-off'];
             canopy_conditions.forEach(cond => {
                 $('#availableValues').append(
@@ -265,11 +273,8 @@ searchFieldSelected = e => {
             })
             break;
         case "Quality":
-            for (let i = 1; i <= 5; i++) {
-                $('#availableValues').append(
-                    '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + i + '</a></li>'
-                );
-            }
+            $('#normalValUI').hide();
+            $('#qualityUI').show();
             break;
         default:
             break;
@@ -278,11 +283,14 @@ searchFieldSelected = e => {
 
 // Update dropdown text when users selects a value
 fieldValueSelected = e => {
-    $('#fieldValue').html(e.text);
-    $('#fieldValue').attr('style', 'color: #000');
+    $('#fieldValue').html(e.text).attr('style', 'color: #000');
 }
-
-
+qualityFrom = e => {
+    $('#qualityFrom').html(e.text).attr('style', 'color: #000');
+}
+qualityTo = e => {
+    $('#qualityTo').html(e.text).attr('style', 'color: #000');
+}
 
 
 // Slide back to welcome

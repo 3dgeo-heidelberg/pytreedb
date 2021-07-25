@@ -225,7 +225,7 @@ class PyTreeDB:
             raise Exception("Operator must be one of the module operator: lt, le, eq, ne, ge, gt")
         else:
             idx = [i for i in self.db if len(list(gen_dict_extract_numeric_comp(key, self.db[i], value, comp_op)))]
-            return list(self.db[key] for key in idx)
+            return list(json.loads(self.db[key]["_json"]) for key in idx)
 
     def query_by_key_exists(self, key):
         """ Returns trees(list) having a given key (no matter which value)"""
@@ -263,6 +263,15 @@ class PyTreeDB:
         else:
             idx = [i for i in self.db if len(list(gen_dict_extract_date_comp(key, self.db[i], _date, comp_op)))]
             return list(self.db[key] for key in idx)
+    
+    def inner_join(self, t_lists):
+        """Returns trees present in all lists"""
+        if len(t_lists) < 2:
+            return t_lists[0]
+        res = t_lists[0]
+        for i in range(len(t_lists) - 1):
+            res = [item for item in res if item in t_lists[i+1]]
+        return res
 
     def join(self, results, operator='and'):
         """Returns list of tree ids: Method to join list of resulting lists of trees(dict) using their 'id' by applying a logical operator on those sets"""

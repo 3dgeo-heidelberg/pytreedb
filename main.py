@@ -69,11 +69,24 @@ def getSharedProperties():
 
 @app.route('/trees')
 def query():
-    field = request.args.get('field')
-    value = request.args.get('value')
-    if field == '' or value == '':
+    fields = request.args.get('field').split(',')
+    values = request.args.get('value').split(',')
+    res = []
+    if fields == [''] or values == ['']:
         return dict()
-    return {'query': mydb.query(field, value)}
+    j = 0
+    for i in range(len(fields)):
+        if fields[i] == 'quality':
+            if values[j] == values[j+1]:
+                res.append(mydb.query_by_numeric_comparison('quality', float(values[j]), pytreedb.eq))
+            else:
+                res.append(mydb.query_by_numeric_comparison('quality', float(values[j]), pytreedb.ge))
+                res.append(mydb.query_by_numeric_comparison('quality', float(values[j+1]), pytreedb.le))
+            j += 2
+        else:
+            res.append(mydb.query(fields[i], values[j]))
+            j += 1
+    return {'query': mydb.inner_join(res)}
 
 @app.route('/getitem')
 def getItem():

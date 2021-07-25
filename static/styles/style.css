@@ -206,22 +206,27 @@ input.warning {
 }
 
 #jsonSnippetSection, #numResContainer, 
-#treeTabs, #previewLabel, #downLoadProgressSection {
+#treeTabs, #previewLabel, #downLoadProgressSection,
+#qualityUI {
     display: none;
 }
 
-#searchField, #fieldValue {
+#searchField, #fieldValue, #qualityFrom, #qualityTo {
     color: #aaa;
 }
 
 #searchField, #searchField + ul,
-#fieldValue, #fieldValue + ul {
+#fieldValue, #fieldValue + ul,
+#qualityFrom, #qualityFrom + ul, 
+#qualityTo, #qualityTo + ul {
     width: 100%;
     text-align: left;
 }
 
 #searchField::after,
-#fieldValue::after {
+#fieldValue::after,
+#qualityFrom::after,
+#qualityTo::after {
     position: absolute;
     right: .5rem;
     border-width: 0 1px 1px 0;

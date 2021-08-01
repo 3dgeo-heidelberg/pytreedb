@@ -108,8 +108,8 @@ def exportcsv(fields, values):
     # zip csv files
     o = io.BytesIO()
     with ZipFile(o, 'w') as zf:
-        zf.write(outdir + '/result_general.csv')
-        zf.write(outdir + '/result_metrics.csv')
+        zf.write(outdir + '/result_general.csv', 'result_general.csv')
+        zf.write(outdir + '/result_metrics.csv', 'result_metrics.csv')
     zf.close()
     o.seek(0)
     # remove local csv

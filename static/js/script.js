@@ -1,4 +1,10 @@
-var species, n_trees, jsonOutput, currReq, getEverySec;
+var species, n_trees, jsonOutput, getEverySec;
+var currReq = {
+    "url": '',
+    "idx": NaN,
+    "property": '',
+    "value": ''
+}
 
 window.onload = () => {
     // Load stats on start
@@ -36,7 +42,8 @@ getItem = () => {
         $('#idx').removeClass('warning').next().hide();
         // Do get
         $.get('/getitem?index=' + idx, data => {
-            currReq = '/getitem?index=' + idx;
+            currReq.url = '/getitem?index=' + idx;
+            currReq.idx = idx;
             var jsonStr = data['item'];
             // Update jsonOutput
             jsonOutput = jsonStr;
@@ -51,6 +58,7 @@ getItem = () => {
         $('#treeTabs').hide();
         $('#saveAllButton').hide();
         $('#savePointCButton').hide();
+        $('#saveCSVButton').hide();
         $('#jsonSnippetSection').css('padding-bottom', '2rem').show();
         $('html,body').animate({
             scrollTop: $('#jsonSnippetSection').offset().top},
@@ -75,7 +83,9 @@ searchDB = () => {
         && value != '' && value != 'Please select a field first'
         && value != 'Choose a value') {
         $.get('/trees?field=' + property + '&value=' + value, data => {
-            currReq = '/trees?field=' + property + '&value=' + value;
+            currReq.url = '/trees?field=' + property + '&value=' + value;
+            currReq.property = property;
+            currReq.value = value;
             var trees = data['query'];
             var num;
             // Clear previous results
@@ -87,6 +97,7 @@ searchDB = () => {
                 $('#numResContainer').show();
                 $('#saveAllButton').show();
                 $('#savePointCButton').show();
+                $('#saveCSVButton').show();
                 // Update for output
                 jsonOutput = JSON.stringify(trees[0]);
                 // Show tabs if results > 1
@@ -169,10 +180,14 @@ saveJsonOutput = () => {
 // Save all result jsons into one json file
 saveAllJsons = () => {
     var outString = '{"type": "FeatureCollection", "features":';
-    $.get(currReq, data => {
+    $.get(currReq.url, data => {
         outString += JSON.stringify(data['query']) + '}';
         saveContent(outString, 'res_feature_collection.json');
     })
+}
+// Save all results into a csv file
+saveCSV = () => {
+
 }
 // Save point clouds of all results into a zip
 savePointClouds = () => {

@@ -11,6 +11,8 @@ import numpy
 import collections
 from pathlib import Path
 from operator import lt, le, eq, ne, ge, gt  # operator objects
+import pandas as pd
+import numpy as np
 
 # import own sub-modules
 from pytreedb.treedb_ufuncs import *
@@ -346,6 +348,53 @@ class PyTreeDB:
     def export_as_numpy(self):
         """Export database as numpy array"""
         raise Exception("Not implemented yes.")
+    
+    def convert_to_csv(self, outdir, trees=[]):
+        """Exports trees to local csv files using pandas dataframe. Each export creates two separate csv files, 
+        one for general imformations, one for metrics."""
+        df_general_all = None
+        df_metrics_all = None
+        if trees == []:
+            trees = self
+        for tree in trees:
+            if trees == []:
+                tree_dict = json.loads(tree['_json'].replace("NA", "NaN"))
+            else:
+                tree_dict = tree
+
+            # writing "general" table: species, lat, long, elev
+            df_general = pd.DataFrame()
+            df_general["tree_id"] = [tree_dict["properties"]["id"]]
+            df_general["species"] = [tree_dict["properties"]["species"]]
+            df_general["lat_epsg4326"] = [tree_dict["geometry"]["coordinates"][1]]
+            df_general["long_epsg4326"] = [tree_dict["geometry"]["coordinates"][0]]
+            df_general["elev_epsg4326"] = [tree_dict["geometry"]["coordinates"][2]]
+
+            # writing "metrics" table: metrics in columns, one row per data source
+            n = len(tree_dict["properties"]["measurements"])
+            df_metrics = pd.DataFrame(index=np.arange(n - 1))
+            df_metrics["tree_id"] = tree_dict["properties"]["id"]
+            i = 0
+            for entry in tree_dict["properties"]["measurements"]:
+                columns = entry.keys()
+                if "position_xyz" in columns:
+                    df_general["x_epsg25832"] = entry["position_xyz"][0]
+                    df_general["y_epsg25832"] = entry["position_xyz"][1]
+                    df_general["z_epsg25832"] = entry["position_xyz"][2]
+                else:
+                    for col in columns:
+                        df_metrics.loc[i, col] = entry[col]
+                    i += 1
+            if df_general_all is None or df_metrics_all is None:
+               df_general_all = df_general
+               df_metrics_all = df_metrics
+            else:
+                df_general_all = pd.concat([df_general_all, df_general], ignore_index=True)
+                df_metrics_all = pd.concat([df_metrics_all, df_metrics], ignore_index=True)
+        
+        # save locally
+        df_general_all.to_csv(outdir + '/result_general.csv', index=False)
+        df_metrics_all.to_csv(outdir + '/result_metrics.csv', index=False)
 
     def start_server(self, host="127.0.0.1", port=5000):
         self.host = host

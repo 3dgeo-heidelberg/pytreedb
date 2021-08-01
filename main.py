@@ -7,6 +7,7 @@ description
 import webbrowser
 import requests
 import io
+import os
 import flask
 import threading
 import shutil
@@ -98,48 +99,28 @@ def getItem(index):
     # print({'item': json.loads(mydb[int(index)]['_json'])})
     # return {'item': json.loads(mydb[int(index)]['_json'])}
 
-# @app.route('/exportcsv')
-# def exportcsv():
-    
-
-@app.route('/downloadpointclouds')
-def downloadPointClouds():
-    global dl_progress
-    
-    # urls = ['https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/2021-05-07-raspios-buster-armhf-lite.zip']
-    urls = ['https://heibox.uni-heidelberg.de/f/3e52b2c164b247fe85ec/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/ad707892be7e41dcabe3/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/7d45579bd93d4b6080c2/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/0ad8e4ff417148d0a6c6/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/4305958abd184a328883/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/bcb95a59940e46a4ab49/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/2c596eb6a9994219b7da/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/8bb1148aa07148c19a62/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/6f747477a00446478909/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/68a9caba76104a3488ce/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/15ea8cd53f274a3a87a7/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/9f60b9dd8c074c70bb4d/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/dafe73a0e66f4433a023/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/5140fb024f6c46e484ae/?dl=1',
-            'https://heibox.uni-heidelberg.de/f/60a912c9e83a46e780ea/?dl=1']
-    dl_progress['numAllItems'] = len(urls)
-    dl_progress['currItem'] = 0
-    
-    # send requests and add to zip    
+@app.route('/exportcsv/<fields>/<values>')
+def exportcsv(fields, values):
+    trees = query(fields, values)['query']
+    # convert trees to csv files, save to disk
+    outdir = r'E:\tmp\csv'
+    mydb.convert_to_csv(outdir, trees)
+    # zip csv files
     o = io.BytesIO()
     with ZipFile(o, 'w') as zf:
-            for i in range(len(urls)):
-                res = requests.get(urls[i]).content
-                zf.writestr('file_{:02d}.laz'.format(i), res)
-                dl_progress['currItem'] += 1
+        zf.write(outdir + '/result_general.csv')
+        zf.write(outdir + '/result_metrics.csv')
     zf.close()
     o.seek(0)
+    # remove local csv
+    shutil.rmtree(outdir)
+    os.mkdir(outdir)
     
     return flask.send_file(
         o,
         mimetype='application/zip',
         as_attachment=True,
-        attachment_filename='pointclouds.zip'
+        attachment_filename='csv.zip'
     )
 
 @app.route('/list_pointclouds')

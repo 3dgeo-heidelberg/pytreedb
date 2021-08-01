@@ -187,7 +187,10 @@ saveAllJsons = () => {
 }
 // Save all results into a csv file
 saveCSV = () => {
-
+    var link = document.createElement('a');
+    link.download = 'csv.zip'
+    link.href = '/exportcsv/' + currReq.property + '/' + currReq.value;
+    link.click();
 }
 // Save point clouds of all results into a zip
 savePointClouds = () => {

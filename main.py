@@ -9,6 +9,7 @@ import requests
 import io
 import flask
 import threading
+import shutil
 
 from zipfile import ZipFile
 from flask import Flask
@@ -48,7 +49,7 @@ def about():
     return render_template(r'about.html')
 
 mydb = pytreedb.PyTreeDB(dbfile=r'E:\tmp\SYSSIFOSS\syssifoss.db') # instantiate pytreedb
-mydb.load_db(r'E:\tmp\SYSSIFOSS\syssifoss.db') # Jiani: loading local db file
+# mydb.load_db(r'E:\tmp\SYSSIFOSS\syssifoss.db') # Jiani: loading local db file
 # mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True) # download data
 
 # automatically open in a new browser tab on start
@@ -67,10 +68,10 @@ def getListSpecies():
 def getSharedProperties():
     return {'properties': mydb.get_shared_properties()}
 
-@app.route('/trees')
-def query():
-    fields = request.args.get('field').split(',')
-    values = request.args.get('value').split(',')
+@app.route('/trees/<fields>/<values>')
+def query(fields, values):
+    fields = fields.split(',')
+    values = values.split(',')
     res = []
     if fields == [''] or values == ['']:
         return dict()
@@ -88,15 +89,18 @@ def query():
             j += 1
     return {'query': mydb.inner_join(res)}
 
-@app.route('/getitem')
-def getItem():
-    index = request.args.get('index')
+@app.route('/getitem/<index>')
+def getItem(index):
     if index == '':
         return dict()
     print(mydb[int(index)]['_json'])
     return {'item': mydb[int(index)]['_json']}
     # print({'item': json.loads(mydb[int(index)]['_json'])})
     # return {'item': json.loads(mydb[int(index)]['_json'])}
+
+# @app.route('/exportcsv')
+# def exportcsv():
+    
 
 @app.route('/downloadpointclouds')
 def downloadPointClouds():

@@ -41,8 +41,8 @@ getItem = () => {
         // Remove warning
         $('#idx').removeClass('warning').next().hide();
         // Do get
-        $.get('/getitem?index=' + idx, data => {
-            currReq.url = '/getitem?index=' + idx;
+        $.get('/getitem/' + idx, data => {
+            currReq.url = '/getitem/' + idx;
             currReq.idx = idx;
             var jsonStr = data['item'];
             // Update jsonOutput
@@ -82,8 +82,8 @@ searchDB = () => {
     if (property != '' && property != 'select search field' 
         && value != '' && value != 'Please select a field first'
         && value != 'Choose a value') {
-        $.get('/trees?field=' + property + '&value=' + value, data => {
-            currReq.url = '/trees?field=' + property + '&value=' + value;
+        $.get('/trees/' + property + '/' + value, data => {
+            currReq.url = '/trees/' + property + '/' + value;
             currReq.property = property;
             currReq.value = value;
             var trees = data['query'];

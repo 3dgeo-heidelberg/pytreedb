@@ -1,4 +1,4 @@
-var species, n_trees, jsonOutput, getEverySec, numFilters = 0;
+var species, n_trees, jsonOutput, getEverySec, numFilters = 1;
 var currReq = {
     "url": '',
     "idx": NaN,
@@ -247,6 +247,7 @@ savePointClouds = () => {
 addSearchFilter = () => {
     $('#paramPair').clone()
         .attr('id', 'paramPair' + numFilters++)
+        .addClass('removeFilterAble')
         .css('margin-top', '0.5rem')
         .insertAfter('[id^="paramPair"]:last');
 }

@@ -248,6 +248,15 @@ ul#treeTabs > li {
     cursor: pointer;
 }
 
+.removeFilterAble > #searchFiledUI::before {
+    position: absolute;
+    right: -20px;
+    display: inline-block;
+    content: "\00d7";
+    cursor: pointer;
+    color: #606060;
+}
+
 
 
 /* lg */
@@ -292,3 +301,5 @@ ul#treeTabs > li {
         transform: translateX(0);
     }
 }
+
+

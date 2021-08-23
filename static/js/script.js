@@ -251,6 +251,11 @@ addSearchFilter = () => {
         .css('margin-top', '0.5rem')
         .insertAfter('[id^="paramPair"]:last');
 }
+//Remove filter
+removeSearchFilter = e => {
+    var filterID = e.parentNode.id;
+    $('#' + filterID).remove();
+}
 // After selecting a field, the available values will be updated in the second dropdown
 searchFieldSelected = e => {
     $('#searchField').html(e.text);

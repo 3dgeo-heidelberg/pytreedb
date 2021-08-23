@@ -1,4 +1,4 @@
-var species, n_trees, jsonOutput, getEverySec;
+var species, n_trees, jsonOutput, getEverySec, numFilters = 0;
 var currReq = {
     "url": '',
     "idx": NaN,
@@ -242,18 +242,14 @@ savePointClouds = () => {
     })
 }
 
-// Toggle shown (active) tree data
-toggleTab = e => {
-    // Toggle active tabs
-    $('.treeTab').removeClass('active');
-    $(e).addClass('active');
-    // Toggle shown data
-    $('.previewTree').hide();
-    $('#tree-' + (e.text - 1)).show();
-    // Update jsonOutput
-    jsonOutput = $('#tree-' + (e.text - 1)).text();
-}
 
+// Add filter (clone search field and field value dropdowns)
+addSearchFilter = () => {
+    $('#paramPair').clone()
+        .attr('id', 'paramPair' + numFilters++)
+        .css('margin-top', '0.5rem')
+        .insertAfter('[id^="paramPair"]:last');
+}
 // After selecting a field, the available values will be updated in the second dropdown
 searchFieldSelected = e => {
     $('#searchField').html(e.text);
@@ -301,7 +297,6 @@ searchFieldSelected = e => {
             break;
     }
 }
-
 // Update dropdown text when users selects a value
 fieldValueSelected = e => {
     $('#fieldValue').html(e.text).attr('style', 'color: #000');
@@ -329,6 +324,18 @@ checkQBounds = () => {
     }
 }
 
+
+// Toggle shown (active) tree data
+toggleTab = e => {
+    // Toggle active tabs
+    $('.treeTab').removeClass('active');
+    $(e).addClass('active');
+    // Toggle shown data
+    $('.previewTree').hide();
+    $('#tree-' + (e.text - 1)).show();
+    // Update jsonOutput
+    jsonOutput = $('#tree-' + (e.text - 1)).text();
+}
 
 // Slide back to welcome
 slideBack = () => {

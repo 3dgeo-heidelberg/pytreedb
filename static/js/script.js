@@ -245,11 +245,7 @@ savePointClouds = () => {
 
 // Add filter (clone search field and field value dropdowns)
 addSearchFilter = () => {
-    $('#paramPair').clone()
-        .attr('id', 'paramPair' + numFilters++)
-        .addClass('removeFilterAble')
-        .css('margin-top', '0.5rem')
-        .insertAfter('[id^="paramPair"]:last');
+    $('[id^="paramPair"]:last').append(addFilterCodeSnippet);
 }
 //Remove filter
 removeSearchFilter = e => {
@@ -258,46 +254,50 @@ removeSearchFilter = e => {
 }
 // After selecting a field, the available values will be updated in the second dropdown
 searchFieldSelected = e => {
-    $('#searchField').html(e.text);
-    $('#searchField').attr('style', 'color: #000');
-    $('#fieldValue').html('Choose a value');
-    $('#fieldValue').attr('style', 'color: #aaa');
-    $('#availableValues').empty();
+    var searchFieldEl = e.parentNode.parentNode.previousElementSibling;
+    var fieldValueEl = searchFieldEl.parentNode.nextElementSibling.children[0];
+    var availableValuesEl = fieldValueEl.nextElementSibling;
+    var normalValUIEl = fieldValueEl.parentNode;
+    var qualityUIEl = normalValUIEl.nextElementSibling;
+
+    $(searchFieldEl).html(e.text).attr('style', 'color: #000');
+    $(fieldValueEl).html('Choose a value').attr('style', 'color: #aaa');
+    $(availableValuesEl).empty();
     switch (e.text) {
         case "Species":
-            $('#normalValUI').show();
-            $('#qualityUI').hide();
+            $(normalValUIEl).show();
+            $(qualityUIEl).hide();
             $.get('/listspecies', data => {
                 data["species"].sort().forEach(specie => {
-                    $('#availableValues').append(
+                    $(availableValuesEl).append(
                         '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + specie + '</a></li>'
                     );
                 });
             })
             break;
         case "Mode":
-            $('#normalValUI').show();
-            $('#qualityUI').hide(); 
+            $(normalValUIEl).show();
+            $(qualityUIEl).hide(); 
             var modes = ['TLS', 'ALS', 'ULS'];
             modes.forEach(mode => {
-                $('#availableValues').append(
+                $(availableValuesEl).append(
                     '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + mode + '</a></li>'
                 );
             })
             break;
         case "Canopy Condition":
-            $('#normalValUI').show();
-            $('#qualityUI').hide();
+            $(normalValUIEl).show();
+            $(qualityUIEl).hide();
             var canopy_conditions = ['leaf-on', 'leaf-off'];
             canopy_conditions.forEach(cond => {
-                $('#availableValues').append(
+                $(availableValuesEl).append(
                     '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + cond + '</a></li>'
                 );
             })
             break;
         case "Quality":
-            $('#normalValUI').hide();
-            $('#qualityUI').show();
+            $(normalValUIEl).hide();
+            $(qualityUIEl).show();
             break;
         default:
             break;
@@ -305,27 +305,33 @@ searchFieldSelected = e => {
 }
 // Update dropdown text when users selects a value
 fieldValueSelected = e => {
-    $('#fieldValue').html(e.text).attr('style', 'color: #000');
+    var fieldValueEl = e.parentNode.parentNode.previousElementSibling;
+    $(fieldValueEl).html(e.text).attr('style', 'color: #000');
 }
 qualityFrom = e => {
-    $('#qualityFrom').html(e.text).attr('style', 'color: #000');
-    checkQBounds();
+    var qualityFromEl = e.parentNode.parentNode.previousElementSibling;
+    var qualityToEl = qualityFromEl.parentNode.nextElementSibling.nextElementSibling.children[0];
+    $(qualityFromEl).html(e.text).attr('style', 'color: #000');
+    checkQBounds(qualityFromEl, qualityToEl);
 }
 qualityTo = e => {
-    $('#qualityTo').html(e.text).attr('style', 'color: #000');
-    checkQBounds();
+    var qualityToEl = e.parentNode.parentNode.previousElementSibling;
+    var qualityFromEl = qualityToEl.parentNode.previousElementSibling.previousElementSibling.children[0];
+    $(qualityToEl).html(e.text).attr('style', 'color: #000');
+    checkQBounds(qualityFromEl, qualityToEl);
 }
 // Check if the quality lower bound is greater than upper bound 
-checkQBounds = () => {
-    if ($('#qualityFrom').text() > $('#qualityTo').text()) {
-        $('#qualityFrom').addClass('warning');
-        $('#qualityTo').addClass('warning');
-        $('#qErr').show();
+checkQBounds = (from, to) => {
+    var qErrEl = to.parentNode.nextElementSibling;
+    if ($(from).text() > $(to).text()) {
+        $(from).addClass('warning');
+        $(to).addClass('warning');
+        $(qErrEl).show();
         return false;
     } else {
-        $('#qualityFrom').removeClass('warning');
-        $('#qualityTo').removeClass('warning');
-        $('#qErr').hide();
+        $(from).removeClass('warning');
+        $(to).removeClass('warning');
+        $(qErrEl).hide();
         return true;
     }
 }
@@ -354,3 +360,5 @@ $('#idx').keydown(e => {
         getItem();
     }
 });
+
+var addFilterCodeSnippet = '<div class="wrapper paramPair removeFilterAble" id="paramPair'+ numFilters++ +'" style="margin-top: .5rem"><span onclick="removeSearchFilter(this)"></span><div class="dropdown" id="searchFieldUI"><a class="btn btn-light dropdown-toggle" id="searchField" role="button" data-bs-toggle="dropdown" aria-expanded="false">Select search field</a><ul class="dropdown-menu" aria-labelledby="searchField"><li><a class="dropdown-item" onclick="searchFieldSelected(this)">Species</a></li><li><a class="dropdown-item" onclick="searchFieldSelected(this)">Mode</a></li><li><a class="dropdown-item" onclick="searchFieldSelected(this)">Canopy Condition</a></li><li><a class="dropdown-item" onclick="searchFieldSelected(this)">Quality</a></li></ul></div><div class="dropdown" id="normalValUI" style="margin-top: 0.5rem; "><a class="btn btn-light dropdown-toggle" id="fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">Please select a field first</a><ul class="dropdown-menu" id="availableValues" aria-labelledby="fieldValue"></ul></div><div id="qualityUI" style="margin-top: 0.5rem;"><div class="dropdown" style="display: inline-block; width: 45%;"><a class="btn btn-light dropdown-toggle" id="qualityFrom" role="button" data-bs-toggle="dropdown" aria-expanded="false">value</a><ul class="dropdown-menu qVals" aria-labelledby="qualityFrom"><li><a class="dropdown-item" onclick="qualityFrom(this)">1</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">2</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">3</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">4</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">5</a></li></ul></div><span style="display: inline-block; width: 6%;"> to </span><div class="dropdown" style="width: 45%; float: right;"><a class="btn btn-light dropdown-toggle" id="qualityTo" role="button" data-bs-toggle="dropdown" aria-expanded="false">value</a><ul class="dropdown-menu qVals" aria-labelledby="qualityTo"><li><a class="dropdown-item" onclick="qualityTo(this)">1</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">2</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">3</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">4</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">5</a></li></ul></div><label id="qErr" class="warning" style="margin-top: 0.05rem;">Error! Lower bound greater than upper bound</label></div></div>';

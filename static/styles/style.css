@@ -208,26 +208,26 @@ a.warning {
 
 #jsonSnippetSection, #numResContainer, 
 #treeTabs, #previewLabel, #downLoadProgressSection,
-#qualityUI {
+.qualityUI {
     display: none;
 }
 
-#searchField, #fieldValue, #qualityFrom, #qualityTo {
+.searchField, .fieldValue, .qualityFrom, .qualityTo {
     color: #aaa;
 }
 
-#searchField, #searchField + ul,
-#fieldValue, #fieldValue + ul,
-#qualityFrom, #qualityFrom + ul, 
-#qualityTo, #qualityTo + ul {
+.searchField, .searchField + ul,
+.fieldValue, .fieldValue + ul,
+.qualityFrom, .qualityFrom + ul, 
+.qualityTo, .qualityTo + ul {
     width: 100%;
     text-align: left;
 }
 
-#searchField::after,
-#fieldValue::after,
-#qualityFrom::after,
-#qualityTo::after {
+.searchField::after,
+.fieldValue::after,
+.qualityFrom::after,
+.qualityTo::after {
     position: absolute;
     right: .5rem;
     border-width: 0 1px 1px 0;
@@ -238,7 +238,7 @@ a.warning {
     min-width: 225px;
 }
 
-ul#availableValues {
+ul.availableValues {
     max-height: 200px;
     overflow: auto;
 }

@@ -2,8 +2,8 @@ var species, n_trees, jsonOutput, getEverySec, numFilters = 1;
 var currReq = {
     "url": '',
     "idx": NaN,
-    "property": '',
-    "value": ''
+    "properties": '',
+    "values": ''
 }
 
 window.onload = () => {
@@ -66,26 +66,51 @@ getItem = () => {
     }
 }
 
-// Query trees via property and value
+// Query trees via properties and value
 searchDB = () => {
-    var property = $('#searchField').text().toLowerCase();
-    var value = $('#fieldValue').text();
-    if (property == 'canopy condition') {
-        property = 'canopy_condition';
-    } else if (property == 'quality') {
-        if (!checkQBounds()) {
-            return;
+    // Collect fields and values
+    var properties = '';
+    var values = '';
+    $('.searchField').each((index, e) => {
+        var field = $(e).text()
+        var val = $(e.parentNode.nextElementSibling.children[0]).text();
+        // Check emptiness
+        if (field != 'Select search field') {
+                if (field == 'Canopy Condition') {
+                    properties += 'canopy_condition,';
+                    values += val + ',';
+                } else if (field == 'Quality') {
+                    var qFrom = $('.qualityFrom').eq(index);
+                    var qTo = $('.qualityTo').eq(index);
+                    // Only when from and to are both given, add to search properties
+                    if (qFrom.text() != 'value' && qTo.text() != 'value') {
+                        properties += 'quality,';
+                        values += qFrom.text() + ',' + qTo.text() + ',';
+                    } else if (qFrom.text() == 'value') {
+                        qFrom.addClass('warning');
+                        $('#searchButton').prop('disabled', true);
+                        return;
+                    } else if (qTo.text() == 'value') {
+                        qTo.addClass('warning');
+                        $('#searchButton').prop('disabled', true);
+                        return;
+                    }
+                } else if (val != 'Please select a field first' && 
+                           val != 'Choose a value') {
+                    properties += field + ',';
+                    values += val + ',';
+                }
         }
-        value = $('#qualityFrom').text() + ',' + $('#qualityTo').text();
-    }
-    // Do get
-    if (property != '' && property != 'select search field' 
-        && value != '' && value != 'Please select a field first'
-        && value != 'Choose a value') {
-        $.get('/trees/' + property + '/' + value, data => {
-            currReq.url = '/trees/' + property + '/' + value;
-            currReq.property = property;
-            currReq.value = value;
+    })
+    properties = properties.toLowerCase().slice(0, -1);
+    values = values.slice(0, -1);
+
+    // Do GET
+    if (properties != '' && values != '') {
+        $.get('/trees/' + properties + '/' + values, data => {
+            currReq.url = '/trees/' + properties + '/' + values;
+            currReq.properties = properties;
+            currReq.values = values;
             var trees = data['query'];
             var num;
             // Clear previous results
@@ -135,14 +160,14 @@ searchDB = () => {
             'slow');
         
         // dummy partial implementation Point Clouds download
-        if (value == 'Pinus sylvestris') {
+        if (values.includes('Pinus sylvestris')) {
             $('#savePointCButton').removeAttr('disabled');
         } else {
             $('#savePointCButton').attr('disabled', 'disabled');
         }
 
     } else {
-        $("#results").html(""); // empty list
+        return;
     }
 }
 
@@ -189,7 +214,7 @@ saveAllJsons = () => {
 saveCSV = () => {
     var link = document.createElement('a');
     link.download = 'csv.zip'
-    link.href = '/exportcsv/' + currReq.property + '/' + currReq.value;
+    link.href = '/exportcsv/' + currReq.properties + '/' + currReq.values;
     link.click();
 }
 // Save point clouds of all results into a zip
@@ -327,11 +352,13 @@ checkQBounds = (from, to) => {
         $(from).addClass('warning');
         $(to).addClass('warning');
         $(qErrEl).show();
+        $('#searchButton').prop('disabled', true);
         return false;
     } else {
         $(from).removeClass('warning');
         $(to).removeClass('warning');
         $(qErrEl).hide();
+        $('#searchButton').prop('disabled', false);
         return true;
     }
 }
@@ -361,4 +388,4 @@ $('#idx').keydown(e => {
     }
 });
 
-var addFilterCodeSnippet = '<div class="wrapper paramPair removeFilterAble" id="paramPair'+ numFilters++ +'" style="margin-top: .5rem"><span onclick="removeSearchFilter(this)"></span><div class="dropdown" id="searchFieldUI"><a class="btn btn-light dropdown-toggle" id="searchField" role="button" data-bs-toggle="dropdown" aria-expanded="false">Select search field</a><ul class="dropdown-menu" aria-labelledby="searchField"><li><a class="dropdown-item" onclick="searchFieldSelected(this)">Species</a></li><li><a class="dropdown-item" onclick="searchFieldSelected(this)">Mode</a></li><li><a class="dropdown-item" onclick="searchFieldSelected(this)">Canopy Condition</a></li><li><a class="dropdown-item" onclick="searchFieldSelected(this)">Quality</a></li></ul></div><div class="dropdown" id="normalValUI" style="margin-top: 0.5rem; "><a class="btn btn-light dropdown-toggle" id="fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">Please select a field first</a><ul class="dropdown-menu" id="availableValues" aria-labelledby="fieldValue"></ul></div><div id="qualityUI" style="margin-top: 0.5rem;"><div class="dropdown" style="display: inline-block; width: 45%;"><a class="btn btn-light dropdown-toggle" id="qualityFrom" role="button" data-bs-toggle="dropdown" aria-expanded="false">value</a><ul class="dropdown-menu qVals" aria-labelledby="qualityFrom"><li><a class="dropdown-item" onclick="qualityFrom(this)">1</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">2</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">3</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">4</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">5</a></li></ul></div><span style="display: inline-block; width: 6%;"> to </span><div class="dropdown" style="width: 45%; float: right;"><a class="btn btn-light dropdown-toggle" id="qualityTo" role="button" data-bs-toggle="dropdown" aria-expanded="false">value</a><ul class="dropdown-menu qVals" aria-labelledby="qualityTo"><li><a class="dropdown-item" onclick="qualityTo(this)">1</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">2</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">3</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">4</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">5</a></li></ul></div><label id="qErr" class="warning" style="margin-top: 0.05rem;">Error! Lower bound greater than upper bound</label></div></div>';
+var addFilterCodeSnippet = '<div class="wrapper paramPair removeFilterAble" id="paramPair'+ numFilters++ +'" style="margin-top: .5rem"><span onclick="removeSearchFilter(this)"></span><div class="dropdown searchFieldUI"><a class="btn btn-light dropdown-toggle searchField" role="button" data-bs-toggle="dropdown" aria-expanded="false">Select search field</a><ul class="dropdown-menu" aria-labelledby="searchField"><li><a class="dropdown-item" onclick="searchFieldSelected(this)">Species</a></li><li><a class="dropdown-item" onclick="searchFieldSelected(this)">Mode</a></li><li><a class="dropdown-item" onclick="searchFieldSelected(this)">Canopy Condition</a></li><li><a class="dropdown-item" onclick="searchFieldSelected(this)">Quality</a></li></ul></div><div class="dropdown normalValUI" style="margin-top: 0.5rem; "><a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">Please select a field first</a><ul class="dropdown-menu availableValues" aria-labelledby="fieldValue"></ul></div><div class="qualityUI" style="margin-top: 0.5rem;"><div class="dropdown" style="display: inline-block; width: 45%;"><a class="btn btn-light dropdown-toggle qualityFrom" role="button" data-bs-toggle="dropdown" aria-expanded="false">value</a><ul class="dropdown-menu qVals" aria-labelledby="qualityFrom"><li><a class="dropdown-item" onclick="qualityFrom(this)">1</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">2</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">3</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">4</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">5</a></li></ul></div><span style="display: inline-block; width: 6%;"> to </span><div class="dropdown" style="width: 45%; float: right;"><a class="btn btn-light dropdown-toggle qualityTo" role="button" data-bs-toggle="dropdown" aria-expanded="false">value</a><ul class="dropdown-menu qVals" aria-labelledby="qualityTo"><li><a class="dropdown-item" onclick="qualityTo(this)">1</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">2</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">3</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">4</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">5</a></li></ul></div><label class="warning qErr" style="margin-top: 0.05rem;">Error! Lower bound greater than upper bound</label></div></div>';

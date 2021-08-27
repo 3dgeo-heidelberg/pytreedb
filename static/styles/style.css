@@ -191,14 +191,14 @@ label.lh-base {
     display: block;
 }
 
-label.warning {
+label.warning, label.warning:hover {
     display: none;
     color: rgb(255, 0, 0);
     margin-top: -1rem;
 }
 
-input.warning,
-a.warning {
+input.warning, input.warning:hover,
+a.warning, a.warning:hover {
     border: solid 2px #FF0000;
 }
 

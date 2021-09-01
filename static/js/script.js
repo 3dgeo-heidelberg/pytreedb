@@ -70,7 +70,7 @@ getItem = () => {
 // Query trees via properties and value
 searchDB = () => {
     // Collect fields and values
-    const {properties, values} = collectFilterParams();
+    const [properties, values] = collectFilterParams();
 
     // Do GET
     if (properties != '' && values != '') {

@@ -18,6 +18,15 @@ window.onload = () => {
 
 }
 
+window.onscroll = () => {
+    var scrolled = $(window).scrollTop();
+    if (scrolled > 0) {
+        $('#navbar').addClass('scrolled');
+    } else {
+        $('#navbar').removeClass('scrolled');
+    }
+}
+
 // Show all species in the databank
 showSpecies = () => {
     if (typeof species == 'undefined') { // Avoid unnessesary calls on backend

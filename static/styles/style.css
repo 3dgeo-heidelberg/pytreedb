@@ -13,9 +13,14 @@ a:hover {
     color: inherit;
 }
 
+#navbar.scrolled {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
 .navbar {
     padding-right: 0.5rem;
     padding-left: 0.5rem;
+    background-color: #ffffff;
 }
 
 .nav-link, .nav-link:focus {

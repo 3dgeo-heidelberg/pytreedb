@@ -71,7 +71,7 @@ getItem = () => {
         $('#saveCSVButton').hide();
         $('#jsonSnippetSection').css('padding-bottom', '2rem').show();
         $('html,body').animate({
-            scrollTop: $('#jsonSnippetSection').offset().top},
+            scrollTop: $('#jsonSnippetSection').offset().top - 62},
             'slow');
     }
 }

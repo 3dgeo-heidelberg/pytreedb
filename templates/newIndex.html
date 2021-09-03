@@ -85,7 +85,7 @@
             </div>
         </section>
         
-        <section id="queryInputSection"  class="container" style="width: 90%; margin-top: 30px; margin-bottom: 60px;">
+        <section id="queryInputSection"  class="container" style="margin-top: 30px; margin-bottom: 60px;">
             <div class="row justify-content-center">
                 <div class="col-lg-5 col-md-5 col-sm-12">
                     <div class="row justify-content-start">
@@ -156,8 +156,8 @@
             </div>
         </section>
 
-        <section id="jsonSnippetSection" style="width: 100%; height: 100%; padding-top: 1.5rem; padding-bottom: 7rem; background-color: #fff;">
-            <div class="wrapper" style="width: 70%; height: 100%; margin: 0 auto;">
+        <section id="jsonSnippetSection" class="container" style="height: calc(100% - 62px); padding-top: 1.5rem; padding-bottom: 7rem; background-color: #fff;">
+            <div class="wrapper" style="height: 100%; margin: 0 auto;">
                 <p id="numResContainer" style="color: #198754;">
                     <span id="numRes"></span> trees found 
                     <span id="previewLabel">. Preview of the first three trees:</span>
@@ -168,7 +168,7 @@
                     <li id="treeTab2" class="nav-item"><a class="nav-link treeTab" onclick="toggleTab(this)">3</a></li>
                 </ul>
                 <div style="float: right; padding-left: 3rem; margin-left: -3rem; width: 210px; white-space: nowrap;">
-                    <button type="button" class="btn btn-success ms-2" onclick="saveJsonOutput()" style="float: none; display: block;">
+                    <button id="saveJsonButton" type="button" class="btn btn-success ms-2" onclick="saveJsonOutput()" style="float: none; display: block;">
                         Save JSON
                     </button>
                     <button id="saveAllButton" type="button" class="btn btn-outline-success ms-2" onclick="saveAllJsons()" style="float: none; display: block; margin-top: .5rem;">
@@ -184,6 +184,38 @@
                 <div id="jsonViewerContainer" class="wrapper" style="height: 100%; margin-bottom: 1rem;"></div>
             </div>
         </section>
+
+        <footer>
+            <div class="container">
+                <div class="row"
+                    style="padding: 50px;color: #fff; border-top-width: medium; border-right-width: medium; border-bottom-width: medium; border-left-width: medium;">
+                    <div style="border: dotted#fff; border-width: 0 1px 0 0;" class="col-8">
+                        <div id="pytreedbLogo" style="font-size: xx-large; padding: 50px 0 50px 0; color: #fff;">
+                            PyTreeDB
+                        </div>
+                        <div style="font-size: small; padding-bottom: 50px; padding-right: 50px; color: #ddd;">
+                            Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) in the frame of the
+                            project SYSSIFOSS – 411263134 / 2019-2022).
+                        </div>
+                    </div>
+                    <div style="padding-left: 70px;" class="col-4">
+                        <h4 style="margin: 30px 0;">Links</h4>
+                        <a target="_blank" class="links"
+                            href="https://www.geog.uni-heidelberg.de/gis/SYSSIFOSS_en.html">SYSSIFOSS Project</a>
+                        <a target="_blank" class="links" href="http://k1z.blog.uni-heidelberg.de/?s=syssifoss">GIScience News
+                            Blog</a>
+                        <a target="_blank" class="links"
+                            href="https://www.researchgate.net/project/SYSSIFOSS-Synthetic-structural-remote-sensing-data-for-improved-forest-inventory-models">Research
+                            Gate</a>
+                        <a id="twitter-link" target="_blank" href="https://twitter.com/search?q=syssifoss&amp;src=typed_query">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-twitter"
+                                viewBox="0 0 16 16" style="margin-left: 5px;" width="20" height="20">
+                                <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"></path>
+                            </svg></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
         
         <section id="downLoadProgressSection" style="width: 100%; position: fixed; bottom: 0; background-color: #fff; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);">
             <div id="progressContainer" class="container" style="padding: 1rem 0;">

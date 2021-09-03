@@ -4,6 +4,11 @@ html, body
     height: 100%;
 }
 
+footer {
+    margin-top: 70px;
+    background-color: #000;
+}
+
 a {
     text-decoration: none;
     color: inherit;
@@ -11,6 +16,16 @@ a {
 
 a:hover {
     color: inherit;
+}
+
+a.links {
+    display: block;
+    padding: 5px 0;
+    color: #ddd;
+}
+
+a.links:hover {
+    text-decoration-line: underline;
 }
 
 #navbar.scrolled {
@@ -28,8 +43,8 @@ a:hover {
     color: #198754;
 }
 
-.navbar-brand {
-    font-weight: 700; 
+.navbar-brand, #pytreedbLogo {
+    font-weight: 700;
     font-size: x-large; 
     font-family: 'Poppins', sans-serif; 
     color: #505050;
@@ -260,6 +275,25 @@ ul#treeTabs > li {
     content: "\00d7";
     cursor: pointer;
     color: #606060;
+}
+
+#twitter-link {
+    border-radius: 15px;
+    background-color: #555;
+    width: 30px;
+    height: 30px;
+    display: block;
+    margin-top: 20px;
+}
+
+#twitter-link:hover {
+    background-color: #198754;
+}
+
+a.links::after {
+	content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAABmJLR0QA/wD/AP+gvaeTAAAA0ElEQVQokaWSQWoCQRBFX4kKrlwLSRCC59BFTpKBgCcIZJVlTuE5PIpxmYjbbAMRXjbtMM70NIJ/092/6nVXw4cbFOeNOgbuWvUf4BeYtfyviDjVoLq3q3d1lfHnAMN00wxYAEvgkHn5EaiAt87s6rx5Y6b+rJ7Uj05fCW6A62xfH6xWCazSeaI+qZMi3AaTN1Vf1Wkv3Bi1BnN9Q/I6Ai8Rsemp0wtHxLYEtWHT+qAOCv3nBFo7KWGfmSTltFNHcJntEXB/xbTfEfF3zbeK+gf3URGXWJodzQAAAABJRU5ErkJggg==);
+	margin: 0 0 0 5px;
+	transform: translateY(-10%);
 }
 
 

@@ -132,7 +132,7 @@ searchDB = () => {
         });
         $('#jsonSnippetSection').css('padding-bottom', '7rem').show();
         $('html,body').animate({
-            scrollTop: $('#jsonSnippetSection').offset().top},
+            scrollTop: $('#jsonSnippetSection').offset().top - 62},
             'slow');
         
         // dummy partial implementation Point Clouds download

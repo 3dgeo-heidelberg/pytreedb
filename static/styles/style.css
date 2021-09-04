@@ -9,6 +9,21 @@ footer {
     background-color: #000;
 }
 
+nav + section {
+    margin-top: 62px;
+}
+
+h1.pageTitle {
+    padding: 50px 0;
+    font-size: 35px;
+    /* color: #206623; */
+}
+
+h2.secondaryTitle {
+    padding: 30px 0;
+    font-size: 30px;
+}
+
 a {
     text-decoration: none;
     color: inherit;
@@ -26,6 +41,11 @@ a.links {
 
 a.links:hover {
     text-decoration-line: underline;
+}
+
+a.inPLink {
+    color: #198754;
+    text-decoration: underline;
 }
 
 #navbar.scrolled {

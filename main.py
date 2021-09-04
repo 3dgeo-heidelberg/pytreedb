@@ -22,24 +22,6 @@ import pytreedb.pytreedb as pytreedb
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
 dl_progress = {'currItem': 0, 'numAllItems': 0}
-# downloading_thread = None
-
-# class DownloadingThread(threading.Thread):
-#     def __init__(self, urls, o):
-#         self.progress = 0
-#         self.urls = urls
-#         self.num_urls = len(urls)
-#         self.data = o
-#         super().__init__()
-
-#     def run(self):
-#         with ZipFile(self.data, 'w') as zf:
-#             for i in range(self.num_urls):
-#                 res = requests.get(self.urls[i]).content
-#                 zf.writestr('file_{:02d}.laz'.format(i), res)
-#                 # self.progress += 1/self.num_urls
-#         # zf.close()
-#         self.data.seek(0)
 
 @app.route('/')
 def index():
@@ -48,6 +30,10 @@ def index():
 @app.route('/about')
 def about():
     return render_template(r'about.html')
+
+@app.route('/contact')
+def contact():
+    return render_template(r'contact.html')
 
 mydb = pytreedb.PyTreeDB(dbfile=r'E:\tmp\SYSSIFOSS\syssifoss.db') # instantiate pytreedb
 # mydb.load_db(r'E:\tmp\SYSSIFOSS\syssifoss.db') # Jiani: loading local db file
@@ -125,7 +111,6 @@ def exportcsv(fields, values):
 
 @app.route('/list_pointclouds')
 def listPointClouds():
-    # urls = ['https://nodejs.org/dist/v16.5.0/node-v16.5.0-x64.msi']
     urls = ['https://3dweb.geog.uni-heidelberg.de/database_sample/PinSyl_KA10_01_2019-07-05_q2_ALS-on.laz',
             'https://3dweb.geog.uni-heidelberg.de/database_sample/PinSyl_KA10_01_2019-07-30_q4_TLS-on.laz',
             'https://3dweb.geog.uni-heidelberg.de/database_sample/PinSyl_KA10_01_2019-09-13_q2_ULS-on.laz']

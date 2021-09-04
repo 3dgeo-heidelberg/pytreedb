@@ -29,7 +29,7 @@
                     <div class="navbar-nav text-end">
                         <a class="nav-item nav-link" aria-current="page" href="/" >HOME</a>
                         <a class="nav-item nav-link" href="/about">ABOUT</a>
-                        <a class="nav-item nav-link" href="#">CONTACT</a>
+                        <a class="nav-item nav-link" href="/contact">CONTACT</a>
                         <div class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 EN
@@ -44,7 +44,7 @@
             </div>
         </nav>
 
-        <section id="bannerSection" class="wrapper" style="overflow: hidden; min-height: 450px; height: 70%; margin-top: 62px;">
+        <section id="bannerSection" style="overflow: hidden; min-height: 450px; height: 70%;">
             <div class="clearfix" style="overflow: hidden; height: 100%;">
                 <div style="position: absolute; width: 100%; height: 100%; overflow: hidden; z-index: -1;">
                     <div id="picDiv">
@@ -93,7 +93,7 @@
                             <b class="func">Search the DB</b>
                         </div>
                         <div class="searchbar col-lg-6 col-md-10 col-sm-6" style="position: relative;">
-                            <div class="wrapper paramPair" id="paramPair">
+                            <div class="paramPair" id="paramPair">
                                 <span onclick="removeSearchFilter(this)"></span>
                                 <div class="dropdown searchFieldUI">
                                     <a class="btn btn-light dropdown-toggle searchField" role="button" data-bs-toggle="dropdown" aria-expanded="false">Select search field</a>
@@ -157,7 +157,7 @@
         </section>
 
         <section id="jsonSnippetSection" class="container" style="height: calc(100% - 62px); padding-top: 1.5rem; padding-bottom: 7rem; background-color: #fff;">
-            <div class="wrapper" style="height: 100%; margin: 0 auto;">
+            <div style="height: 100%; margin: 0 auto;">
                 <p id="numResContainer" style="color: #198754;">
                     <span id="numRes"></span> trees found 
                     <span id="previewLabel">. Preview of the first three trees:</span>
@@ -181,7 +181,7 @@
                         Save Point Clouds
                     </button>
                 </div>
-                <div id="jsonViewerContainer" class="wrapper" style="height: 100%; margin-bottom: 1rem;"></div>
+                <div id="jsonViewerContainer" style="height: 100%; margin-bottom: 1rem;"></div>
             </div>
         </section>
 

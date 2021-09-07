@@ -131,7 +131,8 @@ searchDB = () => {
                 $('#treeTab0').children().addClass('active');
             }
         });
-        $('#jsonViewerContainer').css('padding-bottom', '85px').show();
+        $('#jsonSnippetSection').show();
+        $('#jsonViewerContainer').css('padding-bottom', '85px');
         $('html,body').animate({
             scrollTop: $('#jsonSnippetSection').offset().top - 62},
             'slow');

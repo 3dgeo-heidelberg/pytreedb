@@ -69,7 +69,8 @@ getItem = () => {
         $('#saveAllButton').hide();
         $('#savePointCButton').hide();
         $('#saveCSVButton').hide();
-        $('#jsonSnippetSection').css('padding-bottom', '2rem').show();
+        $('#jsonSnippetSection').show();
+        $('#jsonViewerContainer').css('padding-bottom', '0');
         $('html,body').animate({
             scrollTop: $('#jsonSnippetSection').offset().top - 62},
             'slow');
@@ -130,7 +131,7 @@ searchDB = () => {
                 $('#treeTab0').children().addClass('active');
             }
         });
-        $('#jsonSnippetSection').css('padding-bottom', '7rem').show();
+        $('#jsonViewerContainer').css('padding-bottom', '85px').show();
         $('html,body').animate({
             scrollTop: $('#jsonSnippetSection').offset().top - 62},
             'slow');

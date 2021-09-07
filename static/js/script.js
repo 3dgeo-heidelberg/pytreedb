@@ -6,6 +6,14 @@ var currReq = {
     "properties": '',
     "values": ''
 }
+// Init leaflet map
+var map = L.map('mapContainer').fitWorld();
+// Set up the tile layer
+L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Data © <a href="http://osm.org/copyright">OpenStreetMap</a>',
+    maxZoom: 18
+}).addTo(map);
 
 window.onload = () => {
     // Load stats on start
@@ -63,6 +71,9 @@ getItem = () => {
             // Write new result
             $('#jsonViewerContainer').html('<pre id="idSearchRes"></pre>');
             $('#idSearchRes').jsonViewer(jsonObj, {rootCollapsable: false, withLinks: false});
+
+            // Draw map
+            drawMap([jsonObj]);
         });
         $('#numResContainer').hide();
         $('#treeTabs').hide();
@@ -129,6 +140,9 @@ searchDB = () => {
                     }
                 }
                 $('#treeTab0').children().addClass('active');
+
+                // Draw map
+                drawMap(trees);
             }
         });
         $('#jsonSnippetSection').show();
@@ -183,6 +197,15 @@ collectFilterParams = () => {
     properties = properties.toLowerCase().slice(0, -1);
     values = values.slice(0, -1);
     return [properties, values];
+}
+
+// Show resulting trees on the map
+drawMap = trees => {
+    map.invalidateSize();
+    var geoJSONLayer = L.geoJSON().addTo(map);
+    trees.forEach(tree => {
+        geoJSONLayer.addData(tree);
+    })
 }
 
 // Show download progress

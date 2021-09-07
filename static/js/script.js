@@ -203,15 +203,13 @@ collectFilterParams = () => {
 // Show resulting trees on the map
 drawMap = trees => {
     map.invalidateSize();
-    // map.eachLayer(layer => {
-    //     console.log();
     map.removeLayer(geoJSONLayer);
-    // });
     setTimeout(() => {
         geoJSONLayer = L.geoJSON().addTo(map);
         trees.forEach(tree => {
             geoJSONLayer.addData(tree);
         });
+        map.fitBounds(geoJSONLayer.getBounds());
     }, 100);
 }
 

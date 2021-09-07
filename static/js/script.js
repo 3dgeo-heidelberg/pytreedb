@@ -14,6 +14,7 @@ L.tileLayer(
     attribution: 'Data © <a href="http://osm.org/copyright">OpenStreetMap</a>',
     maxZoom: 18
 }).addTo(map);
+var geoJSONLayer = L.geoJSON().addTo(map);
 
 window.onload = () => {
     // Load stats on start
@@ -202,10 +203,16 @@ collectFilterParams = () => {
 // Show resulting trees on the map
 drawMap = trees => {
     map.invalidateSize();
-    var geoJSONLayer = L.geoJSON().addTo(map);
-    trees.forEach(tree => {
-        geoJSONLayer.addData(tree);
-    })
+    // map.eachLayer(layer => {
+    //     console.log();
+    map.removeLayer(geoJSONLayer);
+    // });
+    setTimeout(() => {
+        geoJSONLayer = L.geoJSON().addTo(map);
+        trees.forEach(tree => {
+            geoJSONLayer.addData(tree);
+        });
+    }, 100);
 }
 
 // Show download progress

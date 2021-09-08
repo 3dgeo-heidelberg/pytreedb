@@ -194,25 +194,6 @@ collectFilterParams = () => {
     return [properties, values];
 }
 
-// Show resulting trees on the map
-drawMap = trees => {
-    
-    map.invalidateSize();  // Make sure tiles render correctly
-    geoJSONLayer.clearLayers();  // Remove previous markers
-    setTimeout(() => {
-        // Add each tree to the geoJSONLayer. They will be displayed as markers by default
-        trees.forEach(tree => {
-            geoJSONLayer.addData(tree);
-        });
-        map.fitBounds(geoJSONLayer.getBounds()); // Fit the map display to results
-
-        // let i = 0;
-        // geoJSONLayer.eachLayer(function(){ i += 1; });
-        // console.log('Map has', i, 'layers.');
-    }, 100);
-
-}
-
 // Show download progress
 showDlProgress = () => {
     $('#downLoadProgressSection').show();
@@ -471,49 +452,60 @@ var geoJSONLayer = L.geoJSON(null, {
         }
     }).addTo(map);
 
-// Initialise the FeatureGroup to store editable layers
-var editableLayers = new L.FeatureGroup();
-map.addLayer(editableLayers);
+// Initialise the FeatureGroup to store drawing layers
+var drawnItems = L.featureGroup().addTo(map);
 
 var drawPluginOptions = {
   position: 'topright',
   draw: {
     polygon: {
-      allowIntersection: false, // Restricts shapes to simple polygons
-      drawError: {
-        color: '#e1e100', // Color the shape will turn when intersects
-        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
-      },
-      shapeOptions: {
-        color: '#97009c'
-      }
+        allowIntersection: false,
+        showArea: true
     },
-    // Disable toolbar item by setting it to false
-    polyline: false,
-    circle: false, // Turns off this drawing tool
+    polyline: false, // disable
+    circle: false, 
     rectangle: false,
     marker: false,
+    circlemarker: false
     },
   edit: {
-    featureGroup: editableLayers, //REQUIRED!!
-    remove: false
+    featureGroup: drawnItems, //REQUIRED!!
+    poly: {
+        allowIntersection: false
+    }
   }
 };
 
-// Initialise the draw control and pass it the FeatureGroup of editable layers
-var drawControl = new L.Control.Draw(drawPluginOptions);
-map.addControl(drawControl);
+// Initialise the draw control and pass it the FeatureGroup of drawing layers
+map.addControl(new L.Control.Draw(drawPluginOptions));
 
-var editableLayers = new L.FeatureGroup();
-map.addLayer(editableLayers);
-
-map.on('draw:created', function(e) {
-  var type = e.layerType,
-    layer = e.layer;
-
+map.on(L.Draw.Event.CREATED, function(e) {
+  var type = e.layerType, layer = e.layer;
   if (type === 'marker') {
     layer.bindPopup('A popup!');
   }
-
-  editableLayers.addLayer(layer);
+  drawnItems.addLayer(layer);
 });
+
+
+
+// Show resulting trees on the map
+drawMap = trees => {
+    
+    map.invalidateSize();  // Make sure tiles render correctly
+    geoJSONLayer.clearLayers();  // Remove previous markers
+    setTimeout(() => {
+        // Add each tree to the geoJSONLayer. They will be displayed as markers by default
+        trees.forEach(tree => {
+            geoJSONLayer.addData(tree);
+        });
+        map.fitBounds(geoJSONLayer.getBounds()); // Fit the map display to results
+
+        // let i = 0;
+        // geoJSONLayer.eachLayer(function(){ i += 1; });
+        // console.log('Map has', i, 'layers.');
+    }, 100);
+
+}
+
+

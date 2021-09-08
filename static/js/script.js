@@ -14,7 +14,12 @@ L.tileLayer(
     attribution: 'Data © <a href="http://osm.org/copyright">OpenStreetMap</a>',
     maxZoom: 18
 }).addTo(map);
-var geoJSONLayer = L.geoJSON().addTo(map);
+// Init geoJSONLayer(group)
+var geoJSONLayer = L.geoJSON(null, {
+        pointToLayer: function (feature, latlng) { // Each tree will be stored in one layer
+            return L.marker(latlng);
+        }
+    }).addTo(map);
 
 // Initialise the FeatureGroup to store editable layers
 var editableLayers = new L.FeatureGroup();
@@ -249,6 +254,7 @@ collectFilterParams = () => {
 
 // Show resulting trees on the map
 drawMap = trees => {
+    
     map.invalidateSize();  // Make sure tiles render correctly
     geoJSONLayer.clearLayers();  // Remove previous markers
     setTimeout(() => {
@@ -257,7 +263,12 @@ drawMap = trees => {
             geoJSONLayer.addData(tree);
         });
         map.fitBounds(geoJSONLayer.getBounds()); // Fit the map display to results
+
+        // let i = 0;
+        // geoJSONLayer.eachLayer(function(){ i += 1; });
+        // console.log('Map has', i, 'layers.');
     }, 100);
+
 }
 
 // Show download progress

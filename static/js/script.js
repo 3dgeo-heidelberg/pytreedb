@@ -33,7 +33,7 @@ var drawPluginOptions = {
         color: '#97009c'
       }
     },
-    // disable toolbar item by setting it to false
+    // Disable toolbar item by setting it to false
     polyline: false,
     circle: false, // Turns off this drawing tool
     rectangle: false,
@@ -249,14 +249,14 @@ collectFilterParams = () => {
 
 // Show resulting trees on the map
 drawMap = trees => {
-    map.invalidateSize();
-    map.removeLayer(geoJSONLayer);
+    map.invalidateSize();  // Make sure tiles render correctly
+    geoJSONLayer.clearLayers();  // Remove previous markers
     setTimeout(() => {
-        geoJSONLayer = L.geoJSON().addTo(map);
+        // Add each tree to the geoJSONLayer. They will be displayed as markers by default
         trees.forEach(tree => {
             geoJSONLayer.addData(tree);
         });
-        map.fitBounds(geoJSONLayer.getBounds());
+        map.fitBounds(geoJSONLayer.getBounds()); // Fit the map display to results
     }, 100);
 }
 

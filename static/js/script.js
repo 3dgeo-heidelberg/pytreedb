@@ -1,3 +1,4 @@
+// Global variables
 var species, n_trees, jsonOutput, getEverySec; 
 var numFilters = 0;
 var currReq = {
@@ -8,65 +9,6 @@ var currReq = {
 }
 // Init leaflet map
 var map = L.map('mapContainer').fitWorld();
-// Set up the tile layer
-L.tileLayer(
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: 'Data © <a href="http://osm.org/copyright">OpenStreetMap</a>',
-    maxZoom: 18
-}).addTo(map);
-// Init geoJSONLayer(group)
-var geoJSONLayer = L.geoJSON(null, {
-        pointToLayer: function (feature, latlng) { // Each tree will be stored in one layer
-            return L.marker(latlng);
-        }
-    }).addTo(map);
-
-// Initialise the FeatureGroup to store editable layers
-var editableLayers = new L.FeatureGroup();
-map.addLayer(editableLayers);
-
-var drawPluginOptions = {
-  position: 'topright',
-  draw: {
-    polygon: {
-      allowIntersection: false, // Restricts shapes to simple polygons
-      drawError: {
-        color: '#e1e100', // Color the shape will turn when intersects
-        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
-      },
-      shapeOptions: {
-        color: '#97009c'
-      }
-    },
-    // Disable toolbar item by setting it to false
-    polyline: false,
-    circle: false, // Turns off this drawing tool
-    rectangle: false,
-    marker: false,
-    },
-  edit: {
-    featureGroup: editableLayers, //REQUIRED!!
-    remove: false
-  }
-};
-
-// Initialise the draw control and pass it the FeatureGroup of editable layers
-var drawControl = new L.Control.Draw(drawPluginOptions);
-map.addControl(drawControl);
-
-var editableLayers = new L.FeatureGroup();
-map.addLayer(editableLayers);
-
-map.on('draw:created', function(e) {
-  var type = e.layerType,
-    layer = e.layer;
-
-  if (type === 'marker') {
-    layer.bindPopup('A popup!');
-  }
-
-  editableLayers.addLayer(layer);
-});
 
 window.onload = () => {
     // Load stats on start
@@ -76,7 +18,6 @@ window.onload = () => {
         $('#numSpecies').html(data['n_species']);
         $('#nTrees').html(n_trees-1);
     });
-
 }
 
 window.onscroll = () => {
@@ -87,6 +28,7 @@ window.onscroll = () => {
         $('#navbar').removeClass('scrolled');
     }
 }
+
 
 // Show all species in the databank
 showSpecies = () => {
@@ -511,3 +453,67 @@ $('#idx').keydown(e => {
     }
 });
 
+
+
+//////////////////////////////////////////////
+// Leaflet
+//////////////////////////////////////////////
+// Set up the tile layer
+L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Data © <a href="http://osm.org/copyright">OpenStreetMap</a>',
+    maxZoom: 18
+}).addTo(map);
+// Init geoJSONLayer(group)
+var geoJSONLayer = L.geoJSON(null, {
+        pointToLayer: function (feature, latlng) { // Each tree will be stored in one layer
+            return L.marker(latlng);
+        }
+    }).addTo(map);
+
+// Initialise the FeatureGroup to store editable layers
+var editableLayers = new L.FeatureGroup();
+map.addLayer(editableLayers);
+
+var drawPluginOptions = {
+  position: 'topright',
+  draw: {
+    polygon: {
+      allowIntersection: false, // Restricts shapes to simple polygons
+      drawError: {
+        color: '#e1e100', // Color the shape will turn when intersects
+        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+      },
+      shapeOptions: {
+        color: '#97009c'
+      }
+    },
+    // Disable toolbar item by setting it to false
+    polyline: false,
+    circle: false, // Turns off this drawing tool
+    rectangle: false,
+    marker: false,
+    },
+  edit: {
+    featureGroup: editableLayers, //REQUIRED!!
+    remove: false
+  }
+};
+
+// Initialise the draw control and pass it the FeatureGroup of editable layers
+var drawControl = new L.Control.Draw(drawPluginOptions);
+map.addControl(drawControl);
+
+var editableLayers = new L.FeatureGroup();
+map.addLayer(editableLayers);
+
+map.on('draw:created', function(e) {
+  var type = e.layerType,
+    layer = e.layer;
+
+  if (type === 'marker') {
+    layer.bindPopup('A popup!');
+  }
+
+  editableLayers.addLayer(layer);
+});

@@ -493,14 +493,31 @@ map.on(L.Draw.Event.CREATED, function (e) {
 
 map.on('draw:edited', function (e) {
     geoJSONLayer.eachLayer(marker => {
+        marker._icon.classList.remove('grayout');
         drawnItems.eachLayer(poly => {
             if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, poly)) {
                 marker._icon.classList.add('grayout');
-            } else {
-                marker._icon.classList.remove('grayout');
             }
-        })
+        });
     });
+});
+
+map.on('draw:deleted', function(e) {
+    var dLayers = e.layers;
+    
+    if (drawnItems.getLayers().length == 0) {
+        geoJSONLayer.eachLayer(marker => {
+            marker._icon.classList.remove('grayout');
+        });
+    } else {
+        geoJSONLayer.eachLayer(marker => {
+            dLayers.eachLayer(dPoly => {
+                if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, dPoly)) {
+                    marker._icon.classList.remove('grayout');
+                }
+            });
+        });
+    }
 });
 
 // Check if a marker is inside a polygon

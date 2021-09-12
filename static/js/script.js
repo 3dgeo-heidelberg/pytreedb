@@ -479,31 +479,59 @@ var drawPluginOptions = {
 // Initialise the draw control and pass it the FeatureGroup of drawing layers
 map.addControl(new L.Control.Draw(drawPluginOptions));
 
-map.on(L.Draw.Event.CREATED, function(e) {
-  var type = e.layerType, layer = e.layer;
-  if (type === 'marker') {
-    layer.bindPopup('A popup!');
-  }
-  drawnItems.addLayer(layer);
+map.on(L.Draw.Event.CREATED, function (e) {
+    var polyLayer = e.layer;
+    drawnItems.addLayer(polyLayer);
+
+    geoJSONLayer.eachLayer(marker => {
+        if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, polyLayer)) {
+            marker._icon.classList.add("grayout");
+            // map.removeLayer(marker);
+        }
+    });
 });
 
+map.on('draw:edited', function (e) {
+    geoJSONLayer.eachLayer(marker => {
+        drawnItems.eachLayer(poly => {
+            if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, poly)) {
+                marker._icon.classList.add('grayout');
+            } else {
+                marker._icon.classList.remove('grayout');
+            }
+        })
+    });
+});
 
+// Check if a marker is inside a polygon
+isMarkerInsidePolygon = (marker, poly) => {
+    var polyPoints = poly.getLatLngs()[0];
+    var x = marker.getLatLng().lat, y = marker.getLatLng().lng;
+
+    var inside = false;
+    for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
+        var xi = polyPoints[i].lat, yi = polyPoints[i].lng;
+        var xj = polyPoints[j].lat, yj = polyPoints[j].lng;
+
+        var intersect = ((yi > y) != (yj > y))
+            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+    return inside;
+};
 
 // Show resulting trees on the map
 drawMap = trees => {
     
     map.invalidateSize();  // Make sure tiles render correctly
     geoJSONLayer.clearLayers();  // Remove previous markers
+    drawnItems.clearLayers(); // Remove previous polygons
     setTimeout(() => {
         // Add each tree to the geoJSONLayer. They will be displayed as markers by default
         trees.forEach(tree => {
             geoJSONLayer.addData(tree);
         });
         map.fitBounds(geoJSONLayer.getBounds()); // Fit the map display to results
-
-        // let i = 0;
-        // geoJSONLayer.eachLayer(function(){ i += 1; });
-        // console.log('Map has', i, 'layers.');
     }, 100);
 
 }

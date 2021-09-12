@@ -316,6 +316,10 @@ a.links::after {
 	transform: translateY(-10%);
 }
 
+img.grayout {
+    filter: grayscale(100%);
+}
+
 
 
 /* lg */

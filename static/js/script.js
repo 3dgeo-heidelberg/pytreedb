@@ -311,7 +311,7 @@ searchFieldSelected = e => {
     var fErrEl = searchFieldEl.nextElementSibling.nextElementSibling;
 
     // Check if the selected field is already given in other filters
-    if (!fieldIsSafe(e.text)) {
+    if (!fieldIsSafe(e.text) && $(searchFieldEl).text() != e.text) {
         $(searchFieldEl).addClass('warning');
         $(fErrEl).show();
         $('#searchButton').prop('disabled', true);
@@ -436,9 +436,10 @@ $('#idx').keydown(e => {
 
 
 
-//////////////////////////////////////////////
-// Leaflet
-//////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////
+//  Leaflet                                                             //
+//////////////////////////////////////////////////////////////////////////
 // Set up the tile layer
 L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

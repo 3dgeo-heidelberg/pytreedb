@@ -259,7 +259,8 @@ a.warning, a.warning:hover {
 .searchField, .searchField + ul,
 .fieldValue, .fieldValue + ul,
 .qualityFrom, .qualityFrom + ul, 
-.qualityTo, .qualityTo + ul {
+.qualityTo, .qualityTo + ul,
+.addFilterBtn + ul {
     width: 100%;
     text-align: left;
 }
@@ -272,6 +273,24 @@ a.warning, a.warning:hover {
     right: .5rem;
     border-width: 0 1px 1px 0;
     margin-top: 7px;
+}
+
+.addFilterBtn::after {
+    border: solid #198754;
+    border-width: 0 1px 1px 0;
+    margin-top: 7px;
+}
+
+.addFilterBtn:hover::after,
+.addFilterBtn.show::after {
+    border: solid #ffffff;
+    border-width: 0 1px 1px 0;
+    margin-top: 7px;
+}
+
+.searchFieldUI {
+    border: dashed #fff;
+    border-width: 0 0 1px 0;
 }
 
 .searchbar {

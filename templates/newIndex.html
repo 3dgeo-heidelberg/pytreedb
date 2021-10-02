@@ -148,20 +148,20 @@
                                     </div>
                                     <label class="warning qErr" style="margin-top: 0.05rem;">Error! Lower bound greater than upper bound</label>
                                 </div>
+                                <div class="dropdown addFilter">
+                                    <a class="btn btn-outline-success dropdown-toggle addFilterBtn" href="#" id="filterDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" 
+                                        style="margin-top: 0.5rem; margin-bottom: 1rem; display: block;">Add Filter</a>
+                                    <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                                        <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Species</a></li>
+                                        <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Mode</a></li>
+                                        <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Canopy Condition</a></li>
+                                        <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Quality</a></li>
+                                    </ul>
+                                </div>
                             </div>
-                            <br>
                             <button type="button" class="btn btn-success float-end" id="searchButton" onclick="searchDB()">
                                 Go
                             </button>
-                            <div type="dropdown">
-                                <a class="btn btn-outline-success float-end dropdown-toggle addFilterBtn" href="#" id="filterDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="margin-right: 0.5rem;">Add Filter</a>
-                                <ul class="dropdown-menu" aria-labelledby="filterDropdown">
-                                    <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Species</a></li>
-                                    <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Mode</a></li>
-                                    <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Canopy Condition</a></li>
-                                    <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Quality</a></li>
-                                </ul>
-                            </div>
                         </div>
                     </div>
                 </div>

@@ -252,8 +252,10 @@ a.warning, a.warning:hover {
     display: none;
 }
 
-.searchField, .fieldValue, .qualityFrom, .qualityTo {
-    color: #aaa;
+.searchField, .fieldValue, .qualityFrom, .qualityTo,
+.searchField:hover, .fieldValue:hover, 
+.qualityFrom:hover, .qualityTo:hover {
+    color: rgba(0, 0, 0, 0);
 }
 
 .searchField, .searchField + ul,
@@ -275,6 +277,10 @@ a.warning, a.warning:hover {
     margin-top: 7px;
 }
 
+.fieldValue {
+    width: 55%;
+}
+
 .addFilterBtn::after {
     border: solid #198754;
     border-width: 0 1px 1px 0;
@@ -288,9 +294,18 @@ a.warning, a.warning:hover {
     margin-top: 7px;
 }
 
-.searchFieldUI {
+/* .searchFieldUI {
     border: dashed #fff;
     border-width: 0 0 1px 0;
+} */
+
+.fieldLabel {
+    display: inline-block;
+    padding: 2px 0;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    vertical-align: middle;
+    width: 45%;
 }
 
 .searchbar {
@@ -310,6 +325,7 @@ ul#treeTabs > li {
 .removeFilterAble > span::before {
     position: absolute;
     right: -20px;
+    margin-top: 3px;
     display: inline-block;
     content: "\00d7";
     cursor: pointer;

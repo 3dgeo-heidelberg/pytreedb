@@ -91,7 +91,7 @@
             <div class="row justify-content-center">
                 <div class="col-lg-5 col-md-5 col-sm-12" style="margin-bottom: 4rem;">
                     <div class="row justify-content-start">
-                        <div class="col col-lg-5 col-md-10 col-sm-6" style="margin-bottom: 1rem;">
+                        <div class="col col-lg-4 col-md-10 col-sm-6" style="margin-bottom: 1rem;">
                             <b class="func">Get tree by index</b>
                         </div>
                         <div class="searchbar col col-lg-6 col-md-10 col-sm-6">
@@ -102,26 +102,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-1 col-md-0 col-sm-0" id="verticalSplitter"></div>
                 <div class="col-lg-5 col-md-5 col-sm-12">
                     <div class="row justify-content-start">
-                        <div class="col col-lg-5 col-md-10 col-sm-6" style="margin-bottom: 1rem;">
+                        <div class="col col-lg-4 col-md-10 col-sm-6" style="margin-bottom: 1rem;">
                             <b class="func">Search the DB</b>
                         </div>
-                        <div class="searchbar col-lg-6 col-md-10 col-sm-6" style="position: relative;">
+                        <div class="searchbar col-lg-8 col-md-10 col-sm-6" style="position: relative;">
                             <div class="wrapper paramPair" id="paramPair" style="margin-bottom: .5rem;">
                                 <span onclick="removeSearchFilter(this)"></span>
-                                <div class="dropdown searchFieldUI">
-                                    <a class="btn btn-light dropdown-toggle searchField" role="button" data-bs-toggle="dropdown" aria-expanded="false">Select search field</a>
-                                    <ul class="dropdown-menu" aria-labelledby="searchField">
-                                        <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Species</a></li>
-                                        <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Mode</a></li>
-                                        <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Canopy Condition</a></li>
-                                        <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Quality</a></li>
-                                    </ul>
-                                </div>
                                 <div class="dropdown normalValUI">
-                                    <a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">Please select a field first</a>
+                                    <span class="fieldLabel">Species:</span><a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">---</a>
                                     <ul class="dropdown-menu availableValues" aria-labelledby="fieldValue"></ul>
                                 </div>
                                 <div class="qualityUI">
@@ -148,16 +138,16 @@
                                     </div>
                                     <label class="warning qErr" style="margin-top: 0.05rem;">Error! Lower bound greater than upper bound</label>
                                 </div>
-                                <div class="dropdown addFilter">
-                                    <a class="btn btn-outline-success dropdown-toggle addFilterBtn" href="#" id="filterDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" 
-                                        style="margin-top: 0.5rem; margin-bottom: 1rem; display: block;">Add Filter</a>
-                                    <ul class="dropdown-menu" aria-labelledby="filterDropdown">
-                                        <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Species</a></li>
-                                        <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Mode</a></li>
-                                        <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Canopy Condition</a></li>
-                                        <li><a class="dropdown-item" onclick="searchFieldSelected(this)">Quality</a></li>
-                                    </ul>
-                                </div>
+                            </div>
+                            <div class="dropdown addFilter">
+                                <a class="btn btn-outline-success dropdown-toggle addFilterBtn" href="#" id="filterDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" 
+                                    style="margin-top: 0.5rem; margin-bottom: 1rem; display: block;">Add Filter</a>
+                                <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                                    <li><a class="dropdown-item" onclick="addSearchFilter(this)">Species</a></li>
+                                    <li><a class="dropdown-item" onclick="addSearchFilter(this)">Mode</a></li>
+                                    <li><a class="dropdown-item" onclick="addSearchFilter(this)">Canopy Condition</a></li>
+                                    <li><a class="dropdown-item" onclick="addSearchFilter(this)">Quality</a></li>
+                                </ul>
                             </div>
                             <button type="button" class="btn btn-success float-end" id="searchButton" onclick="searchDB()">
                                 Go

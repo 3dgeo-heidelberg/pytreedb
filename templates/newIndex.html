@@ -108,37 +108,6 @@
                             <b class="func">Search the DB</b>
                         </div>
                         <div class="searchbar col-lg-8 col-md-10 col-sm-6" style="position: relative;">
-                            <div class="wrapper paramPair" id="paramPair" style="margin-bottom: .5rem;">
-                                <span onclick="removeSearchFilter(this)"></span>
-                                <div class="dropdown normalValUI">
-                                    <span class="fieldLabel">Species:</span><a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">---</a>
-                                    <ul class="dropdown-menu availableValues" aria-labelledby="fieldValue"></ul>
-                                </div>
-                                <div class="qualityUI">
-                                    <div class="dropdown" style="display: inline-block; width: 45%;">
-                                        <a class="btn btn-light dropdown-toggle qualityFrom" role="button" data-bs-toggle="dropdown" aria-expanded="false">value</a>
-                                        <ul class="dropdown-menu qVals" aria-labelledby="qualityFrom">
-                                            <li><a class="dropdown-item" onclick="qualityFrom(this)">1</a></li>
-                                            <li><a class="dropdown-item" onclick="qualityFrom(this)">2</a></li>
-                                            <li><a class="dropdown-item" onclick="qualityFrom(this)">3</a></li>
-                                            <li><a class="dropdown-item" onclick="qualityFrom(this)">4</a></li>
-                                            <li><a class="dropdown-item" onclick="qualityFrom(this)">5</a></li>
-                                        </ul>
-                                    </div>
-                                    <span style="display: inline-block; width: 6%;"> to </span>
-                                    <div class="dropdown" style="width: 45%; float: right;">
-                                        <a class="btn btn-light dropdown-toggle qualityTo" role="button" data-bs-toggle="dropdown" aria-expanded="false">value</a>
-                                        <ul class="dropdown-menu qVals" aria-labelledby="qualityTo">
-                                            <li><a class="dropdown-item" onclick="qualityTo(this)">1</a></li>
-                                            <li><a class="dropdown-item" onclick="qualityTo(this)">2</a></li>
-                                            <li><a class="dropdown-item" onclick="qualityTo(this)">3</a></li>
-                                            <li><a class="dropdown-item" onclick="qualityTo(this)">4</a></li>
-                                            <li><a class="dropdown-item" onclick="qualityTo(this)">5</a></li>
-                                        </ul>
-                                    </div>
-                                    <label class="warning qErr" style="margin-top: 0.05rem;">Error! Lower bound greater than upper bound</label>
-                                </div>
-                            </div>
                             <div class="dropdown addFilter">
                                 <a class="btn btn-outline-success dropdown-toggle addFilterBtn" href="#" id="filterDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" 
                                     style="margin-top: 0.5rem; margin-bottom: 1rem; display: block;">Add Filter</a>

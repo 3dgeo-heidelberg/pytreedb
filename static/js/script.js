@@ -291,11 +291,26 @@ savePointClouds = () => {
 }
 
 
-// Add filter (clone search field and field value dropdowns)
+// Add filter
 addSearchFilter = e => {
-    var addFilterCodeSnippet = '<div class="wrapper paramPair removeFilterAble" id="paramPair'+ numFilters++ +'" style="margin-bottom: .5rem"><span onclick="removeSearchFilter(this)"></span><div class="dropdown normalValUI"><span class="fieldLabel">' + e.text + ':</span><a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">Please select a field first</a><ul class="dropdown-menu availableValues" aria-labelledby="fieldValue"></ul></div><div class="qualityUI"><div class="dropdown" style="display: inline-block; width: 45%;"><a class="btn btn-light dropdown-toggle qualityFrom" role="button" data-bs-toggle="dropdown" aria-expanded="false">value</a><ul class="dropdown-menu qVals" aria-labelledby="qualityFrom"><li><a class="dropdown-item" onclick="qualityFrom(this)">1</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">2</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">3</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">4</a></li><li><a class="dropdown-item" onclick="qualityFrom(this)">5</a></li></ul></div><span style="display: inline-block; width: 6%;"> to </span><div class="dropdown" style="width: 45%; float: right;"><a class="btn btn-light dropdown-toggle qualityTo" role="button" data-bs-toggle="dropdown" aria-expanded="false">value</a><ul class="dropdown-menu qVals" aria-labelledby="qualityTo"><li><a class="dropdown-item" onclick="qualityTo(this)">1</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">2</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">3</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">4</a></li><li><a class="dropdown-item" onclick="qualityTo(this)">5</a></li></ul></div><label class="warning qErr" style="margin-top: 0.05rem;">Error! Lower bound greater than upper bound</label></div></div>';
-    $('[id^="paramPair"]:last').after(addFilterCodeSnippet);
-    $('.paramPair').addClass('removeFilterAble');
+    var newFilterID = 'paramPair' + numFilters++;
+    var addFilterCodeSnippet = 
+        '<div class="wrapper paramPair" id='+ newFilterID +' style="margin-bottom: .5rem">' + 
+            '<span onclick="removeSearchFilter(this)"></span>' + 
+            '<div class="dropdown normalValUI">' + 
+                '<span class="fieldLabel">' + e.text + ':</span><a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">---</a>' + 
+                '<ul class="dropdown-menu availableValues" aria-labelledby="fieldValue"></ul>' + 
+            '</div>' + 
+        '</div>';
+    
+    if ($('[id^="paramPair"]').length == 0) {  // If no filter exists yet
+        $('.addFilter:first').before(addFilterCodeSnippet);  // Insert the first filter
+    } else {  // Otherwise insert code after the last filter
+        $('[id^="paramPair"]:last').after(addFilterCodeSnippet).addClass('removeFilterAble');
+    }
+    
+    // Update available values in the dropdown according to the added field filter
+    updateAvailableVals(newFilterID, e.text);
 }
 //Remove filter
 removeSearchFilter = e => {
@@ -308,66 +323,42 @@ removeSearchFilter = e => {
         }
     } 
 }
-// After selecting a field, the available values will be updated in the second dropdown
-searchFieldSelected = e => {
-    var searchFieldEl = e.parentNode.parentNode.previousElementSibling;
-    var fieldValueEl = searchFieldEl.parentNode.nextElementSibling.children[0];
-    var availableValuesEl = fieldValueEl.nextElementSibling;
-    var normalValUIEl = fieldValueEl.parentNode;
-    var qualityUIEl = normalValUIEl.nextElementSibling;
-    var fErrEl = searchFieldEl.nextElementSibling.nextElementSibling;
+// After adding a filter, the available values will be updated in the dropdown
+updateAvailableVals = (newFilterID, field) => {
+    var e = $('#'+ newFilterID);
+    var fieldLabelEl = e.children().get(1).children[0];
+    var availableValuesEl = fieldLabelEl.nextElementSibling.nextElementSibling;
 
-    // Check if the selected field is already given in other filters
-    if (!fieldIsSafe(e.text) && $(searchFieldEl).text() != e.text) {
-        $(searchFieldEl).addClass('warning');
-        $(fErrEl).show();
-        $('#searchButton').prop('disabled', true);
-        return;
-    } else {
-        $(searchFieldEl).removeClass('warning').html(e.text).attr('style', 'color: #000');
-        $(fieldValueEl).html('Choose a value').attr('style', 'color: #aaa');
-        $(availableValuesEl).empty();
-        $(fErrEl).hide();
-        $('#searchButton').prop('disabled', false);
-        switch (e.text) {
-            case "Species":
-                $(normalValUIEl).show();
-                $(qualityUIEl).hide();
-                $.get('/listspecies', data => {
-                    data["species"].sort().forEach(specie => {
-                        $(availableValuesEl).append(
-                            '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + specie + '</a></li>'
-                        );
-                    });
-                })
-                break;
-            case "Mode":
-                $(normalValUIEl).show();
-                $(qualityUIEl).hide(); 
-                var modes = ['TLS', 'ALS', 'ULS'];
-                modes.forEach(mode => {
+    switch (field) {
+        case "Species":
+            $.get('/listspecies', data => {
+                data["species"].sort().forEach(specie => {
                     $(availableValuesEl).append(
-                        '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + mode + '</a></li>'
+                        '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + specie + '</a></li>'
                     );
-                })
-                break;
-            case "Canopy Condition":
-                $(normalValUIEl).show();
-                $(qualityUIEl).hide();
-                var canopy_conditions = ['leaf-on', 'leaf-off'];
-                canopy_conditions.forEach(cond => {
-                    $(availableValuesEl).append(
-                        '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + cond + '</a></li>'
-                    );
-                })
-                break;
-            case "Quality":
-                $(normalValUIEl).hide();
-                $(qualityUIEl).show();
-                break;
-            default:
-                break;
-        }
+                });
+            })
+            break;
+        case "Mode":
+            var modes = ['TLS', 'ALS', 'ULS'];
+            modes.forEach(mode => {
+                $(availableValuesEl).append(
+                    '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + mode + '</a></li>'
+                );
+            })
+            break;
+        case "Canopy Condition":
+            var canopy_conditions = ['leaf-on', 'leaf-off'];
+            canopy_conditions.forEach(cond => {
+                $(availableValuesEl).append(
+                    '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + cond + '</a></li>'
+                );
+            })
+            break;
+        case "Quality":
+            break;
+        default:
+            break;
     }
 }
 // Update dropdown text when users selects a value

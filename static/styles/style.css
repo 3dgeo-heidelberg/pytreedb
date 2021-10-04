@@ -285,6 +285,7 @@ a.warning, a.warning:hover {
     border: solid #198754;
     border-width: 0 1px 1px 0;
     margin-top: 7px;
+    margin-left: .5rem;
 }
 
 .addFilterBtn:hover::after,
@@ -293,11 +294,6 @@ a.warning, a.warning:hover {
     border-width: 0 1px 1px 0;
     margin-top: 7px;
 }
-
-/* .searchFieldUI {
-    border: dashed #fff;
-    border-width: 0 0 1px 0;
-} */
 
 .fieldLabel {
     display: inline-block;

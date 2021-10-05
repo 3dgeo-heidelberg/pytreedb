@@ -295,18 +295,20 @@ savePointClouds = () => {
 addSearchFilter = e => {
     var newFilterID = 'paramPair' + numFilters++;
     var addFilterCodeSnippet = 
-        '<div class="wrapper paramPair removeFilterAble" id='+ newFilterID +' style="margin-bottom: .5rem">' + 
+        '<div class="wrapper paramPair removeFilterAble" id="'+ newFilterID + '">' +
             '<span onclick="removeSearchFilter(this)"></span>' + 
             '<div class="dropdown normalValUI">' + 
                 '<span class="fieldLabel">' + e.text + ':</span><a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">---</a>' + 
                 '<ul class="dropdown-menu availableValues" aria-labelledby="fieldValue"></ul>' + 
             '</div>' + 
         '</div>';
+    // var orOp = '<div class="orOp filterOperand">or</div>';
+    var andOp = '<div class="andOp filterOperand" onClick="toggleOp(this)">and</div>';
     
     if ($('[id^="paramPair"]').length == 0) {  // If no filter exists yet
         $('.addFilter:first').before(addFilterCodeSnippet);  // Insert the first filter
-    } else {  // Otherwise insert code after the last filter
-        $('[id^="paramPair"]:last').after(addFilterCodeSnippet);
+    } else {  // Otherwise insert code after the last filter, and add connecting operand
+        $('[id^="paramPair"]:last').after(addFilterCodeSnippet).after(andOp);
     }
     
     // Update available values in the dropdown according to the added field filter
@@ -314,18 +316,22 @@ addSearchFilter = e => {
 }
 //Remove filter
 removeSearchFilter = e => {
-    // var numFilters = $('.paramPair').length
-    // if (numFilters > 1) {
-        var filterID = e.parentNode.id;
-        $('#' + filterID).remove();
-        // if (numFilters == 2) {
-        //     $('.paramPair').removeClass('removeFilterAble');
-        // }
-    // } 
+    var numFilters = $('.paramPair').length;
+    var filterID = e.parentNode.id;
+    if (numFilters > 1) {
+        if ($('#' + filterID).prev().length == 0) {
+            $('#' + filterID).next().remove();
+        } else {
+            $('#' + filterID).prev().remove();
+        }
+    }
+    $('#' + filterID).remove();
+
 }
 // After adding a filter, the available values will be updated in the dropdown
 updateAvailableVals = (newFilterID, field) => {
-    var e = $('#'+ newFilterID);
+    console.log(newFilterID);
+    var e = $('#' + newFilterID);
     var fieldLabelEl = e.children().get(1).children[0];
     var availableValuesEl = fieldLabelEl.nextElementSibling.nextElementSibling;
 
@@ -361,10 +367,24 @@ updateAvailableVals = (newFilterID, field) => {
             break;
     }
 }
+// Toggle and/or operands
+toggleOp = e => {
+    // Only and operand is allowed to combine multiple species filters 
+    if ($(e).prev().text().startsWith('Specie') && $(e).next().text().startsWith('Specie')) {
+        return;
+    }
+    if ($(e).text() === 'and') {
+        $(e).text('or');
+        $(e).removeClass('andOp').addClass('orOp');
+    } else {
+        $(e).text('and');
+        $(e).removeClass('orOp').addClass('andOp');
+    }
+}
 // Update dropdown text when users selects a value
 fieldValueSelected = e => {
     var fieldValueEl = e.parentNode.parentNode.previousElementSibling;
-    $(fieldValueEl).html(e.text).attr('style', 'color: #000');
+    $(fieldValueEl).html(e.text).attr('style', 'color: #212529');
 }
 qualityFrom = e => {
     var qualityFromEl = e.parentNode.parentNode.previousElementSibling;
@@ -396,16 +416,16 @@ checkQBounds = (from, to) => {
     }
 }
 // Check if the selected field in additional filter is already given 
-fieldIsSafe = (field) => {
-    var isSafe = true;
-    $('.searchField').each((index, e) => {
-        if ($(e).text() == field) {
-            isSafe = !isSafe
-            return false;
-        }
-    })
-    return isSafe;
-}
+// fieldIsSafe = (field) => {
+//     var isSafe = true;
+//     $('.searchField').each((index, e) => {
+//         if ($(e).text() == field) {
+//             isSafe = !isSafe
+//             return false;
+//         }
+//     })
+//     return isSafe;
+// }
 
 
 // Toggle shown (active) tree data

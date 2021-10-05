@@ -297,15 +297,39 @@ a.warning, a.warning:hover {
 
 .fieldLabel {
     display: inline-block;
-    padding: 2px 0;
+    padding: 2px 0 2px .5rem;
     border: 1px solid transparent;
     border-radius: .25rem;
     vertical-align: middle;
     width: 45%;
+    background-color: #f8f9fa;
+    border-color: #f8f9fa;
 }
 
 .searchbar {
     min-width: 225px;
+}
+
+.filterOperand {
+    text-align: center;
+    padding: .05rem;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color .15s ease-in-out;
+}
+
+.filterOperand:hover {
+    background-color: #9cb9ac;
+}
+
+.orOp {
+    /* background-color: #94c4a2; */
+    background-color: #b4cac0;
+}
+
+.andOp {
+    /* background-color: #198754; */
+    background-color: #b4cac0;
 }
 
 ul.availableValues {

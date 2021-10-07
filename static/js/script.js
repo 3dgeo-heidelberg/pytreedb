@@ -293,12 +293,13 @@ savePointClouds = () => {
 
 // Add filter
 addSearchFilter = e => {
+    var field = e.text;
     var newFilterID = 'paramPair' + numFilters++;
     var addFilterCodeSnippet = 
         '<div class="wrapper paramPair removeFilterAble" id="'+ newFilterID + '">' +
             '<span onclick="removeSearchFilter(this)"></span>' + 
             '<div class="dropdown normalValUI">' + 
-                '<span class="fieldLabel">' + e.text + ':</span><a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">---</a>' + 
+                '<span class="fieldLabel ' + field + '">' + field + ':</span><a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">---</a>' + 
                 '<ul class="dropdown-menu availableValues" aria-labelledby="fieldValue"></ul>' + 
             '</div>' + 
         '</div>';
@@ -307,12 +308,15 @@ addSearchFilter = e => {
     
     if ($('[id^="paramPair"]').length == 0) {  // If no filter exists yet
         $('.addFilter:first').before(addFilterCodeSnippet);  // Insert the first filter
+    } else if (field === 'Specie' && $('.fieldLabel').text().includes('Specie')) {  
+        // Add new species filter right below the previous ones (only 'and' allowed)
+        $('.fieldLabel.Specie:last').parent().parent().after(addFilterCodeSnippet).after(andOp);
     } else {  // Otherwise insert code after the last filter, and add connecting operand
         $('[id^="paramPair"]:last').after(addFilterCodeSnippet).after(andOp);
     }
     
     // Update available values in the dropdown according to the added field filter
-    updateAvailableVals(newFilterID, e.text);
+    updateAvailableVals(newFilterID, field);
 }
 //Remove filter
 removeSearchFilter = e => {

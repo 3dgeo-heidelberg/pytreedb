@@ -303,14 +303,14 @@ addSearchFilter = e => {
                 '<ul class="dropdown-menu availableValues" aria-labelledby="fieldValue"></ul>' + 
             '</div>' + 
         '</div>';
-    // var orOp = '<div class="orOp filterOperand">or</div>';
+    var orOp = '<div class="orOp filterOperand" onClick="toggleOp(this)">or</div>';
     var andOp = '<div class="andOp filterOperand" onClick="toggleOp(this)">and</div>';
     
     if ($('[id^="paramPair"]').length == 0) {  // If no filter exists yet
         $('.addFilter:first').before(addFilterCodeSnippet);  // Insert the first filter
     } else if (field === 'Specie' && $('.fieldLabel').text().includes('Specie')) {  
-        // Add new species filter right below the previous ones (only 'and' allowed)
-        $('.fieldLabel.Specie:last').parent().parent().after(addFilterCodeSnippet).after(andOp);
+        // Add new species filter right below the previous ones (only 'or' allowed)
+        $('.fieldLabel.Specie:last').parent().parent().after(addFilterCodeSnippet).after(orOp);
     } else {  // Otherwise insert code after the last filter, and add connecting operand
         $('[id^="paramPair"]:last').after(addFilterCodeSnippet).after(andOp);
     }
@@ -334,7 +334,6 @@ removeSearchFilter = e => {
 }
 // After adding a filter, the available values will be updated in the dropdown
 updateAvailableVals = (newFilterID, field) => {
-    console.log(newFilterID);
     var e = $('#' + newFilterID);
     var fieldLabelEl = e.children().get(1).children[0];
     var availableValuesEl = fieldLabelEl.nextElementSibling.nextElementSibling;
@@ -373,7 +372,7 @@ updateAvailableVals = (newFilterID, field) => {
 }
 // Toggle and/or operands
 toggleOp = e => {
-    // Only and operand is allowed to combine multiple species filters 
+    // Only or operand is allowed to combine multiple species filters 
     if ($(e).prev().text().startsWith('Specie') && $(e).next().text().startsWith('Specie')) {
         return;
     }

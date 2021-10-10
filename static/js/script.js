@@ -308,9 +308,9 @@ addSearchFilter = e => {
     
     if ($('[id^="paramPair"]').length == 0) {  // If no filter exists yet
         $('.addFilter:first').before(addFilterCodeSnippet);  // Insert the first filter
-    } else if (field === 'Specie' && $('.fieldLabel').text().includes('Specie')) {  
+    // } else if (field === 'Specie' && $('.fieldLabel').text().includes('Specie')) {  
         // Add new species filter right below the previous ones (only 'or' allowed)
-        $('.fieldLabel.Specie:last').parent().parent().after(addFilterCodeSnippet).after(orOp);
+        // $('.fieldLabel.Specie:last').parent().parent().after(addFilterCodeSnippet).after(orOp);
     } else {  // Otherwise insert code after the last filter, and add connecting operand
         $('[id^="paramPair"]:last').after(addFilterCodeSnippet).after(andOp);
     }
@@ -339,7 +339,7 @@ updateAvailableVals = (newFilterID, field) => {
     var availableValuesEl = fieldLabelEl.nextElementSibling.nextElementSibling;
 
     switch (field) {
-        case "Species":
+        case "Specie":
             $.get('/listspecies', data => {
                 data["species"].sort().forEach(specie => {
                     $(availableValuesEl).append(

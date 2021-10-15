@@ -56,7 +56,7 @@ def getSharedProperties():
     return {'properties': mydb.get_shared_properties()}
 
 @app.route('/trees/<fields>/<values>')
-def query(fields, values):
+def naiveQuery(fields, values):
     fields = fields.split(',')
     values = values.split(',')
     res = []
@@ -75,6 +75,27 @@ def query(fields, values):
             res.append(mydb.query(fields[i], values[j]))
             j += 1
     return {'query': mydb.inner_join(res)}
+
+@app.route('/search', methods=['POST'])
+def query():
+    json = request.get_json(force=True)
+    res = andQuery(json)
+    return {'query': res}
+
+def andQuery(jsonObj):
+    res = []
+    for key, value in jsonObj.items():
+        if key == 'or':
+            res.append(orQuery(jsonObj['or'])) # recursively call or-query fct.
+        else:
+            res.append(mydb.query(key, value))
+    return mydb.inner_join(res)
+
+def orQuery(jsonArr):
+    res = []
+    for obj in jsonArr:
+        res.append(andQuery(obj)) # recursively call and-query fct.
+    return mydb.outer_join(res)
 
 @app.route('/getitem/<index>')
 def getItem(index):

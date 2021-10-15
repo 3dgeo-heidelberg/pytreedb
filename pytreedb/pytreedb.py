@@ -274,6 +274,15 @@ class PyTreeDB:
         for i in range(len(t_lists) - 1):
             res = [item for item in res if item in t_lists[i+1]]
         return res
+    
+    def outer_join(self, t_lists):
+        """Return trees present in either of the lists"""
+        if len(t_lists) < 2:
+            return t_lists[0]
+        res = t_lists[0]
+        for i in range(len(t_lists) - 1):
+            res += [item for item in t_lists[i + 1] if item not in res]
+        return res
 
     def join(self, results, operator='and'):
         """Returns list of tree ids: Method to join list of resulting lists of trees(dict) using their 'id' by applying a logical operator on those sets"""

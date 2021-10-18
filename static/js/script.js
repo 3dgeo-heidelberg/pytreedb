@@ -85,74 +85,100 @@ getItem = () => {
 
 // Query trees via properties and value
 searchDB = () => {
-    // Collect fields and values
-    const [properties, values] = collectFilterParams();
-
-    // Do GET
-    if (properties != '' && values != '') {
-        $.get('/trees/' + properties + '/' + values, data => {
-            currReq.url = '/trees/' + properties + '/' + values;
-            currReq.properties = properties;
-            currReq.values = values;
-            var trees = data['query'];
-            var num;
-            // Clear previous results
-            $('#jsonViewerContainer').empty(); 
-            // Show number of results
-            $('#numRes').html(trees.length);
-            // Show json code snippets if trees found
-            if (trees.length != 0) {
-                $('#numResContainer').show();
-                $('#saveAllButton').show();
-                $('#savePointCButton').show();
-                $('#saveCSVButton').show();
-                // Update for output
-                jsonOutput = JSON.stringify(trees[0]);
-                // Show tabs if results > 1
-                if (trees.length >= 3) {
-                    num = 3;
-                    $('#previewLabel').attr('style', 'display: inline;');
-                    $('.treeTab').removeClass('active');
-                } else {
-                    num = trees.length;
-                    $('#previewLabel').hide();
-                    if (num == 1) {
-                        $('#treeTab1').hide();
-                    }
-                    $('#treeTab2').hide();
-                }
-                // Show json data of maximal 3 trees
-                for (let i = 0; i < num; i++) {
-                    // Show tabs
-                    $('#treeTabs').css('display', 'flex');
-                    $('#treeTab' + i).show();
-                    // Load data into html
-                    $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + i + '"></pre>');
-                    $('#tree-' + i).jsonViewer(trees[i]);
-                    // Show only one code block
-                    if (i > 0) {
-                        $('#tree-' + i).hide();
-                    }
-                }
-                $('#treeTab0').children().addClass('active');
-
-                // Draw map
-                drawMap(trees);
+    var data = {
+        "or": [
+            {
+                "species": "Acer Campestre"
+            },
+            {
+                "species": "Betula pendula",
+                "mode": "TLS",
+                "Canopy Condition": "leaf-on"
             }
-        });
-        $('#jsonSnippetSection').show();
-        $('#jsonViewerContainer').css('padding-bottom', '85px');
-        $('html,body').animate({
-            scrollTop: $('#jsonSnippetSection').offset().top - 62},
-            'slow');
+        ] 
+    };
+    var data2 = {
+        "mode": "TLS",
+        "canopy Condition": "leaf-on",
+        "or": [
+            {
+                "species": "Acer Campestre"
+            },
+            {
+                "species": "Betula pendula"
+            }
+        ]
+    };
+    console.log(JSON.stringify(data));
+    $.post('/search', JSON.stringify(data));
+    // // Collect fields and values
+    // const [properties, values] = collectFilterParams();
+
+    // // Do GET
+    // if (properties != '' && values != '') {
+    //     $.get('/trees/' + properties + '/' + values, data => {
+    //         currReq.url = '/trees/' + properties + '/' + values;
+    //         currReq.properties = properties;
+    //         currReq.values = values;
+    //         var trees = data['query'];
+    //         var num;
+    //         // Clear previous results
+    //         $('#jsonViewerContainer').empty(); 
+    //         // Show number of results
+    //         $('#numRes').html(trees.length);
+    //         // Show json code snippets if trees found
+    //         if (trees.length != 0) {
+    //             $('#numResContainer').show();
+    //             $('#saveAllButton').show();
+    //             $('#savePointCButton').show();
+    //             $('#saveCSVButton').show();
+    //             // Update for output
+    //             jsonOutput = JSON.stringify(trees[0]);
+    //             // Show tabs if results > 1
+    //             if (trees.length >= 3) {
+    //                 num = 3;
+    //                 $('#previewLabel').attr('style', 'display: inline;');
+    //                 $('.treeTab').removeClass('active');
+    //             } else {
+    //                 num = trees.length;
+    //                 $('#previewLabel').hide();
+    //                 if (num == 1) {
+    //                     $('#treeTab1').hide();
+    //                 }
+    //                 $('#treeTab2').hide();
+    //             }
+    //             // Show json data of maximal 3 trees
+    //             for (let i = 0; i < num; i++) {
+    //                 // Show tabs
+    //                 $('#treeTabs').css('display', 'flex');
+    //                 $('#treeTab' + i).show();
+    //                 // Load data into html
+    //                 $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + i + '"></pre>');
+    //                 $('#tree-' + i).jsonViewer(trees[i]);
+    //                 // Show only one code block
+    //                 if (i > 0) {
+    //                     $('#tree-' + i).hide();
+    //                 }
+    //             }
+    //             $('#treeTab0').children().addClass('active');
+
+    //             // Draw map
+    //             drawMap(trees);
+    //         }
+    //     });
+    //     $('#jsonSnippetSection').show();
+    //     $('#jsonViewerContainer').css('padding-bottom', '85px');
+    //     $('html,body').animate({
+    //         scrollTop: $('#jsonSnippetSection').offset().top - 62},
+    //         'slow');
         
-        // dummy partial implementation Point Clouds download
-        if (values.includes('Pinus sylvestris')) {
-            $('#savePointCButton').removeAttr('disabled');
-        } else {
-            $('#savePointCButton').attr('disabled', 'disabled');
-        }
-    }
+    //     // dummy partial implementation Point Clouds download
+    //     if (values.includes('Pinus sylvestris')) {
+    //         $('#savePointCButton').removeAttr('disabled');
+    //     } else {
+    //         $('#savePointCButton').attr('disabled', 'disabled');
+    //     }
+    // }
 }
 // Collect fields and values
 collectFilterParams = () => {
@@ -295,24 +321,27 @@ savePointClouds = () => {
 addSearchFilter = e => {
     var field = e.text;
     var newFilterID = 'paramPair' + numFilters++;
+    var operand = '';
+    var andOp = '<span class="andOp filterOperand" onClick="toggleOp(this)">AND</span>';
     var addFilterCodeSnippet = 
-        '<div class="wrapper paramPair removeFilterAble" id="'+ newFilterID + '">' +
-            '<span onclick="removeSearchFilter(this)"></span>' + 
-            '<div class="dropdown normalValUI">' + 
-                '<span class="fieldLabel ' + field + '">' + field + ':</span><a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">---</a>' + 
+        '<div class="wrapper paramPair removeFilterAble" id="'+ newFilterID + '" style="margin-bottom: .25rem; width: 100%">' +
+            '<span onclick="removeSearchFilter(this)"></span>' + andOp +
+            '<div class="dropdown normalValUI" style="display: inline-block; width: calc(100% - 4rem);">' + 
+                '<span class="fieldLabel ' + field + '">' + field + '</span><a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">---</a>' + 
                 '<ul class="dropdown-menu availableValues" aria-labelledby="fieldValue"></ul>' + 
             '</div>' + 
         '</div>';
-    var orOp = '<div class="orOp filterOperand" onClick="toggleOp(this)">or</div>';
-    var andOp = '<div class="andOp filterOperand" onClick="toggleOp(this)">and</div>';
+    var orOp = '<div class="orOp filterOperand" onClick="toggleOp(this)">OR</div>';
     
     if ($('[id^="paramPair"]').length == 0) {  // If no filter exists yet
         $('.addFilter:first').before(addFilterCodeSnippet);  // Insert the first filter
+        $('.filterOperand:first').remove();
+        $('.dropdown.normalValUI').css('width', '100%');
     // } else if (field === 'Specie' && $('.fieldLabel').text().includes('Specie')) {  
         // Add new species filter right below the previous ones (only 'or' allowed)
         // $('.fieldLabel.Specie:last').parent().parent().after(addFilterCodeSnippet).after(orOp);
     } else {  // Otherwise insert code after the last filter, and add connecting operand
-        $('[id^="paramPair"]:last').after(addFilterCodeSnippet).after(andOp);
+        $('[id^="paramPair"]:last').after(addFilterCodeSnippet);
     }
     
     // Update available values in the dropdown according to the added field filter
@@ -335,7 +364,7 @@ removeSearchFilter = e => {
 // After adding a filter, the available values will be updated in the dropdown
 updateAvailableVals = (newFilterID, field) => {
     var e = $('#' + newFilterID);
-    var fieldLabelEl = e.children().get(1).children[0];
+    var fieldLabelEl = e.children().last().children()[0];
     var availableValuesEl = fieldLabelEl.nextElementSibling.nextElementSibling;
 
     switch (field) {
@@ -376,11 +405,11 @@ toggleOp = e => {
     if ($(e).prev().text().startsWith('Specie') && $(e).next().text().startsWith('Specie')) {
         return;
     }
-    if ($(e).text() === 'and') {
-        $(e).text('or');
+    if ($(e).text() === 'AND') {
+        $(e).text('OR');
         $(e).removeClass('andOp').addClass('orOp');
     } else {
-        $(e).text('and');
+        $(e).text('AND');
         $(e).removeClass('orOp').addClass('andOp');
     }
 }

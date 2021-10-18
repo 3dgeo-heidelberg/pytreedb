@@ -4,6 +4,10 @@ html, body
     height: 100%;
 }
 
+body {
+    background-color: #F8F9FA;
+}
+
 footer {
     margin-top: 70px;
     background-color: #000;
@@ -279,6 +283,7 @@ a.warning, a.warning:hover {
 
 .fieldValue {
     width: 55%;
+    background-color: #fff;
 }
 
 .addFilterBtn::after {
@@ -297,13 +302,12 @@ a.warning, a.warning:hover {
 
 .fieldLabel {
     display: inline-block;
-    padding: 2px 0 2px .5rem;
+    padding: 2px .5rem;
     border: 1px solid transparent;
-    border-radius: .25rem;
     vertical-align: middle;
-    width: 45%;
-    background-color: #f8f9fa;
-    border-color: #f8f9fa;
+    width: 35%;
+    background-color: #F5F5F5;
+    text-align: center;
 }
 
 .searchbar {
@@ -311,25 +315,22 @@ a.warning, a.warning:hover {
 }
 
 .filterOperand {
+    display: inline-block;
     text-align: center;
-    padding: .05rem;
     color: #fff;
     cursor: pointer;
     transition: background-color .15s ease-in-out;
+    width: 4rem;
+    padding: 2px .5rem;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    border-top-left-radius: .75rem;
+    border-bottom-left-radius: .75rem;
+    background-color: #36B434;
 }
 
 .filterOperand:hover {
-    background-color: #9cb9ac;
-}
-
-.orOp {
-    /* background-color: #94c4a2; */
-    background-color: #b4cac0;
-}
-
-.andOp {
-    /* background-color: #198754; */
-    background-color: #b4cac0;
+    background-color: #29A428;
 }
 
 ul.availableValues {
@@ -342,7 +343,7 @@ ul#treeTabs > li {
     cursor: pointer;
 }
 
-.removeFilterAble > span::before {
+.removeFilterAble > span:first-child:before {
     position: absolute;
     right: -20px;
     margin-top: 3px;

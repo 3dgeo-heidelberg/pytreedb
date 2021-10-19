@@ -282,7 +282,7 @@ a.warning, a.warning:hover {
 }
 
 .fieldValue {
-    width: 55%;
+    width: 65%;
     background-color: #fff;
 }
 
@@ -326,11 +326,11 @@ a.warning, a.warning:hover {
     border: 1px solid transparent;
     border-top-left-radius: .75rem;
     border-bottom-left-radius: .75rem;
-    background-color: #36B434;
+    background-color: #29A428;
 }
 
 .filterOperand:hover {
-    background-color: #29A428;
+    background-color: #198519;
 }
 
 ul.availableValues {
@@ -343,10 +343,10 @@ ul#treeTabs > li {
     cursor: pointer;
 }
 
-.removeFilterAble > span:first-child:before {
+.crossBtn::before {
     position: absolute;
-    right: -20px;
-    margin-top: 3px;
+    right: -3rem;
+    margin-top: .15rem;
     display: inline-block;
     content: "\00d7";
     cursor: pointer;
@@ -376,6 +376,31 @@ img.grayout {
     filter: grayscale(100%);
 }
 
+.parentheseArrow::after {
+    width: 0;
+    height: 0;
+    content: '';
+    position: absolute;
+    border-top: .85rem solid transparent;
+    border-bottom: .85rem solid transparent;
+    margin-top: .15rem;
+    cursor: pointer;
+}
+
+.leftArrow::after {
+    border-right: .85rem solid #E5E5E5;
+    left: -1rem;
+}
+
+.rightArrow::after {
+    border-left: .85rem solid #E5E5E5;
+    right: -1rem;
+}
+
+.paramPair {
+    margin-bottom: .35rem;
+    width: 100%;
+}
 
 
 /* lg */

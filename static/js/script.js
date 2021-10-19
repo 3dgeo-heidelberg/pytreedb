@@ -324,12 +324,14 @@ addSearchFilter = e => {
     var operand = '';
     var andOp = '<span class="andOp filterOperand" onClick="toggleOp(this)">AND</span>';
     var addFilterCodeSnippet = 
-        '<div class="wrapper paramPair removeFilterAble" id="'+ newFilterID + '" style="margin-bottom: .25rem; width: 100%">' +
-            '<span onclick="removeSearchFilter(this)"></span>' + andOp +
+        '<div class="wrapper paramPair removeFilterAble" id="'+ newFilterID + '" >' +
+            '<span class="crossBtn" onclick="removeSearchFilter(this)"></span>' + andOp +
             '<div class="dropdown normalValUI" style="display: inline-block; width: calc(100% - 4rem);">' + 
                 '<span class="fieldLabel ' + field + '">' + field + '</span><a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">---</a>' + 
                 '<ul class="dropdown-menu availableValues" aria-labelledby="fieldValue"></ul>' + 
             '</div>' + 
+            '<span class="leftArrow parentheseArrow"></span>' +
+            '<span class="rightArrow parentheseArrow"></span>' + 
         '</div>';
     var orOp = '<div class="orOp filterOperand" onClick="toggleOp(this)">OR</div>';
     

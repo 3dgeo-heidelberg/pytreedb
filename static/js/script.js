@@ -337,9 +337,6 @@ addSearchFilter = e => {
         $('.addFilter:first').before(addFilterCodeSnippet);  // Insert the first filter
         $('.filterOperand:first').remove();
         $('.dropdown.normalValUI').css('width', '100%');
-    // } else if (field === 'Specie' && $('.fieldLabel').text().includes('Specie')) {  
-        // Add new species filter right below the previous ones (only 'or' allowed)
-        // $('.fieldLabel.Specie:last').parent().parent().after(addFilterCodeSnippet).after(orOp);
     } else {  // Otherwise insert code after the last filter, and add connecting operand
         $('[id^="paramPair"]:last').after(addFilterCodeSnippet);
     }
@@ -350,16 +347,14 @@ addSearchFilter = e => {
 //Remove filter
 removeSearchFilter = e => {
     var numFilters = $('.paramPair').length;
-    var filterID = e.parentNode.id;
-    if (numFilters > 1) {
-        if ($('#' + filterID).prev().length == 0) {
-            $('#' + filterID).next().remove();
-        } else {
-            $('#' + filterID).prev().remove();
-        }
-    }
-    $('#' + filterID).remove();
-
+    var rFilter = $('#' + e.parentNode.id)
+    var nFilter = rFilter.next()
+    rFilter.remove();
+    // If the first filter is removed, the second becomes first, change style
+    if (nFilter.prev().length == 0) {
+        $('.filterOperand:first').remove();
+        $('.paramPair:first').children('.dropdown').css('width', '100%');
+    } 
 }
 // After adding a filter, the available values will be updated in the dropdown
 updateAvailableVals = (newFilterID, field) => {

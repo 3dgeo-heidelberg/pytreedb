@@ -412,6 +412,29 @@ fieldValueSelected = e => {
     var fieldValueEl = e.parentNode.parentNode.previousElementSibling;
     $(fieldValueEl).html(e.text).attr('style', 'color: #212529');
 }
+// Move a single filter right (Add brackets)
+moveLeft = e => {
+    var classList = e.parentNode.classList;
+    var classList = e.parentNode.classList;
+    if (classList.contains('bracket-3')) {
+        classList.remove('bracket-3');
+    } else if (classList.contains('bracket-2')) {
+        classList.remove('bracket-2');
+    } else if (classList.contains('bracket-1')) {
+        classList.remove('bracket-1');
+    }
+}
+// Move a single filter left (Delete brackets)
+moveRight = e => {
+    var classList = e.parentNode.classList;
+    if (!classList.contains('bracket-1')) {
+        classList.add('bracket-1');
+    } else if (!classList.contains('bracket-2')) {
+        classList.add('bracket-2');
+    } else if (!classList.contains('bracket-3')) {
+        classList.add('bracket-3');
+    }
+}
 qualityFrom = e => {
     var qualityFromEl = e.parentNode.parentNode.previousElementSibling;
     var qualityToEl = qualityFromEl.parentNode.nextElementSibling.nextElementSibling.children[0];

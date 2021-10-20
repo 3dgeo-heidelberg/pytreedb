@@ -358,7 +358,7 @@ removeSearchFilter = e => {
 // After adding a filter, the available values will be updated in the dropdown
 updateAvailableVals = (newFilterID, field) => {
     var e = $('#' + newFilterID);
-    var fieldLabelEl = e.children().last().children()[0];
+    var fieldLabelEl = e.children().eq(-3).children()[0];
     var availableValuesEl = fieldLabelEl.nextElementSibling.nextElementSibling;
 
     switch (field) {

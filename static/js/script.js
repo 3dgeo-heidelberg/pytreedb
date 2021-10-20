@@ -189,7 +189,7 @@ collectFilterParams = () => {
         var val = $(e.parentNode.nextElementSibling.children[0]).text();
         // Check emptiness
         if (field != 'Select search field') {
-                if (field == 'Canopy Condition') {
+                if (field == 'Canopy') {
                     properties += 'canopy_condition,';
                     values += val + ',';
                 } else if (field == 'Quality') {
@@ -379,7 +379,7 @@ updateAvailableVals = (newFilterID, field) => {
                 );
             })
             break;
-        case "Canopy Condition":
+        case "Canopy":
             var canopy_conditions = ['leaf-on', 'leaf-off'];
             canopy_conditions.forEach(cond => {
                 $(availableValuesEl).append(

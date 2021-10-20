@@ -319,7 +319,6 @@ a.warning, a.warning:hover {
     text-align: center;
     color: #fff;
     cursor: pointer;
-    transition: background-color .15s ease-in-out;
     width: 4rem;
     padding: 2px .5rem;
     vertical-align: middle;
@@ -331,6 +330,21 @@ a.warning, a.warning:hover {
 
 .filterOperand:hover {
     background-color: #198519;
+}
+
+.firstFilter {
+    background-color: #E5E5E5;
+    color: #E5E5E5;
+}
+
+.firstFilter:hover {
+    background-color: #E5E5E5 !important;
+    color: #E5E5E5;
+    cursor: default;
+}
+
+.andOp, .orOp {
+    transition: background-color .15s ease-in-out;
 }
 
 ul.availableValues {

@@ -335,8 +335,7 @@ addSearchFilter = e => {
     
     if ($('[id^="paramPair"]').length == 0) {  // If no filter exists yet
         $('.addFilter:first').before(addFilterCodeSnippet);  // Insert the first filter
-        $('.filterOperand:first').remove();
-        $('.dropdown.normalValUI').css('width', '100%');
+        $('.filterOperand:first').text('.').removeClass('andOp').removeClass('orOp').addClass('firstFilter');
     } else {  // Otherwise insert code after the last filter, and add connecting operand
         $('[id^="paramPair"]:last').after(addFilterCodeSnippet);
     }
@@ -351,8 +350,8 @@ removeSearchFilter = e => {
     rFilter.remove();
     // If the first filter is removed, the second becomes first, change style
     if (nFilter.prev().length == 0) {
-        $('.filterOperand:first').remove();
-        $('.paramPair:first').children('.dropdown').css('width', '100%');
+        $('.filterOperand:first').text('.').removeClass('andOp').removeClass('orOp').addClass('firstFilter');
+        // $('.paramPair:first').children('.dropdown').css('width', '100%');
     } 
 }
 // After adding a filter, the available values will be updated in the dropdown

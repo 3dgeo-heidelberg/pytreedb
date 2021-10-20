@@ -411,14 +411,6 @@ img.grayout {
     }  
 }
 
-/* md-sm */
-@media (max-width: 992px) {
-    #verticalSplitter {
-        width: 0;
-    }
-}
-
-
 
 .moveWelcomeLeft {
     animation: moveWelcomeLeft 1.0s 1 forwards;

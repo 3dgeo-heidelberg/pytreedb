@@ -321,7 +321,6 @@ savePointClouds = () => {
 addSearchFilter = e => {
     var field = e.text;
     var newFilterID = 'paramPair' + numFilters++;
-    var operand = '';
     var andOp = '<span class="andOp filterOperand" onClick="toggleOp(this)">AND</span>';
     var addFilterCodeSnippet = 
         '<div class="wrapper paramPair removeFilterAble" id="'+ newFilterID + '" >' +
@@ -330,10 +329,9 @@ addSearchFilter = e => {
                 '<span class="fieldLabel ' + field + '">' + field + '</span><a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">---</a>' + 
                 '<ul class="dropdown-menu availableValues" aria-labelledby="fieldValue"></ul>' + 
             '</div>' + 
-            '<span class="leftArrow parentheseArrow"></span>' +
-            '<span class="rightArrow parentheseArrow"></span>' + 
+            '<span class="leftArrow parentheseArrow" onclick="moveLeft(this)"></span>' +
+            '<span class="rightArrow parentheseArrow" onclick="moveRight(this)"></span>' + 
         '</div>';
-    var orOp = '<div class="orOp filterOperand" onClick="toggleOp(this)">OR</div>';
     
     if ($('[id^="paramPair"]').length == 0) {  // If no filter exists yet
         $('.addFilter:first').before(addFilterCodeSnippet);  // Insert the first filter
@@ -348,7 +346,6 @@ addSearchFilter = e => {
 }
 //Remove filter
 removeSearchFilter = e => {
-    var numFilters = $('.paramPair').length;
     var rFilter = $('#' + e.parentNode.id)
     var nFilter = rFilter.next()
     rFilter.remove();

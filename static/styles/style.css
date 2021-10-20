@@ -311,7 +311,7 @@ a.warning, a.warning:hover {
 }
 
 .searchbar {
-    min-width: 225px;
+    min-width: 11.5rem;
 }
 
 .filterOperand {
@@ -399,7 +399,7 @@ img.grayout {
 
 .paramPair {
     margin-bottom: .35rem;
-    width: 100%;
+    width: 80%;
 }
 
 

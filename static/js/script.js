@@ -85,32 +85,87 @@ getItem = () => {
 
 // Query trees via properties and value
 searchDB = () => {
-    var data = {
-        "or": [
-            {
-                "species": "Acer Campestre"
-            },
-            {
-                "species": "Betula pendula",
-                "mode": "TLS",
-                "Canopy Condition": "leaf-on"
+    // ======================== dummy ==============
+    // var data = {
+    //     "or": [
+    //         {
+    //             "species": "Acer Campestre"
+    //         },
+    //         {
+    //             "species": "Betula pendula",
+    //             "mode": "TLS",
+    //             "Canopy Condition": "leaf-on"
+    //         }
+    //     ] 
+    // };
+    // var data2 = {
+    //     "mode": "TLS",
+    //     "canopy Condition": "leaf-on",
+    //     "or": [
+    //         {
+    //             "species": "Acer Campestre"
+    //         },
+    //         {
+    //             "species": "Betula pendula"
+    //         }
+    //     ]
+    // };
+    // console.log(JSON.stringify(data));
+    // $.post('/search', JSON.stringify(data));
+    // =============================================
+
+    // Stores the outer most layer 
+    // e.g. jsonObjs = [{'specie':'abies'}, {'mode':'tls'}]
+    var jsonObjs = [];
+    var nthFilter = 0;
+    var nthOr = 0;
+    $('.paramPair').each((index, e) => {
+        var op = $(e).find('.filterOperand').text();
+        var label = $(e).find('.fieldLabel').text();
+        var value = $(e).find('.fieldValue').text();
+        var classlists = e.classList;
+        
+        var obj = {};
+        // (without brackets right now)
+        if (nthFilter == 0) {
+            obj[label] = value;
+            jsonObjs.push(obj);
+            nthFilter++;
+        } else if (op == 'OR') {
+            let hasPrevOr, key;
+            let lastobj = jsonObjs[jsonObjs.length - 1];
+            // check if the last obj of jsonObjs is OR array
+            for (key in lastobj) {
+                if (lastobj.hasOwnProperty(key) && /or*/.test(key)) {
+                    hasPrevOr = true;
+                }
             }
-        ] 
-    };
-    var data2 = {
-        "mode": "TLS",
-        "canopy Condition": "leaf-on",
-        "or": [
-            {
-                "species": "Acer Campestre"
-            },
-            {
-                "species": "Betula pendula"
+            if (hasPrevOr) {  // directly add to the OR array
+                obj[label] = value;
+                lastobj[key].push(obj);
+            } else {
+                let orArr = [];  // create a new OR array
+                obj[label] = value;
+                orArr.push(obj);  // push the current filter to array
+                orArr.push(lastobj);  // push the prev filter to array
+                jsonObjs.pop();  // remove the prev filter from jsonObjs
+                let orObj = {};
+                orObj['or' + nthOr] = orArr;
+                jsonObjs.push(orObj);
+                nthOr++;
             }
-        ]
-    };
-    console.log(JSON.stringify(data));
-    $.post('/search', JSON.stringify(data));
+        }
+    });
+    
+    // Store jsonObjs into one json:
+    // e.g. jsonOut = {'specie':'abies', 'mode':'tls'}
+    var jsonOut = {};
+    jsonObjs.forEach(obj => {
+        Object.keys(obj).forEach(key => jsonOut[key] = obj[key]);
+    })
+    
+    console.log(jsonOut);
+
     // // Collect fields and values
     // const [properties, values] = collectFilterParams();
 
@@ -335,6 +390,8 @@ addSearchFilter = e => {
     
     if ($('[id^="paramPair"]').length == 0) {  // If no filter exists yet
         $('.addFilter:first').before(addFilterCodeSnippet);  // Insert the first filter
+        // $('.filterOperand:first').remove();
+        // $('.dropdown.normalValUI').css('width', '100%');
         $('.filterOperand:first').text('.').removeClass('andOp').removeClass('orOp').addClass('firstFilter');
     } else {  // Otherwise insert code after the last filter, and add connecting operand
         $('[id^="paramPair"]:last').after(addFilterCodeSnippet);
@@ -350,8 +407,9 @@ removeSearchFilter = e => {
     rFilter.remove();
     // If the first filter is removed, the second becomes first, change style
     if (nFilter.prev().length == 0) {
-        $('.filterOperand:first').text('.').removeClass('andOp').removeClass('orOp').addClass('firstFilter');
+        // $('.filterOperand:first').remove();
         // $('.paramPair:first').children('.dropdown').css('width', '100%');
+        $('.filterOperand:first').text('.').removeClass('andOp').removeClass('orOp').addClass('firstFilter');
     } 
 }
 // After adding a filter, the available values will be updated in the dropdown

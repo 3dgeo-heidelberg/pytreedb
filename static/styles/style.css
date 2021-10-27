@@ -319,6 +319,7 @@ a.warning, a.warning:hover {
     text-align: center;
     color: #fff;
     cursor: pointer;
+    transition: background-color .15s ease-in-out;
     width: 4rem;
     padding: 2px .5rem;
     vertical-align: middle;

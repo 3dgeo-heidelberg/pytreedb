@@ -85,8 +85,8 @@ def query():
 def andQuery(jsonObj):
     res = []
     for key, value in jsonObj.items():
-        if key == 'or':
-            res.append(orQuery(jsonObj['or'])) # recursively call or-query fct.
+        if key.startswith('or'):
+            res.append(orQuery(jsonObj[key])) # recursively call or-query fct.
         else:
             res.append(mydb.query(key, value))
     return mydb.inner_join(res)

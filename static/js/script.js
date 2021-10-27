@@ -87,16 +87,22 @@ getItem = () => {
 searchDB = () => {
     // ======================== dummy ==============
     // var data = {
-    //     "or": [
+    //     "or1": [
     //         {
     //             "species": "Acer Campestre"
     //         },
     //         {
-    //             "species": "Betula pendula",
-    //             "mode": "TLS",
-    //             "Canopy Condition": "leaf-on"
+    //             "species": "Betula pendula"
     //         }
-    //     ] 
+    //     ],
+    //     "or2": [
+    //         {
+    //             "species": "Acer Campestre"
+    //         },
+    //         {
+    //             "species": "Picea abies"
+    //         }
+    //     ]
     // };
     // var data2 = {
     //     "mode": "TLS",
@@ -125,34 +131,46 @@ searchDB = () => {
         var value = $(e).find('.fieldValue').text();
         var classlists = e.classList;
         
-        var obj = {};
+        var obj = {};   // new obj of the current filter
         // (without brackets right now)
-        if (nthFilter == 0) {
+        if (nthFilter == 0) {  // first filter
             obj[label] = value;
             jsonObjs.push(obj);
             nthFilter++;
-        } else if (op == 'OR') {
-            let hasPrevOr, key;
+        } else {
+            let hasPrevOr = false, key;
             let lastobj = jsonObjs[jsonObjs.length - 1];
-            // check if the last obj of jsonObjs is OR array
+            // Check if the last obj of jsonObjs is OR array
             for (key in lastobj) {
-                if (lastobj.hasOwnProperty(key) && /or*/.test(key)) {
+                if (lastobj.hasOwnProperty(key) && /or+/.test(key)) {
                     hasPrevOr = true;
                 }
             }
-            if (hasPrevOr) {  // directly add to the OR array
-                obj[label] = value;
-                lastobj[key].push(obj);
-            } else {
-                let orArr = [];  // create a new OR array
-                obj[label] = value;
-                orArr.push(obj);  // push the current filter to array
-                orArr.push(lastobj);  // push the prev filter to array
-                jsonObjs.pop();  // remove the prev filter from jsonObjs
-                let orObj = {};
-                orObj['or' + nthOr] = orArr;
-                jsonObjs.push(orObj);
-                nthOr++;
+
+            if (op == 'AND') {
+                if (hasPrevOr) {  // add to the last el. of OR array and combine into one obj
+                    let combId = lastobj[key].length - 1;
+                    lastobj[key][combId][label] = value;
+                } else {
+                    lastobj[label] = value;  // add to the lastobj
+                }
+            }
+
+            if (op == 'OR') {
+                if (hasPrevOr) {  // directly add to the OR array
+                    obj[label] = value;
+                    lastobj[key].push(obj);
+                } else {
+                    let orArr = [];  // create a new OR array
+                    obj[label] = value;
+                    orArr.push(lastobj);  // push the prev filter to array
+                    orArr.push(obj);  // push the current filter to array
+                    jsonObjs.pop();  // remove the prev filter from jsonObjs
+                    let orObj = {};
+                    orObj['or' + nthOr] = orArr;
+                    jsonObjs.push(orObj);
+                    nthOr++;
+                }
             }
         }
     });

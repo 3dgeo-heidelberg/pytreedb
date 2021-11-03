@@ -122,17 +122,18 @@ searchDB = () => {
 
     // Stores the outer most layer 
     // e.g. jsonObjs = [{'specie':'abies'}, {'mode':'tls'}]
-    var jsonObjs = [];
+    var jsonObjs = []; // 'AND' logic combines elements
     var nthFilter = 0;
     var nthOr = 0;
+    var prevInBracket1 = false;
     $('.paramPair').each((index, e) => {
         var op = $(e).find('.filterOperand').text();
         var label = $(e).find('.fieldLabel').text();
         var value = $(e).find('.fieldValue').text();
         var classlists = e.classList;
+        var inBracket1 = classlists.contains('bracket-1');
         
         var obj = {};   // new obj of the current filter
-        // (without brackets right now)
         if (nthFilter == 0) {  // first filter
             obj[label] = value;
             jsonObjs.push(obj);
@@ -148,21 +149,35 @@ searchDB = () => {
             }
 
             if (op == 'AND') {
-                if (hasPrevOr) {  // add to the last el. of OR array and combine into one obj
+                if (hasPrevOr && !prevInBracket1) {  
+                    // add to the last el. of OR array and combine into one obj
                     let combId = lastobj[key].length - 1;
                     lastobj[key][combId][label] = value;
-                } else {
-                    lastobj[label] = value;  // add to the lastobj
+                } else if (!inBracket1 && prevInBracket1) {
+                    // add to jsonObjs
+                    obj[label] = value;
+                    jsonObjs.push(obj);
+                } else if (!hasPrevOr && inBracket1 && !prevInBracket1) {
+                    // add to the last obj of jsonObjs
+                    lastobj[label] = value;
                 }
             }
 
             if (op == 'OR') {
-                if (hasPrevOr) {  // directly add to the OR array
-                    obj[label] = value;
+                obj[label] = value;
+                if (hasPrevOr && !inBracket1 && !prevInBracket1
+                    || !hasPrevOr && inBracket1 && !prevInBracket1) {  
+                    // directly add to the OR array
                     lastobj[key].push(obj);
+                } else if (hasPrevOr && inBracket1 && !prevInBracket1) {
+                    let orArr = [];
+                    let combId = lastobj[key].length - 1;
+                    // add the last element of the prev array to curr array
+                    orArr.push(lastobj[key][combId]);
+                    lastobj[key].pop();  // pop the last element of the prev array
+                    lastobj[key].push(orArr); // add curr orArr to the prev array
                 } else {
                     let orArr = [];  // create a new OR array
-                    obj[label] = value;
                     orArr.push(lastobj);  // push the prev filter to array
                     orArr.push(obj);  // push the current filter to array
                     jsonObjs.pop();  // remove the prev filter from jsonObjs

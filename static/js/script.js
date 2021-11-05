@@ -5,7 +5,8 @@ var currReq = {
     "url": '',
     "idx": NaN,
     "properties": '',
-    "values": ''
+    "values": '',
+    "stringFormat": ''
 }
 // Init leaflet map
 var map = L.map('mapContainer').fitWorld();
@@ -85,47 +86,12 @@ getItem = () => {
 
 // Query trees via properties and value
 searchDB = () => {
-    // ======================== dummy ==============
-    // var data = {
-    //     "or1": [
-    //         {
-    //             "species": "Acer Campestre"
-    //         },
-    //         {
-    //             "species": "Betula pendula"
-    //         }
-    //     ],
-    //     "or2": [
-    //         {
-    //             "species": "Acer Campestre"
-    //         },
-    //         {
-    //             "species": "Picea abies"
-    //         }
-    //     ]
-    // };
-    // var data2 = {
-    //     "mode": "TLS",
-    //     "canopy Condition": "leaf-on",
-    //     "or": [
-    //         {
-    //             "species": "Acer Campestre"
-    //         },
-    //         {
-    //             "species": "Betula pendula"
-    //         }
-    //     ]
-    // };
     // console.log(JSON.stringify(data));
     // $.post('/search', JSON.stringify(data));
     // =============================================
 
-    // Stores the outer most layer 
-    // e.g. jsonObjs = [{'specie':'abies'}, {'mode':'tls'}]
-    var jsonObjs = []; // 'AND' logic combines elements
-    var nthFilter = 0;
-    var nthOr = 0;
-    var prevInBracket1 = false;
+    var filters = [], operands = [], brackets = [];
+    var out = [];
     $('.paramPair').each((index, e) => {
         var op = $(e).find('.filterOperand').text();
         var label = $(e).find('.fieldLabel').text();
@@ -133,140 +99,30 @@ searchDB = () => {
         var classlists = e.classList;
         var inBracket1 = classlists.contains('bracket-1');
         
-        var obj = {};   // new obj of the current filter
-        if (nthFilter == 0) {  // first filter
-            obj[label] = value;
-            jsonObjs.push(obj);
-            nthFilter++;
+        filters.push(label + ':' + value);
+        operands.push(op);
+        brackets.push(inBracket1?1:0);
+    });
+
+    let bracketOpen = false;
+    for (let i = filters.length - 1; i > -1; i--) {
+        if (brackets[i] == 1) {
+            if (!bracketOpen) {
+                filters[i] += ')';
+            }
+            bracketOpen = true;
         } else {
-            let hasPrevOr = false, key;
-            let lastobj = jsonObjs[jsonObjs.length - 1];
-            // Check if the last obj of jsonObjs is OR array
-            for (key in lastobj) {
-                if (lastobj.hasOwnProperty(key) && /or+/.test(key)) {
-                    hasPrevOr = true;
-                }
-            }
-
-            if (op == 'AND') {
-                if (hasPrevOr && !prevInBracket1) {  
-                    // add to the last el. of OR array and combine into one obj
-                    let combId = lastobj[key].length - 1;
-                    lastobj[key][combId][label] = value;
-                } else if (!inBracket1 && prevInBracket1) {
-                    // add to jsonObjs
-                    obj[label] = value;
-                    jsonObjs.push(obj);
-                } else if (!hasPrevOr && inBracket1 && !prevInBracket1) {
-                    // add to the last obj of jsonObjs
-                    lastobj[label] = value;
-                }
-            }
-
-            if (op == 'OR') {
-                obj[label] = value;
-                if (hasPrevOr && !inBracket1 && !prevInBracket1
-                    || !hasPrevOr && inBracket1 && !prevInBracket1) {  
-                    // directly add to the OR array
-                    lastobj[key].push(obj);
-                } else if (hasPrevOr && inBracket1 && !prevInBracket1) {
-                    let orArr = [];
-                    let combId = lastobj[key].length - 1;
-                    // add the last element of the prev array to curr array
-                    orArr.push(lastobj[key][combId]);
-                    lastobj[key].pop();  // pop the last element of the prev array
-                    lastobj[key].push(orArr); // add curr orArr to the prev array
-                } else {
-                    let orArr = [];  // create a new OR array
-                    orArr.push(lastobj);  // push the prev filter to array
-                    orArr.push(obj);  // push the current filter to array
-                    jsonObjs.pop();  // remove the prev filter from jsonObjs
-                    let orObj = {};
-                    orObj['or' + nthOr] = orArr;
-                    jsonObjs.push(orObj);
-                    nthOr++;
-                }
+            if (bracketOpen) {
+                filters[i] = '(' + filters[i];
+                bracketOpen = false;
             }
         }
-    });
+
+        filters[i] = operands[i] + ' ' + filters[i];
+    }
     
-    // Store jsonObjs into one json:
-    // e.g. jsonOut = {'specie':'abies', 'mode':'tls'}
-    var jsonOut = {};
-    jsonObjs.forEach(obj => {
-        Object.keys(obj).forEach(key => jsonOut[key] = obj[key]);
-    })
-    
-    console.log(jsonOut);
-
-    // // Collect fields and values
-    // const [properties, values] = collectFilterParams();
-
-    // // Do GET
-    // if (properties != '' && values != '') {
-    //     $.get('/trees/' + properties + '/' + values, data => {
-    //         currReq.url = '/trees/' + properties + '/' + values;
-    //         currReq.properties = properties;
-    //         currReq.values = values;
-    //         var trees = data['query'];
-    //         var num;
-    //         // Clear previous results
-    //         $('#jsonViewerContainer').empty(); 
-    //         // Show number of results
-    //         $('#numRes').html(trees.length);
-    //         // Show json code snippets if trees found
-    //         if (trees.length != 0) {
-    //             $('#numResContainer').show();
-    //             $('#saveAllButton').show();
-    //             $('#savePointCButton').show();
-    //             $('#saveCSVButton').show();
-    //             // Update for output
-    //             jsonOutput = JSON.stringify(trees[0]);
-    //             // Show tabs if results > 1
-    //             if (trees.length >= 3) {
-    //                 num = 3;
-    //                 $('#previewLabel').attr('style', 'display: inline;');
-    //                 $('.treeTab').removeClass('active');
-    //             } else {
-    //                 num = trees.length;
-    //                 $('#previewLabel').hide();
-    //                 if (num == 1) {
-    //                     $('#treeTab1').hide();
-    //                 }
-    //                 $('#treeTab2').hide();
-    //             }
-    //             // Show json data of maximal 3 trees
-    //             for (let i = 0; i < num; i++) {
-    //                 // Show tabs
-    //                 $('#treeTabs').css('display', 'flex');
-    //                 $('#treeTab' + i).show();
-    //                 // Load data into html
-    //                 $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + i + '"></pre>');
-    //                 $('#tree-' + i).jsonViewer(trees[i]);
-    //                 // Show only one code block
-    //                 if (i > 0) {
-    //                     $('#tree-' + i).hide();
-    //                 }
-    //             }
-    //             $('#treeTab0').children().addClass('active');
-
-    //             // Draw map
-    //             drawMap(trees);
-    //         }
-    //     });
-    //     $('#jsonSnippetSection').show();
-    //     $('#jsonViewerContainer').css('padding-bottom', '85px');
-    //     $('html,body').animate({
-    //         scrollTop: $('#jsonSnippetSection').offset().top - 62},
-    //         'slow');
-        
-    //     // dummy partial implementation Point Clouds download
-    //     if (values.includes('Pinus sylvestris')) {
-    //         $('#savePointCButton').removeAttr('disabled');
-    //     } else {
-    //         $('#savePointCButton').attr('disabled', 'disabled');
-    //     }
-    // }
+    currReq.stringFormat = filters.join(' ').substring(1);
+    console.log(currReq.stringFormat);
 }
 // Collect fields and values
 collectFilterParams = () => {
@@ -306,6 +162,41 @@ collectFilterParams = () => {
     properties = properties.toLowerCase().slice(0, -1);
     values = values.slice(0, -1);
     return [properties, values];
+}
+// Show/update user-input query in human-readable string form
+updateQueryPreview = () => {
+    var filters = [], operands = [], brackets = [];
+    $('.paramPair').each((index, e) => {
+        var op = $(e).find('.filterOperand').text();
+        var label = $(e).find('.fieldLabel').text();
+        var value = $(e).find('.fieldValue').text();
+        var classlists = e.classList;
+        var inBracket1 = classlists.contains('bracket-1');
+        
+        filters.push(label + ':' + value);
+        operands.push(op);
+        brackets.push(inBracket1?1:0);
+    });
+
+    let bracketOpen = false;
+    for (let i = filters.length - 1; i > -1; i--) {
+        if (brackets[i] == 1) {
+            if (!bracketOpen) {
+                filters[i] += ')';
+            }
+            bracketOpen = true;
+        } else {
+            if (bracketOpen) {
+                filters[i] = '(' + filters[i];
+                bracketOpen = false;
+            }
+        }
+
+        filters[i] = operands[i] + ' ' + filters[i];
+    }
+    
+    currReq.stringFormat = filters.join(' ').substring(1);
+    $('#queryPreviewBtn').text(currReq.stringFormat);
 }
 
 // Show download progress

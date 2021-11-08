@@ -198,6 +198,19 @@ updateQueryPreview = () => {
     currReq.stringFormat = filters.join(' ').substring(1);
     $('#queryPreviewBtn').text(currReq.stringFormat);
 }
+// Copy the query in preview to clipboard
+copyQuery = () => {
+    let text_to_copy = $('#queryPreviewBtn').text();
+    if (!navigator.clipboard){ // use old commandExec() way
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val(text_to_copy).select();
+        document.execCommand("copy");
+        $temp.remove();
+    } else{
+        navigator.clipboard.writeText(text_to_copy);
+    }    
+}
 
 // Show download progress
 showDlProgress = () => {

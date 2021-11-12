@@ -4,9 +4,10 @@ var numFilters = 0;
 var currReq = {
     "url": '',
     "idx": NaN,
-    "properties": '',
-    "values": '',
-    "stringFormat": ''
+    "stringFormat": '',
+    "filters": [],
+    "operands": [],
+    "brackets": []
 }
 // Init leaflet map
 var map = L.map('mapContainer').fitWorld();
@@ -90,82 +91,69 @@ searchDB = () => {
     // $.post('/search', JSON.stringify(data));
     // =============================================
 
-    var filters = [], operands = [], brackets = [];
-    var out = [];
-    $('.paramPair').each((index, e) => {
-        var op = $(e).find('.filterOperand').text();
-        var label = $(e).find('.fieldLabel').text();
-        var value = $(e).find('.fieldValue').text();
-        var classlists = e.classList;
-        var inBracket1 = classlists.contains('bracket-1');
+    // var s = updateQueryPreview();
+    // var out = [];
+
+    // s.forEach(_ => {
         
-        filters.push(label + ':' + value);
-        operands.push(op);
-        brackets.push(inBracket1?1:0);
-    });
+    // });
+    collectFilterParams();
+    let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
+    console.log(filters);
 
-    let bracketOpen = false;
-    for (let i = filters.length - 1; i > -1; i--) {
-        if (brackets[i] == 1) {
-            if (!bracketOpen) {
-                filters[i] += ')';
+    let right = filters.length - 1, left = right - 1;
+    while (left > -1) {
+        if (brackets[right] == 1) {
+            while (brackets[left] == 1) {
+                left -= 1;
             }
-            bracketOpen = true;
+            let bracketL = processAND(left, right);
+            filters.splice(left, right - left + 1, bracketL);
+            operands.splice(left + 1, right - left);
+
+            console.log('left: ' + left, 'right: ' + right);
+            console.log(filters); 
+            console.log(operands);
+
+            right = left - 1;
+            left = right - 1;
+            console.log('left: ' + left, 'right: ' + right);
         } else {
-            if (bracketOpen) {
-                filters[i] = '(' + filters[i];
-                bracketOpen = false;
-            }
+            bracketOpen = false;
+            right -= 1;
+            left = right - 1;
         }
-
-        filters[i] = operands[i] + ' ' + filters[i];
     }
+    processAND(0, filters.length - 1);
     
-    currReq.stringFormat = filters.join(' ').substring(1);
-    console.log(currReq.stringFormat);
+}
+processAND = (start, end) => {
+    let filters = currReq.filters.slice(start, end + 1); 
+    let operands = currReq.operands.slice(start, end + 1);
+    console.log("processAND input");
+    console.log(filters);
+    console.log(operands);
+    
+    let prevIsAnd = false;
+    for (let i = filters.length - 1; i > 0; i--) {
+        if (operands[i] == "AND" && !prevIsAnd) {
+            filters.splice(i - 1, 2, ['and', filters[i-1], filters[i]]);
+            prevIsAnd = true;
+        } else if (operands[i] == "AND" && prevIsAnd) {
+            filters[i].push(filters[i-1])
+            filters.splice(i - 1, 1);
+        } else {
+            console.log("thrdcase " + i, operands[i]);
+            prevIsAnd = false;
+        }
+    }
+    console.log("processAND output");
+    console.log([filters]);
+    return [filters];
 }
 // Collect fields and values
 collectFilterParams = () => {
-    var properties = '';
-    var values = '';
-    $('.searchField').each((index, e) => {
-        var field = $(e).text()
-        var val = $(e.parentNode.nextElementSibling.children[0]).text();
-        // Check emptiness
-        if (field != 'Select search field') {
-                if (field == 'Canopy') {
-                    properties += 'canopy_condition,';
-                    values += val + ',';
-                } else if (field == 'Quality') {
-                    var qFrom = $('.qualityFrom').eq(index);
-                    var qTo = $('.qualityTo').eq(index);
-                    // Only when from and to are both given, add to search properties
-                    if (qFrom.text() != 'value' && qTo.text() != 'value') {
-                        properties += 'quality,';
-                        values += qFrom.text() + ',' + qTo.text() + ',';
-                    } else if (qFrom.text() == 'value') {
-                        qFrom.addClass('warning');
-                        $('#searchButton').prop('disabled', true);
-                        return;
-                    } else if (qTo.text() == 'value') {
-                        qTo.addClass('warning');
-                        $('#searchButton').prop('disabled', true);
-                        return;
-                    }
-                } else if (val != 'Please select a field first' && 
-                           val != 'Choose a value') {
-                    properties += field + ',';
-                    values += val + ',';
-                }
-        }
-    })
-    properties = properties.toLowerCase().slice(0, -1);
-    values = values.slice(0, -1);
-    return [properties, values];
-}
-// Show/update user-input query in human-readable string form
-updateQueryPreview = () => {
-    var filters = [], operands = [], brackets = [];
+    currReq.filters = [], currReq.operands = [], currReq.brackets = [];
     $('.paramPair').each((index, e) => {
         var op = $(e).find('.filterOperand').text();
         var label = $(e).find('.fieldLabel').text();
@@ -173,13 +161,19 @@ updateQueryPreview = () => {
         var classlists = e.classList;
         var inBracket1 = classlists.contains('bracket-1');
         
-        filters.push(label + ':' + value);
-        operands.push(op);
-        brackets.push(inBracket1?1:0);
+        currReq.filters.push(label + ':' + value);
+        currReq.operands.push(op);
+        currReq.brackets.push(inBracket1?1:0);
     });
+}
+// Show/update user-input query in human-readable string form
+updateQueryPreview = () => {
+    collectFilterParams();
+    let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
 
     let bracketOpen = false;
     for (let i = filters.length - 1; i > -1; i--) {
+        filters[i] = '\"' + filters[i] + '\"';
         if (brackets[i] == 1) {
             if (!bracketOpen) {
                 filters[i] += ')';
@@ -195,8 +189,9 @@ updateQueryPreview = () => {
         filters[i] = operands[i] + ' ' + filters[i];
     }
     
-    currReq.stringFormat = filters.join(' ').substring(1);
+    currReq.stringFormat = filters.join(' ').substring(2);
     $('#queryPreviewBtn').text(currReq.stringFormat);
+    return currReq.stringFormat;
 }
 // Copy the query in preview to clipboard
 copyQuery = () => {

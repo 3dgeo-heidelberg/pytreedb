@@ -156,12 +156,13 @@ collectFilterParams = () => {
         var label = $(e).find('.fieldLabel').text();
         var value = $(e).find('.fieldValue').text();
         var classlists = e.classList;
-        var inBracket2 = classlists.contains('bracket-2');
         var inBracket1 = classlists.contains('bracket-1');
+        var inBracket2 = classlists.contains('bracket-2');
+        var inBracket3 = classlists.contains('bracket-3');
         
         currReq.filters.push(label + ':' + value);
         currReq.operands.push(op);
-        currReq.brackets.push(inBracket2?2:(inBracket1?1:0));
+        currReq.brackets.push( inBracket3 ? 3 : ( inBracket2 ? 2 : ( inBracket1 ? 1 : 0 ) ) );
     });
 }
 // Show/update user-input query in human-readable string form

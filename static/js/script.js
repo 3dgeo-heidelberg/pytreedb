@@ -90,66 +90,113 @@ searchDB = () => {
     // console.log(JSON.stringify(data));
     // $.post('/search', JSON.stringify(data));
     // =============================================
-
-    // var s = updateQueryPreview();
-    // var out = [];
-
-    // s.forEach(_ => {
-        
-    // });
     collectFilterParams();
     let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
-    console.log(filters);
+    processAND(0, currReq.filters.length - 1, filters, operands, brackets);
+    // console.log(filters);
 
-    let right = filters.length - 1, left = right - 1;
-    while (left > -1) {
-        if (brackets[right] == 1) {
-            while (brackets[left] == 1) {
-                left -= 1;
-            }
-            let bracketL = processAND(left, right);
-            filters.splice(left, right - left + 1, bracketL);
-            operands.splice(left + 1, right - left);
+    // let right = filters.length - 1, left = right - 1;
+    // while (left > -1) {
+    //     if (brackets[right] == 1) {
+    //         while (brackets[left] == 1) {
+    //             left -= 1;
+    //         }
+    //         let bracketL = processAND(left, right, filters, operands);
+    //         filters.splice(left, right - left + 1, bracketL);
+    //         operands.splice(left + 1, right - left);
 
-            console.log('left: ' + left, 'right: ' + right);
-            console.log(filters); 
-            console.log(operands);
+    //         console.log('left: ' + left, 'right: ' + right);
+    //         console.log(filters); 
+    //         console.log(operands);
+    //         console.log('vs global filters');
+    //         console.log(currReq.filters);
 
-            right = left - 1;
-            left = right - 1;
-            console.log('left: ' + left, 'right: ' + right);
-        } else {
-            bracketOpen = false;
-            right -= 1;
-            left = right - 1;
-        }
-    }
-    processAND(0, filters.length - 1);
-    
+    //         right = left - 1;
+    //         left = right - 1;
+    //         console.log('left: ' + left, 'right: ' + right);
+    //     } else {
+    //         bracketOpen = false;
+    //         right -= 1;
+    //         left = right - 1;
+    //     }
+    // }
+    // processAND(0, filters.length - 1, filters, operands);
 }
-processAND = (start, end) => {
-    let filters = currReq.filters.slice(start, end + 1); 
-    let operands = currReq.operands.slice(start, end + 1);
+processAND = (start, end, ft, op, bk) => {
+    // let filters = ft.slice(start, end + 1); 
+    // let operands = op.slice(start, end + 1);
+    // console.log("processAND input");
+    // console.log(filters);
+    // console.log(operands);
+    
+    // let prevIsAnd = false;
+    // for (let i = filters.length - 1; i > 0; i--) {
+    //     if (operands[i] == "AND" && !prevIsAnd) {
+    //         filters.splice(i - 1, 2, ['and', filters[i-1], filters[i]]);
+    //         prevIsAnd = true;
+    //     } else if (operands[i] == "AND" && prevIsAnd) {
+    //         filters[i].push(filters[i-1])
+    //         filters.splice(i - 1, 1);
+    //     } else {
+    //         prevIsAnd = false;
+    //     }
+    // }
+    // console.log("processAND output");
+    // console.log([filters]);
+    // return [filters];
+
+    let filters = ft.slice(start, end + 1); 
+    let operands = op.slice(start, end + 1);
+    let brackets = bk.slice(start, end + 1);
     console.log("processAND input");
     console.log(filters);
     console.log(operands);
     
-    let prevIsAnd = false;
-    for (let i = filters.length - 1; i > 0; i--) {
-        if (operands[i] == "AND" && !prevIsAnd) {
-            filters.splice(i - 1, 2, ['and', filters[i-1], filters[i]]);
-            prevIsAnd = true;
-        } else if (operands[i] == "AND" && prevIsAnd) {
-            filters[i].push(filters[i-1])
-            filters.splice(i - 1, 1);
-        } else {
-            console.log("thrdcase " + i, operands[i]);
-            prevIsAnd = false;
+    // Check if the slice constains brackets
+    if (!brackets.slice(1, end + 1).every((val, i, arr) => val === arr[0])) {
+        // Split deeper brackets and go into another recursion
+        let bracketOpen = false;
+        let right = filters.length - 1, left = right - 1;
+        while (left > -1) {
+            if (brackets[right] > 0) {
+                while (brackets[left] > 0) {
+                    left -= 1;
+                }
+                brackets = brackets.map(val => {return val - 1});
+                let bracketL = processAND(left, right, filters, operands, brackets);
+                filters.splice(left, right - left + 1, bracketL);
+                operands.splice(left + 1, right - left);
+                brackets.splice(left + 1, right - left);
+                console.log('test');
+                console.log(filters);
+                console.log(operands);
+                right = left - 1;
+                left = right - 1;
+            } else {
+                bracketOpen = false;
+                right -= 1;
+                left = right - 1;
+            }
         }
+        return processAND(0, filters.length - 1, filters, operands, brackets);
+    } else {
+        // Process AND in this slice
+        let prevIsAnd = false;
+        for (let i = filters.length - 1; i > 0; i--) {
+            if (operands[i] == "AND" && !prevIsAnd) {
+                filters.splice(i - 1, 2, ['and', filters[i-1], filters[i]]);
+                prevIsAnd = true;
+            } else if (operands[i] == "AND" && prevIsAnd) {
+                filters[i].push(filters[i-1])
+                filters.splice(i - 1, 1);
+            } else {
+                prevIsAnd = false;
+            }
+        }
+        console.log("processAND output");
+        console.log([filters]);
+        return [filters];
     }
-    console.log("processAND output");
-    console.log([filters]);
-    return [filters];
 }
 // Collect fields and values
 collectFilterParams = () => {
@@ -159,11 +206,12 @@ collectFilterParams = () => {
         var label = $(e).find('.fieldLabel').text();
         var value = $(e).find('.fieldValue').text();
         var classlists = e.classList;
+        var inBracket2 = classlists.contains('bracket-2');
         var inBracket1 = classlists.contains('bracket-1');
         
         currReq.filters.push(label + ':' + value);
         currReq.operands.push(op);
-        currReq.brackets.push(inBracket1?1:0);
+        currReq.brackets.push(inBracket2?2:(inBracket1?1:0));
     });
 }
 // Show/update user-input query in human-readable string form

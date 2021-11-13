@@ -93,58 +93,8 @@ searchDB = () => {
     collectFilterParams();
     let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
     processAND(0, currReq.filters.length - 1, filters, operands, brackets);
-    // console.log(filters);
-
-    // let right = filters.length - 1, left = right - 1;
-    // while (left > -1) {
-    //     if (brackets[right] == 1) {
-    //         while (brackets[left] == 1) {
-    //             left -= 1;
-    //         }
-    //         let bracketL = processAND(left, right, filters, operands);
-    //         filters.splice(left, right - left + 1, bracketL);
-    //         operands.splice(left + 1, right - left);
-
-    //         console.log('left: ' + left, 'right: ' + right);
-    //         console.log(filters); 
-    //         console.log(operands);
-    //         console.log('vs global filters');
-    //         console.log(currReq.filters);
-
-    //         right = left - 1;
-    //         left = right - 1;
-    //         console.log('left: ' + left, 'right: ' + right);
-    //     } else {
-    //         bracketOpen = false;
-    //         right -= 1;
-    //         left = right - 1;
-    //     }
-    // }
-    // processAND(0, filters.length - 1, filters, operands);
 }
 processAND = (start, end, ft, op, bk) => {
-    // let filters = ft.slice(start, end + 1); 
-    // let operands = op.slice(start, end + 1);
-    // console.log("processAND input");
-    // console.log(filters);
-    // console.log(operands);
-    
-    // let prevIsAnd = false;
-    // for (let i = filters.length - 1; i > 0; i--) {
-    //     if (operands[i] == "AND" && !prevIsAnd) {
-    //         filters.splice(i - 1, 2, ['and', filters[i-1], filters[i]]);
-    //         prevIsAnd = true;
-    //     } else if (operands[i] == "AND" && prevIsAnd) {
-    //         filters[i].push(filters[i-1])
-    //         filters.splice(i - 1, 1);
-    //     } else {
-    //         prevIsAnd = false;
-    //     }
-    // }
-    // console.log("processAND output");
-    // console.log([filters]);
-    // return [filters];
-
     let filters = ft.slice(start, end + 1); 
     let operands = op.slice(start, end + 1);
     let brackets = bk.slice(start, end + 1);

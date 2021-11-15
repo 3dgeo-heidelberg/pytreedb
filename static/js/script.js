@@ -193,16 +193,17 @@ updateQueryPreview = () => {
     return currReq.stringFormat;
 }
 // Copy the query in preview to clipboard
+// Referenced source: https://www.codegrepper.com/code-examples/javascript/copy+text+to+clipboard+javascript
 copyQuery = () => {
-    let text_to_copy = $('#queryPreviewBtn').text();
+    let targetText = $('#queryPreviewBtn').text();
     if (!navigator.clipboard){ // use old commandExec() way
         var $temp = $("<input>");
         $("body").append($temp);
-        $temp.val(text_to_copy).select();
+        $temp.val(targetText).select();
         document.execCommand("copy");
         $temp.remove();
     } else{
-        navigator.clipboard.writeText(text_to_copy);
+        navigator.clipboard.writeText(targetText);
     }    
 }
 
@@ -227,6 +228,7 @@ getDlProgress = () => {
 }
 
 // Utility function: save a string to a file that will pop up for the user to download
+// Source: https://stackoverflow.com/questions/283956/is-there-any-way-to-specify-a-suggested-filename-when-using-data-uri
 saveContent = (fileContents, fileName) => {
     var link = document.createElement('a');
     link.download = fileName;
@@ -253,6 +255,7 @@ saveCSV = () => {
     link.click();
 }
 // Save point clouds of all results into a zip
+// The JSZip library: https://github.com/Stuk/jszip
 savePointClouds = () => {
     var zip = new JSZip();
     var cntFilesDownloaded = 0;
@@ -452,17 +455,6 @@ checkQBounds = (from, to) => {
         return true;
     }
 }
-// Check if the selected field in additional filter is already given 
-// fieldIsSafe = (field) => {
-//     var isSafe = true;
-//     $('.searchField').each((index, e) => {
-//         if ($(e).text() == field) {
-//             isSafe = !isSafe
-//             return false;
-//         }
-//     })
-//     return isSafe;
-// }
 
 
 // Toggle shown (active) tree data
@@ -495,6 +487,8 @@ $('#idx').keydown(e => {
 //////////////////////////////////////////////////////////////////////////
 //  Leaflet                                                             //
 //////////////////////////////////////////////////////////////////////////
+// Leaflet Draw API: https://leaflet.github.io/Leaflet.draw/docs/leaflet-draw-latest.html
+
 // Set up the tile layer
 L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

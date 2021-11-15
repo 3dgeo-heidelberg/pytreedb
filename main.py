@@ -78,8 +78,9 @@ def naiveQuery(fields, values):
 
 @app.route('/search', methods=['POST'])
 def query():
-    json = request.get_json(force=True)
-    res = andQuery(json)
+    query = request.get_json(force=True)['data']
+    print(query[0])
+    # res = andQuery(json)
     return {'query': res}
 
 def andQuery(jsonObj):

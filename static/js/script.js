@@ -87,12 +87,13 @@ getItem = () => {
 
 // Query trees via properties and value
 searchDB = () => {
-    // console.log(JSON.stringify(data));
-    // $.post('/search', JSON.stringify(data));
-    // =============================================
     collectFilterParams();
     let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
-    processAND(0, currReq.filters.length - 1, filters, operands, brackets);
+    var data = processAND(0, currReq.filters.length - 1, filters, operands, brackets);
+
+    console.log('TEST');
+    console.log(data);
+    $.post('/search', JSON.stringify({"data": data}));
 }
 processAND = (start, end, ft, op, bk) => {
     let filters = ft.slice(start, end + 1); 

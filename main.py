@@ -79,23 +79,34 @@ def naiveQuery(fields, values):
 @app.route('/search', methods=['POST'])
 def query():
     query = request.get_json(force=True)['data']
-    print(query[0])
-    # res = andQuery(json)
+    print(query)
+    res = orQuery(query)
+    print(len(res))
     return {'query': res}
 
-def andQuery(jsonObj):
+def andQuery(li):
     res = []
-    for key, value in jsonObj.items():
-        if key.startswith('or'):
-            res.append(orQuery(jsonObj[key])) # recursively call or-query fct.
-        else:
-            res.append(mydb.query(key, value))
+    for subQuery in li[1:]:
+        if isinstance(subQuery, str):  # if subQuery not nested
+            kv = subQuery.split(":")
+            res.append(mydb.query(kv[0], kv[1]))
+        elif type(subQuery) == list and subQuery[0] == "and":  # if nested AND query
+            res.append(andQuery(subQuery))
+        else:  # if nested OR query
+            res.append(orQuery(subQuery))
     return mydb.inner_join(res)
 
-def orQuery(jsonArr):
+def orQuery(li):
     res = []
-    for obj in jsonArr:
-        res.append(andQuery(obj)) # recursively call and-query fct.
+    for subQuery in li:
+        if isinstance(subQuery, str):  # if subQuery not nested
+            print("subQuery is a string:", subQuery)
+            kv = subQuery.split(":")
+            res.append(mydb.query(kv[0], kv[1]))
+        elif type(subQuery) == list and subQuery[0] == "and":  # if nested AND query
+            res.append(andQuery(subQuery))
+        else:  # if nested OR query
+            res.append(orQuery(subQuery))
     return mydb.outer_join(res)
 
 @app.route('/getitem/<index>')

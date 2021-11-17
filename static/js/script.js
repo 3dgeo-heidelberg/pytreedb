@@ -154,12 +154,14 @@ collectFilterParams = () => {
     currReq.filters = [], currReq.operands = [], currReq.brackets = [];
     $('.paramPair').each((index, e) => {
         var op = $(e).find('.filterOperand').text();
-        var label = $(e).find('.fieldLabel').text();
-        var value = $(e).find('.fieldValue').text();
+        var label = $(e).find('.fieldLabel').text().toLowerCase();
+        var value = $(e).find('.fieldValue').text().toLowerCase();
         var classlists = e.classList;
         var inBracket1 = classlists.contains('bracket-1');
         var inBracket2 = classlists.contains('bracket-2');
         var inBracket3 = classlists.contains('bracket-3');
+
+        if (label.startsWith('canopy')) {label = 'canopy_condition'};
         
         currReq.filters.push(label + ':' + value);
         currReq.operands.push(op);
@@ -354,7 +356,7 @@ updateAvailableVals = (newFilterID, field) => {
     var availableValuesEl = fieldLabelEl.nextElementSibling.nextElementSibling;
 
     switch (field) {
-        case "Specie":
+        case "Species":
             $.get('/listspecies', data => {
                 data["species"].sort().forEach(specie => {
                     $(availableValuesEl).append(

@@ -85,29 +85,22 @@ def query():
     return {'query': res}
 
 def andQuery(li):
-    res = []
-    for subQuery in li[1:]:
-        if isinstance(subQuery, str):  # if subQuery not nested
-            kv = subQuery.split(":")
-            res.append(mydb.query(kv[0], kv[1]))
-        elif type(subQuery) == list and subQuery[0] == "and":  # if nested AND query
-            res.append(andQuery(subQuery))
-        else:  # if nested OR query
-            res.append(orQuery(subQuery))
-    return mydb.inner_join(res)
+    return mydb.inner_join(procSubquery(li[1:]))
 
 def orQuery(li):
+    return mydb.outer_join(procSubquery(li))
+
+def procSubquery(li):
     res = []
     for subQuery in li:
         if isinstance(subQuery, str):  # if subQuery not nested
-            print("subQuery is a string:", subQuery)
             kv = subQuery.split(":")
             res.append(mydb.query(kv[0], kv[1]))
         elif type(subQuery) == list and subQuery[0] == "and":  # if nested AND query
             res.append(andQuery(subQuery))
         else:  # if nested OR query
             res.append(orQuery(subQuery))
-    return mydb.outer_join(res)
+    return res
 
 @app.route('/getitem/<index>')
 def getItem(index):

@@ -93,7 +93,64 @@ searchDB = () => {
 
     console.log('TEST');
     console.log(data);
-    $.post('/search', JSON.stringify({"data": data}));
+    $.post('/search', JSON.stringify({"data": data}), data => {
+        var trees = data['query'];
+        // Clear previous results
+        $('#jsonViewerContainer').empty(); 
+        // Show number of results
+        $('#numRes').html(trees.length);
+        // Show json code snippets if trees found
+        if (trees.length != 0) {
+            $('#numResContainer').show();
+            $('#saveAllButton').show();
+            $('#savePointCButton').show();
+            $('#saveCSVButton').show();
+            // Update for output
+            jsonOutput = JSON.stringify(trees[0]);
+            // Show tabs if results > 1
+            if (trees.length >= 3) {
+                num = 3;
+                $('#previewLabel').attr('style', 'display: inline;');
+                $('.treeTab').removeClass('active');
+            } else {
+                num = trees.length;
+                $('#previewLabel').hide();
+                if (num == 1) {
+                    $('#treeTab1').hide();
+                }
+                $('#treeTab2').hide();
+            }
+            // Show json data of maximal 3 trees
+            for (let i = 0; i < num; i++) {
+                // Show tabs
+                $('#treeTabs').css('display', 'flex');
+                $('#treeTab' + i).show();
+                // Load data into html
+                $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + i + '"></pre>');
+                $('#tree-' + i).jsonViewer(trees[i]);
+                // Show only one code block
+                if (i > 0) {
+                    $('#tree-' + i).hide();
+                }
+            }
+            $('#treeTab0').children().addClass('active');
+
+            // Draw map
+            drawMap(trees);
+        }
+    });
+    $('#jsonSnippetSection').show();
+    $('#jsonViewerContainer').css('padding-bottom', '85px');
+    $('html,body').animate({
+        scrollTop: $('#jsonSnippetSection').offset().top - 62},
+        'slow');
+    
+    // dummy partial implementation Point Clouds download
+    if (currReq.filters.includes('species:pinus sylvestris')) {
+        $('#savePointCButton').removeAttr('disabled');
+    } else {
+        $('#savePointCButton').attr('disabled', 'disabled');
+    }
 }
 processAND = (start, end, ft, op, bk) => {
     let filters = ft.slice(start, end + 1); 

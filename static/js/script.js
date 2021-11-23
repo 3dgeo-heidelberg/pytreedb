@@ -160,7 +160,7 @@ processAND = (start, end, ft, op, bk) => {
     console.log(filters);
     console.log(operands);
     
-    // Check if the slice constains brackets
+    // Check if the slice contains brackets
     if (!brackets.slice(1, end + 1).every((val, i, arr) => val === arr[0])) {
         // Split deeper brackets and go into another recursion
         let bracketOpen = false;
@@ -230,20 +230,20 @@ updateQueryPreview = () => {
     collectFilterParams();
     let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
 
-    let bracketOpen = false;
+    let bracketOpen = 0;
     for (let i = filters.length - 1; i > -1; i--) {
         filters[i] = '\"' + filters[i] + '\"';
-        if (brackets[i] == 1) {
-            if (!bracketOpen) {
-                filters[i] += ')';
+            if (bracketOpen < brackets[i]) {
+                for (let n = 0; n < brackets[i] - bracketOpen; n++) {
+                    filters[i] += ')';
+                }
             }
-            bracketOpen = true;
-        } else {
-            if (bracketOpen) {
-                filters[i] = '(' + filters[i];
-                bracketOpen = false;
+            if (bracketOpen > brackets[i]) {
+                for (let n = 0; n < bracketOpen - brackets[i]; n++) {
+                    filters[i] = '(' + filters[i];
+                }
             }
-        }
+            bracketOpen = brackets[i];
 
         filters[i] = operands[i] + ' ' + filters[i];
     }

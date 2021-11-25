@@ -91,8 +91,6 @@ searchDB = () => {
     let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
     var data = processAND(0, currReq.filters.length - 1, filters, operands, brackets);
 
-    console.log('TEST');
-    console.log(data);
     $.post('/search', JSON.stringify({"data": data}), data => {
         var trees = data['query'];
         // Clear previous results
@@ -156,9 +154,6 @@ processAND = (start, end, ft, op, bk) => {
     let filters = ft.slice(start, end + 1); 
     let operands = op.slice(start, end + 1);
     let brackets = bk.slice(start, end + 1);
-    console.log("processAND input");
-    console.log(filters);
-    console.log(operands);
     
     // Check if the slice contains brackets
     if (!brackets.slice(1, end + 1).every((val, i, arr) => val === arr[0])) {
@@ -175,7 +170,6 @@ processAND = (start, end, ft, op, bk) => {
                 filters.splice(left, right - left + 1, bracketL);
                 operands.splice(left + 1, right - left);
                 brackets.splice(left + 1, right - left);
-                console.log('test');
                 console.log(filters);
                 console.log(operands);
                 right = left - 1;
@@ -201,8 +195,6 @@ processAND = (start, end, ft, op, bk) => {
                 prevIsAnd = false;
             }
         }
-        console.log("processAND output");
-        console.log([filters]);
         return [filters];
     }
 }

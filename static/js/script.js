@@ -87,8 +87,9 @@ getItem = () => {
 
 // Query trees via properties and value
 searchDB = () => {
-    collectFilterParams();
+    updateQueryPreview();
     let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
+    console.log(currReq);
     var data = processAND(0, currReq.filters.length - 1, filters, operands, brackets);
 
     $.post('/search', JSON.stringify({"data": data}), data => {
@@ -165,13 +166,11 @@ processAND = (start, end, ft, op, bk) => {
                 while (brackets[left] > 0) {
                     left -= 1;
                 }
-                brackets = brackets.map(val => {return val - 1});
-                let bracketL = processAND(left, right, filters, operands, brackets);
+                // brackets = brackets.map(val => {return val - 1});
+                let bracketL = processAND(left, right, filters, operands, brackets.map(val => {return val - 1}));
                 filters.splice(left, right - left + 1, bracketL);
                 operands.splice(left + 1, right - left);
                 brackets.splice(left + 1, right - left);
-                console.log(filters);
-                console.log(operands);
                 right = left - 1;
                 left = right - 1;
             } else {
@@ -220,7 +219,8 @@ collectFilterParams = () => {
 // Show/update user-input query in human-readable string form
 updateQueryPreview = () => {
     collectFilterParams();
-    let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
+    let newObj = jQuery.extend(true, {}, currReq);
+    let filters = newObj.filters, operands = newObj.operands, brackets = newObj.brackets;
 
     let bracketOpen = 0;
     for (let i = filters.length - 1; i > -1; i--) {

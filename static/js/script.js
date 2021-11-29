@@ -94,6 +94,7 @@ searchDB = () => {
 
     $.post('/search', JSON.stringify({"data": currReq.backendQ}), data => {
         var trees = data['query'];
+        currReq.url = '/search';
         // Clear previous results
         $('#jsonViewerContainer').empty(); 
         // Show number of results
@@ -295,7 +296,7 @@ getDlProgress = () => {
     })
 }
 
-// Utility function: save a string to a file that will pop up for the user to download
+// Utility function: save a string to a txt file that will pop up for the user to download
 // Source: https://stackoverflow.com/questions/283956/is-there-any-way-to-specify-a-suggested-filename-when-using-data-uri
 saveContent = (fileContents, fileName) => {
     var link = document.createElement('a');
@@ -303,17 +304,35 @@ saveContent = (fileContents, fileName) => {
     link.href = 'data:,' + fileContents;
     link.click();
 }
+// Utility function: export an object to Json file for download
+// Source: https://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
+saveJsonContent = (exportObj, fileName) => {
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(exportObj);
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", fileName + ".json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
 // Save single jsonOutput to a json file
 saveJsonOutput = () => {
-    saveContent(jsonOutput, 'current_tree_json.json');
+    saveJsonContent(jsonOutput, 'current_tree_json');
 }
 // Save all result jsons into one json file
 saveAllJsons = () => {
     var outString = '{"type": "FeatureCollection", "features":';
-    $.get(currReq.url, data => {
-        outString += JSON.stringify(data['query']) + '}';
-        saveContent(outString, 'res_feature_collection.json');
-    })
+    if (currReq.url == '/search') {
+        $.post('/search', JSON.stringify({"data": currReq.backendQ}), data => {
+            outString += JSON.stringify(data['query']) + '}';
+            saveJsonContent(outString, 'res_feature_collection');
+        })
+    } else {
+        $.get(currReq.url, data => {
+            outString += JSON.stringify(data['query']) + '}';
+            saveJsonContent(outString, 'res_feature_collection');
+        })
+    }
 }
 // Save all results into a csv file
 saveCSV = () => {

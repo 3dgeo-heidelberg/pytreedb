@@ -4,10 +4,11 @@ var numFilters = 0;
 var currReq = {
     "url": '',
     "idx": NaN,
-    "stringFormat": '',
     "filters": [],
     "operands": [],
-    "brackets": []
+    "brackets": [],
+    "stringFormat": '',
+    "backendQ": ''
 }
 // Init leaflet map
 var map = L.map('mapContainer').fitWorld();
@@ -89,10 +90,9 @@ getItem = () => {
 searchDB = () => {
     updateQueryPreview();
     let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
-    console.log(currReq);
-    var data = processAND(0, currReq.filters.length - 1, filters, operands, brackets);
+    currReq.backendQ = processAND(0, currReq.filters.length - 1, filters, operands, brackets);
 
-    $.post('/search', JSON.stringify({"data": data}), data => {
+    $.post('/search', JSON.stringify({"data": currReq.backendQ}), data => {
         var trees = data['query'];
         // Clear previous results
         $('#jsonViewerContainer').empty(); 
@@ -257,6 +257,22 @@ copyQuery = () => {
     } else{
         navigator.clipboard.writeText(targetText);
     }    
+}
+// Import query
+importQuery = () => {}
+// Export query for future use
+exportQuery = () => {
+    updateQueryPreview();
+    if (currReq.backendQ == '') {
+        let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
+        currReq.backendQ = processAND(0, currReq.filters.length - 1, filters, operands, brackets);
+    }
+    
+    var queryJsonExp = {
+        "queryString": currReq.stringFormat,
+        "backendQuery": currReq.backendQ
+    };
+    saveContent(JSON.stringify(queryJsonExp), 'query_exported.json');
 }
 
 // Show download progress

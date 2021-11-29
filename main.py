@@ -79,9 +79,7 @@ def naiveQuery(fields, values):
 @app.route('/search', methods=['POST'])
 def query():
     query = request.get_json(force=True)['data']
-    print(query)
     res = orQuery(query)
-    print(len(res))
     return {'query': res}
 
 def andQuery(li):
@@ -111,9 +109,10 @@ def getItem(index):
     # print({'item': json.loads(mydb[int(index)]['_json'])})
     # return {'item': json.loads(mydb[int(index)]['_json'])}
 
-@app.route('/exportcsv/<fields>/<values>')
-def exportcsv(fields, values):
-    trees = query(fields, values)['query']
+@app.route('/exportcsv', methods=['POST'])
+def exportcsv():
+    query = request.get_json(force=True)['data']
+    trees = orQuery(query)
     # convert trees to csv files, save to disk
     outdir = r'E:\tmp\csv'
     mydb.convert_to_csv(outdir, trees)

@@ -334,12 +334,24 @@ saveAllJsons = () => {
         })
     }
 }
-// Save all results into a csv file
+// Save all results into zipped csv-files
 saveCSV = () => {
-    var link = document.createElement('a');
-    link.download = 'csv.zip'
-    link.href = '/exportcsv/' + currReq.properties + '/' + currReq.values;
-    link.click();
+    $.ajax({
+        url: '/exportcsv',
+        type: "POST",
+        data: JSON.stringify({"data": currReq.backendQ}),
+        success: file => {
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(file);
+            console.log(link.href);
+            link.download = 'csv.zip';
+            document.body.appendChild(link);
+            link.click();
+        },
+        xhrFields:{
+            responseType: 'blob'
+        }
+    })
 }
 // Save point clouds of all results into a zip
 // The JSZip library: https://github.com/Stuk/jszip

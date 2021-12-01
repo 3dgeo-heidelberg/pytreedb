@@ -3,7 +3,6 @@ var species, n_trees, jsonOutput, getEverySec;
 var numFilters = 0;
 var currReq = {
     "url": '',
-    "idx": NaN,
     "filters": [],
     "operands": [],
     "brackets": [],
@@ -59,7 +58,6 @@ getItem = () => {
         // Do get
         $.get('/getitem/' + idx, data => {
             currReq.url = '/getitem/' + idx;
-            currReq.idx = idx;
             var jsonStr = data['item'];
             // Update jsonOutput
             jsonOutput = jsonStr;

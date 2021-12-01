@@ -1,5 +1,5 @@
 // Global variables
-var species, n_trees, jsonOutput, getEverySec; 
+var speciesList, n_trees, jsonOutput, getEverySec; 
 var numFilters = 0;
 var currReq = {
     "url": '',
@@ -20,6 +20,14 @@ window.onload = () => {
         $('#numSpecies').html(data['n_species']);
         $('#nTrees').html(n_trees-1);
     });
+    // Get list of species on start to avoid redundant future calls
+    $.get('/listspecies', data => {
+        speciesList = data["species"].sort();
+        $('#speciesList').attr('style', 'columns:' + parseInt(speciesList.length / 11 + 1));
+        speciesList.forEach(specie => {
+            $('#speciesList').append($('<li>' + specie + '</li>'));
+        });
+    })
 }
 
 window.onscroll = () => {
@@ -31,20 +39,6 @@ window.onscroll = () => {
     }
 }
 
-
-// Show all species in the databank
-showSpecies = () => {
-    if (typeof species == 'undefined') { // Avoid unnessesary calls on backend
-        $.get('/listspecies', data => {
-            species = data["species"];
-            $('#speciesList').attr('style', 'columns:' + parseInt(species.length / 11 + 1));
-            species.forEach(specie => {
-                $('#speciesList').append($('<li>' + specie + '</li>'));
-            });
-        })
-    }
-    $('#animAnchor').attr('class', 'moveWelcomeLeft');        
-}
 
 // Get tree item by index
 getItem = () => {
@@ -466,12 +460,10 @@ updateAvailableVals = (newFilterID, field) => {
 
     switch (field) {
         case "Species":
-            $.get('/listspecies', data => {
-                data["species"].sort().forEach(specie => {
-                    $(availableValuesEl).append(
-                        '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + specie + '</a></li>'
-                    );
-                });
+            speciesList.forEach(specie => {
+                $(availableValuesEl).append(
+                    '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + specie + '</a></li>'
+                );
             })
             break;
         case "Mode":
@@ -581,6 +573,10 @@ toggleTab = e => {
     jsonOutput = $('#tree-' + (e.text - 1)).text();
 }
 
+// Show all species in the databank
+showSpecies = () => {
+    $('#animAnchor').attr('class', 'moveWelcomeLeft');        
+}
 // Slide back to welcome
 slideBack = () => {
     $('#animAnchor').attr('class', 'moveWelcomeBack'); 

@@ -273,7 +273,7 @@ exportQuery = () => {
         "queryString": currReq.stringFormat,
         "backendQuery": currReq.backendQ
     };
-    saveContent(JSON.stringify(queryJsonExp), 'query_exported.json');
+    saveJsonContent(JSON.stringify(queryJsonExp), 'query_exported');
 }
 
 // Show download progress

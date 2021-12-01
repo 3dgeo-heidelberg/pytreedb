@@ -75,9 +75,11 @@ getItem = () => {
         });
         $('#numResContainer').hide();
         $('#treeTabs').hide();
+        $('#saveJsonButton').show();
         $('#saveAllButton').hide();
         $('#savePointCButton').hide();
         $('#saveCSVButton').hide();
+        $('#mapContainer').show();
         $('#jsonSnippetSection').show();
         $('#jsonViewerContainer').css('padding-bottom', '0');
         $('html,body').animate({
@@ -99,12 +101,14 @@ searchDB = () => {
         $('#jsonViewerContainer').empty(); 
         // Show number of results
         $('#numRes').html(trees.length);
+        $('#numResContainer').show();
         // Show json code snippets if trees found
         if (trees.length != 0) {
-            $('#numResContainer').show();
+            $('#saveJsonButton').show();
             $('#saveAllButton').show();
             $('#savePointCButton').show();
             $('#saveCSVButton').show();
+            $('#mapContainer').show();
             // Update for output
             jsonOutput = JSON.stringify(trees[0]);
             // Show tabs if results > 1
@@ -137,6 +141,17 @@ searchDB = () => {
 
             // Draw map
             drawMap(trees);
+        } 
+        // If no trees satisfy the query, clear prev results
+        else {
+            $('#previewLabel').hide();
+            $('#treeTabs').hide();
+            $('#saveJsonButton').hide();
+            $('#saveAllButton').hide();
+            $('#savePointCButton').hide();
+            $('#saveCSVButton').hide();
+            cleanMap();
+            $('#mapContainer').hide();
         }
     });
     $('#jsonSnippetSection').show();
@@ -701,5 +716,10 @@ drawMap = trees => {
     }, 100);
 
 }
-
+// Clean map, remove all markers and layers
+cleanMap = () => {
+    map.invalidateSize();  // Make sure tiles render correctly
+    geoJSONLayer.clearLayers();  // Remove previous markers
+    drawnItems.clearLayers(); // Remove previous polygons
+}
 

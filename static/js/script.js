@@ -282,9 +282,15 @@ exportQuery = () => {
         "brackets": currReq.brackets
     };
     saveJsonContent(JSON.stringify(queryJsonExp), 'query_exported');
+    querySaved = true;
 }
 // Import query
 importQuery = () => {
+    // Remind the user that importing will result in unsaved changes being discarded
+    if (!confirm('Your current search will be discarded after importing.' +
+        '(You could save your current query by exporting it to local.)\n' +
+        'Continue import?')) {return;}
+
     $('#queryUpload').trigger('click');
     $(document).on('change', '#queryUpload', () => {
         // Instantiate file reader
@@ -300,13 +306,6 @@ importQuery = () => {
 }
 // Replicate query
 replicateQuery = query => {
-    // Update global var
-    currReq.stringFormat = query.queryString;
-    currReq.backendQ = query.backendQuery;
-    currReq.filters = query.filters;
-    currReq.operands = query.operands;
-    currReq.brackets = query.brackets;
-
     // Update query preview
     $('#queryPreviewBtn').text(currReq.stringFormat); 
     // Add each filter to the page

@@ -28,6 +28,20 @@ window.onload = () => {
             $('#speciesList').append($('<li>' + specie + '</li>'));
         });
     })
+    // Event handler for query import
+    $('#queryUpload').change(() => {
+        console.log($('#queryUpload')[0].files[0]);
+        // Instantiate file reader
+        const reader = new FileReader();
+        var query = {};
+        reader.onload = e => {
+            query = JSON.parse(reader.result);  // Parse file
+            replicateQuery(query);  // Replicate the query on page, so that users can further manipulate the query
+            console.log(query);
+        }
+        // Read file
+        reader.readAsText($('#queryUpload')[0].files[0]);
+    })
 }
 
 window.onscroll = () => {
@@ -249,13 +263,13 @@ updateQueryPreview = () => {
     }
     
     currReq.stringFormat = filters.join(' ').substring(2);
-    $('#queryPreviewBtn').text(currReq.stringFormat);
+    $('#queryPreviewArea').text(currReq.stringFormat);
     return currReq.stringFormat;
 }
 // Copy the query in preview to clipboard
 // Referenced source: https://www.codegrepper.com/code-examples/javascript/copy+text+to+clipboard+javascript
 copyQuery = () => {
-    let targetText = $('#queryPreviewBtn').text();
+    let targetText = $('#queryPreviewArea').text();
     if (!navigator.clipboard){ // use old commandExec() way
         var $temp = $("<input>");
         $("body").append($temp);
@@ -292,22 +306,11 @@ importQuery = () => {
         'Continue import?')) {return;}
 
     $('#queryUpload').trigger('click');
-    $(document).on('change', '#queryUpload', () => {
-        // Instantiate file reader
-        const reader = new FileReader();
-        var query = {};
-        reader.onload = e => {
-            query = JSON.parse(reader.result);  // Parse file
-            replicateQuery(query);  // Replicate the query on page, so that users can further manipulate the query
-        }
-        // Read file
-        reader.readAsText($('#queryUpload')[0].files[0]);
-    })
 }
 // Replicate query
 replicateQuery = query => {
-    // Update query preview
-    $('#queryPreviewBtn').text(currReq.stringFormat); 
+    // Remove all current filters
+    cleanSearchBar();
     // Add each filter to the page
     for (let i = 0; i < query.filters.length; i++) {
         // Styling
@@ -324,6 +327,12 @@ replicateQuery = query => {
             moveRight($('.rightArrow:last')[0]);
         }
     }
+    // Update query preview
+    $('#queryPreviewArea').text(query.queryString); 
+}
+// Clean search
+cleanSearchBar = () => {
+    $('.paramPair').remove();
 }
 
 // Show download progress

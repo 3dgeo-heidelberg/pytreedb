@@ -266,8 +266,6 @@ copyQuery = () => {
         navigator.clipboard.writeText(targetText);
     }    
 }
-// Import query
-importQuery = () => {}
 // Export query for future use
 exportQuery = () => {
     updateQueryPreview();
@@ -278,9 +276,55 @@ exportQuery = () => {
     
     var queryJsonExp = {
         "queryString": currReq.stringFormat,
-        "backendQuery": currReq.backendQ
+        "backendQuery": currReq.backendQ,
+        "filters": currReq.filters,
+        "operands": currReq.operands,
+        "brackets": currReq.brackets
     };
     saveJsonContent(JSON.stringify(queryJsonExp), 'query_exported');
+}
+// Import query
+importQuery = () => {
+    $('#queryUpload').trigger('click');
+    $(document).on('change', '#queryUpload', () => {
+        // Instantiate file reader
+        const reader = new FileReader();
+        var query = {};
+        reader.onload = e => {
+            query = JSON.parse(reader.result);  // Parse file
+            replicateQuery(query);  // Replicate the query on page, so that users can further manipulate the query
+        }
+        // Read file
+        reader.readAsText($('#queryUpload')[0].files[0]);
+    })
+}
+// Replicate query
+replicateQuery = query => {
+    // Update global var
+    currReq.stringFormat = query.queryString;
+    currReq.backendQ = query.backendQuery;
+    currReq.filters = query.filters;
+    currReq.operands = query.operands;
+    currReq.brackets = query.brackets;
+
+    // Update query preview
+    $('#queryPreviewBtn').text(currReq.stringFormat); 
+    // Add each filter to the page
+    for (let i = 0; i < query.filters.length; i++) {
+        // Styling
+        let [lab, val] = capitalizeFirstLetter(query.filters[i].split(':'));
+        if (lab === 'Mode') {val = val.toUpperCase();}
+        // Add filter to page
+        addSearchFilter({'text': lab});
+        // Show the value of filter
+        $('.fieldValue:last').html(val).attr('style', 'color: #212529');
+        // Set the operand
+        if (query.operands[i] == 'OR') {toggleOp($('.filterOperand:last'));}
+        // Add brackets
+        for (let depth = 1; depth <= query.brackets[i]; depth++) {
+            moveRight($('.rightArrow:last')[0]);
+        }
+    }
 }
 
 // Show download progress
@@ -411,7 +455,6 @@ savePointClouds = () => {
     })
 }
 
-
 // Add filter
 addSearchFilter = e => {
     var field = e.text;
@@ -475,7 +518,7 @@ updateAvailableVals = (newFilterID, field) => {
             })
             break;
         case "Canopy":
-            var canopy_conditions = ['leaf-on', 'leaf-off'];
+            var canopy_conditions = ['Leaf-on', 'Leaf-off'];
             canopy_conditions.forEach(cond => {
                 $(availableValuesEl).append(
                     '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + cond + '</a></li>'
@@ -491,9 +534,9 @@ updateAvailableVals = (newFilterID, field) => {
 // Toggle and/or operands
 toggleOp = e => {
     // Only or operand is allowed to combine multiple species filters 
-    if ($(e).prev().text().startsWith('Specie') && $(e).next().text().startsWith('Specie')) {
-        return;
-    }
+    // if ($(e).prev().text().startsWith('Specie') && $(e).next().text().startsWith('Specie')) {
+    //     return;
+    // }
     if ($(e).text() === 'AND') {
         $(e).text('OR');
         $(e).removeClass('andOp').addClass('orOp');
@@ -590,7 +633,15 @@ $('#idx').keydown(e => {
 });
 
 
-
+// Other trivial helper functions
+// Capitalize the first letter of each word in a list
+capitalizeFirstLetter = arr => {
+    let res = [];
+    arr.forEach(string => {
+        res.push(string.charAt(0).toUpperCase() + string.slice(1));
+    });
+    return res;
+}
 
 //////////////////////////////////////////////////////////////////////////
 //  Leaflet                                                             //

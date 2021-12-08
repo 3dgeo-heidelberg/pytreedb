@@ -103,7 +103,7 @@
                             <b class="func">Search the DB</b>
                         </div>
                         <div class="searchbar col-lg-8 col-md-12 col-sm-12" style="position: relative;">
-                            <div class="dropdown addFilter">
+                            <div class="dropdown addFilter" style="width: 80%; display: inline-block; vertical-align: middle;">
                                 <a class="btn btn-outline-success dropdown-toggle addFilterBtn" href="#" id="filterDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" 
                                     style="margin-top: 0.5rem; margin-bottom: 0.5rem; display: block;">Add Filter</a>
                                 <ul class="dropdown-menu" aria-labelledby="filterDropdown">
@@ -113,6 +113,7 @@
                                     <li><a class="dropdown-item" onclick="addSearchFilter(this)">Quality</a></li>
                                 </ul>
                             </div>
+                            <button type="button" class="btn btn-outline-success float-none" id="removeAllFilterBtn" onclick="cleanSearchBar()" style="display: inline-block; margin-right: -5rem;">Remove All</button>
                             <div id="queryPreviewArea" style="margin-bottom: 0.5rem;"> Your query: </div>
                             <button type="button" class="btn btn-outline-success float-start" id="updateQPreviewBtn" onclick="updateQueryPreview()">
                                 Update Preview

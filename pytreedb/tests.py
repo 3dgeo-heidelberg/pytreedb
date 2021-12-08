@@ -110,3 +110,56 @@ mydb.export_data('d:/tmp/test')                   # Export all, = reverse of imp
 mydb.export_data('d:/tmp/test2', trees=[1,5])     # Export only subset
 mydb.export_data(r'E:\tmp\test')
 mydb.export_data(r'E:\tmp\test2', trees=[1,5])
+
+
+
+
+
+# test run time
+import time
+
+
+def andQuery(li):
+    return mydb.inner_join(procSubquery(li[1:]))
+def orQuery(li):
+    return mydb.outer_join(procSubquery(li))
+def procSubquery(li):
+    res = []
+    for subQuery in li:
+        if isinstance(subQuery, str):  # if subQuery not nested
+            kv = subQuery.split(":")
+            res.append(mydb.query(kv[0], kv[1]))
+        elif type(subQuery) == list and subQuery[0] == "and":  # if nested AND query
+            res.append(andQuery(subQuery))
+        else:  # if nested OR query
+            res.append(orQuery(subQuery))
+    return res
+
+def retrievalTest():
+    start_time = time.time()
+    mydb.get_stats()
+    print("Get stats --- %s seconds ---" % (time.time() - start_time))
+    
+    start_time = time.time()
+    mydb.query('species', 'abies')
+    print("Query species --- %s seconds ---" % (time.time() - start_time))
+    
+    start_time = time.time()
+    query = [[["and","species:abies alba","mode:uls"]]]
+    print(len(orQuery(query)))
+    print("Simulate backend query --- %s seconds ---" % (time.time() - start_time))
+    
+
+start_time = time.time()
+mydb.import_data(r'E:\work\heidelberg\geojsons', overwrite=True)
+print("Importing current data needs --- %s seconds ---" % (time.time() - start_time))
+retrievalTest()
+
+print('===============')
+
+start_time = time.time()
+mydb.import_data(r'E:\work\heidelberg\test_geojsons_large_dataset', overwrite=True)
+print("Importing 10 times of data needs --- %s seconds ---" % (time.time() - start_time))
+retrievalTest()
+
+

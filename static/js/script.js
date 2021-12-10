@@ -316,6 +316,7 @@ replicateQuery = query => {
         // Styling
         let [lab, val] = capitalizeFirstLetter(query.filters[i].split(':'));
         if (lab === 'Mode') {val = val.toUpperCase();}
+        if (lab.startsWith('Canopy')) {lab = 'Canopy';}
         // Add filter to page
         addSearchFilter({'text': lab});
         // Show the value of filter
@@ -333,6 +334,7 @@ replicateQuery = query => {
 // Clean search
 cleanSearchBar = () => {
     $('.paramPair').remove();
+    $('#queryPreviewArea').text('Your query: ');
 }
 
 // Show download progress

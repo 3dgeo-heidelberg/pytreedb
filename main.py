@@ -17,7 +17,7 @@ from flask import Flask
 from flask import request
 from flask import render_template
 
-import pytreedb.pytreedb as pytreedb
+import pytreedb.db as pytreedb
 
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -35,9 +35,9 @@ def about():
 def contact():
     return render_template(r'contact.html')
 
-mydb = pytreedb.PyTreeDB(dbfile=r'E:\tmp\SYSSIFOSS\syssifoss.db') # instantiate pytreedb
+mydb = pytreedb.PyTreeDB(dbfile=r'D:\tmp\SYSSIFOSS\syssifoss.db') # instantiate pytreedb
 # mydb.load_db(r'E:\tmp\SYSSIFOSS\syssifoss.db') # Jiani: loading local db file
-# mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True) # download data
+#mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True) # download data
 
 # automatically open in a new browser tab on start
 if __name__ == 'main':

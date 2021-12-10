@@ -1,22 +1,23 @@
-#load module
-import pytreedb.pytreedb as pytreedb
+#load modules
+from pytreedb import db
+import sys
 
 #Test import from ZIP web resource
-db = pytreedb.PyTreeDB(dbfile=r'E:\tmp\SYSSIFOSS\syssifoss.db')
-db.import_data(r'https://heibox.uni-heidelberg.de/f/fc5e3cc8d93d4e0ca53b/?dl=1', overwrite=True)
-print(db.get_stats())
+mydb = db.PyTreeDB(dbfile=r'D:\tmp\SYSSIFOSS\syssifoss.db')
+mydb.import_data(r'https://heibox.uni-heidelberg.de/f/fc5e3cc8d93d4e0ca53b/?dl=1', overwrite=True)
+print(mydb.get_stats())
 
 # Create or load db from previous import
-mydb = pytreedb.PyTreeDB(dbfile=r'E:\tmp\SYSSIFOSS\syssifoss.db')
-mydb = pytreedb.PyTreeDB(dbfile=r'E:\work\heidelberg\syssifoss.db')
+mydb = db.PyTreeDB(dbfile=r'D:\tmp\SYSSIFOSS\syssifoss.db')
+#mydb = db.PyTreeDB(dbfile=r'E:\work\heidelberg\syssifoss.db')
 
 
 #Validate input GEOJSON if all mandatory keys are present
 # mydb.validate_json('C:/Users/bhoefle/Downloads/geojsons/B_BR01_01.geojson')
-mydb.validate_json(r'C:\Users\Anna\AppData\Local\Temp\tmpf52gu1pn\AbiAlb_BR03_01.geojson')
+mydb.validate_json(r'D:\data\SYSSIFOSS\geojsons\geojsons\AbiAlb_BR03_01.geojson')
 
 #Import data: append or create
-mydb.import_data(r'E:\work\heidelberg\geojsons', overwrite=True)
+mydb.import_data(r'D:\data\SYSSIFOSS\geojsons\geojsons\\', overwrite=True)
 #mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True)
 
 #mydb.import_data(r'C:\Users\bhoefle\Downloads')
@@ -60,15 +61,15 @@ print("Query result 'leaf-on' :", len(mydb.query('canopy_condition', 'leaf-on'))
 print("Query result 'leaf-off':", len(mydb.query('canopy_condition', 'leaf-off')))  # get subset of db fufilling query
 print("Query result 'leaf-on' (exact value search):", len(mydb.query('canopy_condition', 'leaf-on', False)))  # get subset of db fufilling query in exact manner
 
-print("Query by numeric comparison - quality == 3(eq): ", len(mydb.query_by_numeric_comparison('quality', 3, pytreedb.eq)))
-print("Query by numeric comparison - quality <= 3 (le): ", len(mydb.query_by_numeric_comparison('quality', 3, pytreedb.le)))
-print("Query by numeric comparison - pointCount < 5000 : ", len(mydb.query_by_numeric_comparison('pointCount', 5000, pytreedb.lt)))
+print("Query by numeric comparison - quality == 3(eq): ", len(mydb.query_by_numeric_comparison('quality', 3, db.eq)))
+print("Query by numeric comparison - quality <= 3 (le): ", len(mydb.query_by_numeric_comparison('quality', 3, db.le)))
+print("Query by numeric comparison - pointCount < 5000 : ", len(mydb.query_by_numeric_comparison('pointCount', 5000, db.lt)))
 print("Query result 'ALS' :", len(mydb.query('mode', 'ALS', regex=False)))  # get subset of db fufilling query
 print("Query if key exists: season: ", len(mydb.query_by_key_exists('canopy_condition')))
 print("Query if key exists: crown_diameter_1_m: ", len(mydb.query_by_key_exists('crown_diameter_1_m')))
 
 #Query by date
-print("Query by date: ", len(mydb.query_by_date('date','2020-01-01', pytreedb.gt)))
+print("Query by date: ", len(mydb.query_by_date('date','2020-01-01', db.gt)))
 
 #Query by search geometry [watch out latlon]
 print("Distance search1: ", len(mydb.query_by_geometry('{"type": "Point", "coordinates": [ -121.425061, 40.506229, 233.56 ] }', distance=1.0)))
@@ -99,7 +100,7 @@ for t in res_fi:
 
 #Query example: Date search
 
-print(pytreedb.hash_file(mydb.dbfile))
+print(db.hash_file(mydb.dbfile))
 
 # Get original JSON(str) of a tree
 json_of_first_tree = mydb.get_tree_as_json(mydb[0])
@@ -108,8 +109,8 @@ print(json_of_first_tree)
 # Export data
 mydb.export_data('d:/tmp/test')                   # Export all, = reverse of import_data()
 mydb.export_data('d:/tmp/test2', trees=[1,5])     # Export only subset
-mydb.export_data(r'E:\tmp\test')
-mydb.export_data(r'E:\tmp\test2', trees=[1,5])
+mydb.export_data(r'd:\tmp\test')
+mydb.export_data(r'd:\tmp\test2', trees=[1,5])
 
 
 

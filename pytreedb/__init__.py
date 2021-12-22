@@ -7,9 +7,9 @@ from __future__ import absolute_import
 
 __version__ = '0.1'
 
-import pytreedb.db, pytreedb.treedb_format, pytreedb.treedb_ufuncs
+import pytreedb.db, pytreedb.db_conf, pytreedb.db_utils
 
-__bibtex__ = r"""@Article{Hoefle:2020,
+__bibtex__ = r"""@Article{Hoefle:2022,
   Author    = {H\"ofle, B},
   Title     = {pytreedb},
   Journal   = {xxx},

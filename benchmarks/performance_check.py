@@ -60,18 +60,17 @@ if not os.path.isfile(cfg_path_to_dbfile_small):
 if not os.path.isfile(cfg_path_to_dbfile_large):
     create_data_set(cfg_path_to_dbfile_large, 100)
 
-sys.exit()
-
 mydb = pytreedb.PyTreeDB(dbfile=cfg_path_to_dbfile_small)
 print("################# SMALL DATA ###################")
 print(mydb.get_stats())
-cProfile.run('retrievalTest()')
-
+#cProfile.run('retrievalTest()')
+retrievalTest()
 
 print("################# BIG DATA ###################")
 mydb = pytreedb.PyTreeDB(dbfile=cfg_path_to_dbfile_large)
 print(mydb.get_stats())
-cProfile.run('retrievalTest()')
+#cProfile.run('retrievalTest()')
+retrievalTest()
 
 sys.exit()
 

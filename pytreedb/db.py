@@ -3,36 +3,43 @@ import json
 import glob
 import os
 import datetime
-import shapely.geometry
+import gzip
+
 import urllib
 import urllib.request
-import _pickle as cpickle
 import numpy
-import collections
+
 from pathlib import Path
 from operator import lt, le, eq, ne, ge, gt  # operator objects
+from functools import *
+
+#NEEDED ???
 import pandas as pd
+
 import numpy as np
+import copy
 
 # import own sub-modules
-from pytreedb.treedb_ufuncs import *
-from pytreedb.treedb_format import *
+from pytreedb.db_utils import *
+from pytreedb.db_conf import *
+
+#MongoDB
+import pymongo
+from bson.son import SON
+
 
 """ 
 ---------------------
 OPEN ISSUES
 ---------------------
-GENERAL / DB-BACKEND:
-    - REST server: start, stop, monitoring; @API functions 
-    - Write TESTS / test class: https://realpython.com/python-testing/
+
+ISSUES on gitlab: https://gitlab.gistools.geog.uni-heidelberg.de/giscience/3DGeo/pytreedb/-/issues
     
-- IMPORT
-    - Import from other DB via REST interface and optionally also download and re-link all linked data sources [idea from Fabian 22.07.2020]
+MISC
+    - cpickle compress/decompress db file
+    - Function to re-link all datasources in DB: i.e. change URL prefixes.
 
-- QUERIES
-    - ?
-
-DB EXPORTS
+DB EXPORTS (check if not yet existing...)
     - Export as geojson
     - Export as Numpy array
     - Export as Shapefile with flattened attributes: see flatten_json code
@@ -40,49 +47,30 @@ DB EXPORTS
     - Export for potree
     - Export as input for HELIOS: XML => Select data source (i.e. point cloud)
 
-WEBPAGE:
-    - Webpage providing (2D/3D) visualization and search capabilities based on OpenAPI of pytreedb
-    - Download option of selected trees (including linked data) as ZIP file: do it via Web Service (?)
-
-PYPI PACKAGE
-    - Check PEP-8:  https://legacy.python.org/dev/peps/pep-0008/ ; e.g. => underscore in variables
-    - Doxygen / auto docs generation
-    - Prepare folder/file structure for pypi: see ORS as example
-    - Create package and test upload
-    - Documentation for pypi
- 
 """
 
-
 class PyTreeDB:
-    def __init__(self, dbfile):
-        if __name__ == "__main__":
-            print("pyTreeDB (version {}), (c) 3DGeo Research Group, Heidelberg University (2020+)".format(__version__))
-        self.dbfile = dbfile  # pickle file holding the entire database
-        self.db = None  # dictionary central db file
-        self.data = None  # path do input data imported with import
-        self.host = None
-        self.port = None
-        self.service = None
-        self.stats = {"n_trees": None,
-                      "n_species": None}  # dictionary holding summary statistics about database (default variables are defined here)
-        self.i = 0  # needed for iterator
-        
-        if dbfile is not None:
-            # Check if dbfile is a valid path, if not, query users if an empty file shall be created
-            if not os.path.exists(dbfile):
-                if query_yes_no("The given path of dbfile <%s> does not exist. Create an empty file now?" % dbfile):
-                    print("File is created successfully. Note that you might want to import data into this empty .db file.")
-                    # Create the directory first if the dir does not exist
-                    if not os.path.exists(os.path.dirname(dbfile)):
-                        os.makedirs(os.path.dirname(dbfile))
-                    open(dbfile, 'w').close() # Create empty file
-                    self.dbfile = dbfile; # Set number variable
-                else:
-                    raise Exception("No such file or directory: %s" % self.dbfile)
-            else:
-                self.load_db(dbfile)
-
+    def __init__(self, dbfile, mongodb = {"uri": "mongodb://127.0.0.1:27017/", "db": "pytreedb", "col": "syssifoss"}):
+        self.dbfile = dbfile     # local file holding self.db
+        self.mongodb = mongodb  # dict holding mongodb connection infos
+        self.db = list()            # data container  -> list of dictionaries 
+        self.data = None            # path to input data imported with import (path of last import)      
+        self.stats = {"n_trees": None, "n_species": None}  # dictionary holding summary statistics about database
+        self.i = 0  # needed for iterator            
+        try:
+            #Connect MongoDB
+            self.mongodb_client = pymongo.MongoClient(self.mongodb["uri"])  #Check MongoDB connection
+            #Check if collection exists.
+            if not self.mongodb["col"] in self.mongodb_client[self.mongodb["db"]].list_collection_names():
+                print("Collection: {} created.".format(self.mongodb["col"]))           
+            #Connect and create connection if not yet there.
+            self.mongodb_col = self.mongodb_client[self.mongodb["db"]][self.mongodb["col"]] #MongoDB collection to be queried
+            #Create indices in MongoDB
+            self.mongodb_create_indexes()        
+        except:
+            print("Could not connect to MongoDB server or establishing sync/indices/etc. to MongoDB: {}.".format(self.mongodb))
+            sys.exit()          
+            
     def __getitem__(self, item):
         """Allow index(int) subscription on the database, list(int) and slicing access with int"""
         if isinstance(item, int):
@@ -91,9 +79,10 @@ class PyTreeDB:
         elif isinstance(item, list) or isinstance(item, numpy.ndarray):
             """Returns a list of selected trees(dict)"""
             return list(self.db[key] for key in item)
+
         elif isinstance(item, slice):
             """Returns list of slicing selected trees(dict) """
-            idx_array = numpy.array(list(self.db.keys()))
+            idx_array = numpy.arange(0,len(self.db))
             return self[idx_array[item]]
 
     def __len__(self):
@@ -115,71 +104,136 @@ class PyTreeDB:
         raise Exception(
             "Copying of PyTreeDb object is not yet safe. Lifehack: Make a new database and import the other db.")
 
-    def load_db(self, dbfile):
-        """Loads existing database file from pickle"""
-        try:
-            self.db = cpickle.load(open(dbfile, "rb"))
+    def save(self,dbfile=None, sync=False):
+        """Saves database to compressed serialized version."""
+        if dbfile is None:
+            dbfile = self.dbfile    #if no filename is given as arg - just overwrite existing file in self.dbfile
+        try:           
+            with gzip.open(dbfile, 'w') as output_file:
+                output_file.write(json.dumps(self.db).encode('utf-8'))
+            print ("WRITTEN: ", dbfile)
+            if sync is True:
+                upload_result = self.mongodb_synchronize(clear=True)
+                print("{} trees synchronized with MongoDB server.".format(len(upload_result.inserted_ids)))   
         except:
-            raise Exception("Could not read db file %s" % (dbfile))
+            raise Exception("Could not write db file {}. Path or permissions might be missing.".format (dbfile))    
 
+    def load(self, dbfile, sync=True):
+        """Loads existing compressed serialized version of database.
+           - sync: synchronize MongoDB immediately after loading (clears MongoDB first)."""
+        try:
+            with gzip.open(dbfile, 'r') as input_file:
+                self.db = json.loads(input_file.read().decode('utf-8'))
+            if sync is True:
+                upload_result = self.mongodb_synchronize(clear=True)
+                print("{} trees synchronized with MongoDB server.".format(len(upload_result.inserted_ids)))           
+        except:
+            raise Exception("Could not read db file {}. File might be corrupt.".format(dbfile))
+
+    def clear(self):
+        """Clear database and MongoDB. Start with empty data and MongoDB. Does not empty local db file."""
+        self.__init__(self.dbfile, self.mongodb)
+        self. mongodb_clear_col()
+        
     def import_data(self, path, overwrite=False):
-        """Read data from local file or from ZIP file provided as URL with filename like *.*json"""
-        if self.db is None or overwrite is True:
-            self.db = collections.OrderedDict()  # indexed.IndexedOrderedDict()  #https://pypi.org/project/indexed/
+        """Read data (json files) from local file or from URL of ZIP archive with files named like *.*json.
+           Returns number of trees added"""
+        if overwrite is True:
+            self.clear() # empty db
+            
         self.data = path  # URL or local directory used as data storage
-        # Check if data is local path or URL
-        if urllib.parse.urlparse(path).scheme in ('http', 'https',):
+        if urllib.parse.urlparse(path).scheme in ('http', 'https',):   # Check if data is local path or URL
             print("Download and use data from: {}".format(path))
             data_dir = download_extract_zip_tempdir(path)
-            print("Downloading to local temp: ", data_dir)
         else:
-            # local data
-            data_dir = path
+            data_dir = path    # local data
+        cnt= 0
         for f in Path(data_dir).rglob('*.*json'):
             try:
                 self.add_tree_file(f)
+                cnt+=1
             except Exception as err:
                 print("Input file <%s> cannot be read and is ignored. %s" % (f, err))
 
-        "#Store db as pickle"
-        cpickle.dump(self.db, open(self.dbfile, "wb"))
+        #Save zipped db file  and synchronize with MongoDB
+        self.save(self.dbfile, sync=True)
+        return cnt
 
     def import_db(self, path, overwrite=False):
-        """Import other database via pytreedb REST interface and optionally also download all files and re-link to new location"""
-        raise Exception("Not implemented yet.")
+        """Read data from local db file or from URL. Returns number of trees added"""
+        if overwrite is True:
+            self.clear() # empty db
+            
+        self.data = path  # URL or local directory used as data storage
+        if urllib.parse.urlparse(path).scheme in ('http', 'https',):   # Check if data is local path or URL
+            print("Download db file from: {}".format(path))
+            data_file= download_file_to_tempdir(path)
+        else:
+            data_file = path    # local data
+        try:
+            with gzip.open(data_file, 'r') as input_file:
+                data = json.loads(input_file.read().decode('utf-8'))                  
+        except:
+            raise Exception("Could not read db file {}. File might be not existing or corrupt.".format(data_file)) 
+            
+        cnt= 0
+        for tree_dict in data:  #add each single tree
+            self.add_tree(tree_dict)    #add tree
+            cnt+=1
+
+        #Save zipped db file  and synchronize with MongoDB
+        self.save(self.dbfile, sync=True)
+        return cnt
+
+    def mongodb_create_indexes(self):
+         #print("Create MongoDB indexes.")
+         #Create indices on fields
+         try:
+            for idx in INDEX_FIELDS:
+                resp = self.mongodb_col.create_index(idx)
+            for idx in INDEX_UNIQUE_FIELDS:
+                resp = self.mongodb_col.create_index(idx, unique=True)                    
+            for idx in INDEX_GEOM_SPHERE_FIELDS:
+                resp = self.mongodb_col.create_index([idx])
+         except:
+            print("Could not create index: {} defined in db_conf.py".format(idx))
+
+    def mongodb_drop_indexes(self):
+         #print("Dropping all MongoDB indexes.")
+         self.mongodb_col.drop_indexes() #drop all existing indices
+
+    def mongodb_synchronize(self, clear=True):   
+        #Bulk import into Mongodb
+        if clear is True: #empty collection first
+            self.mongodb_clear_col();
+        result = self.mongodb_col.insert_many(copy.deepcopy(self.db))   #deepcopy avoids that MongoDB object ["_id"] id is written into local dictionary
+        return result
+
+    def mongodb_clear_col(self):
+         #print("Clear MongoDB collection.")
+         self.mongodb_col.delete_many( { } ); #clear collection
+
+    def add_tree(self, tree):
+        """Add single tree object from dict"""
+        tree_dict=tree.copy()
+        # Add meta data 
+        tree_dict['_id_x'] = len( self.db) # store id (increment) for faster operations on result sets
+        tree_dict['_date'] = datetime.datetime.now().isoformat()  # Get insertion date
+        self.db.append(tree_dict)   #add to list      
 
     def add_tree_file(self, filenamepath):
         """Add single tree object from JSON file to db and add meta info"""
-
         # Validate input file first
         if self.validate_json(filenamepath) is False:
             print("File '%s' is not a valid format for pydtreedb. See template in treedb_format.py" % filenamepath)
             return
-
-        f_json = open(filenamepath)
+        #Add data
+        f_json = open(filenamepath)     #open input file
         json_string = json.loads(f_json.read())
         tree_dict = json_string.copy()
-        # Get id for new tree as autoincrement
-        new_idx = self.get_new_index()
-        self.db[new_idx] = tree_dict
-        # Add additional columns used for db handling and quick searching
-        tree_dict['id'] = new_idx  # Store object ID additionally also in object
-        tree_dict['_date'] = datetime.datetime.now().isoformat()  # Get insertion date
-        tree_dict['_file'] = Path(filenamepath).name  # Get filename
-        tree_dict['_geometry'] = shapely.geometry.shape(
-            json_string['geometry'])  # Generate Shapely geometry object of position
-        tree_dict['_json'] = json.dumps(json_string)  # Store original input json string
-        tree_dict['_file_hash'] = hash_file(filenamepath)
-        f_json.close()
-
-    def get_new_index(self):
-        """Get auto-increment new key for tree object"""
-        if self.db is None:
-            return 0
-        elif len(self.db) > 0:
-            return max(self.db.keys()) + 1
-        else:
-            return 0
+        tree_dict['_file'] = Path(filenamepath).name         
+        self.add_tree(tree_dict)
+        f_json.close() #close input file
 
     def get_db_file(self):
         """Returns name/path to pickle file of DB"""
@@ -195,79 +249,124 @@ class PyTreeDB:
         return self.stats
 
     def get_list_species(self):
-        """Returns list of unique names of species stored in DB"""
-        return list(set(gen_dict_extract('species', self.db)))
+        """Returns list of unique names of species stored in DB"""      
+        res = self.mongodb_col.distinct("properties.species") 
+        return list(res)
 
-    def get_shared_properties(self):
+    def get_shared_properties(self): #this is currently not done in DB, but sequentially on list(dict).
         """Returns all object.properties that are shared among all objects"""
         try:
             setlist = [set(self.db[i]['properties'].keys()) for i in range(0, len(self.db))]
             return sorted(list(set.intersection(*setlist)))
         except Exception as ex:
             return []
-
-    def query(self, key, value, regex=True):
-        """ Returns trees (list) fulfilling the regex or exact matching of value for a given key. Keys must written exactly the same."""
-        try:
-            if regex is True:
-                idx = [i for i in self.db if len(list(gen_dict_extract_regex(key, self.db[i], value)))]
-            else:
-                idx = [i for i in self.db if len(list(gen_dict_extract_exact(key, self.db[i], value)))]
-            #returning input json for now because of error "Object of type Point is not JSON serializable"; might need to implement custom serialization
-            return list(json.loads(self.db[key]["_json"]) for key in idx)
-            # Directly return the indexes
-            # return idx
+               
+    def query(self, *args, **kwargs):
+        """ General MongDB query forwarding: Returns trees (list of dict) fulfilling the arguments. Returns list of dict (=trees)
+          - Example: filter = {"properties.species": "Abies alba"}   
+          - Query ops: https://docs.mongodb.com/manual/reference/operator/query/ """
+        try:       
+            res = self.mongodb_col.find(*args,**kwargs)
+            return [e for e in res]
         except Exception as ex:
             print(ex)
             return []
 
-    def query_by_numeric_comparison(self, key, value, comp_op):
-        """ Returns trees (list) fulfilling the numeric comparison of values for given key"""
-        if comp_op not in [lt, le, eq, ne, ge, gt]:
-            raise Exception("Operator must be one of the module operator: lt, le, eq, ne, ge, gt")
+#############
+#===>
+#############
+    def query_multi(self):
+        """ Runs self.query() for each key-value-pair and returns aggregated result (i.e. outer join of single queries) """
+        pass
+
+#####################
+
+
+    def query_by_key_value(self, key, value, regex=True):
+        """ Returns trees (list) fulfilling the regex or exact matching of value for a given key (including nested path of key). Keys must written exactly the same, e.g. key = properties.species, value="Quercus *", regex=True"""
+        if regex is True:
+            res =  self.mongodb_col.find({key : { "$regex": value }},{'_id': False})       
         else:
-            idx = [i for i in self.db if len(list(gen_dict_extract_numeric_comp(key, self.db[i], value, comp_op)))]
-            return list(json.loads(self.db[key]["_json"]) for key in idx)
+            print("else:")
+            res =  self.mongodb_col.find({key : value},{'_id': False})  
+        return [e for e in res]
 
     def query_by_key_exists(self, key):
-        """ Returns trees(list) having a given key (no matter which value)"""
-        idx = [i for i in self.db if len(list(gen_dict_extract(key, self.db[i])))]
-        return list(self.db[key] for key in idx)
+        """ Returns trees(list) having a given key(string) defined as dict (no matter which value)"""
+        res = self.mongodb_col.find({key:{'$exists': 1}},{'_id': False}) 
+        return [e for e in res]
 
-    def query_by_species(self, value):
+    def query_by_numeric_comparison(self, key, value, comp_op):
+        """ Returns trees (list) fulfilling the numeric comparison of values for given key"""
+        raise Exception("Can be done with self.query()")     
+
+    def query_by_species(self, regex):
         """Returns trees(list) fulfilling the regex matching on the species name"""
-        return self.query('species', value)
+        res =  self.mongodb_col.find({QUERY_SPECIES_FIELDNAME : { "$regex": regex }},{'_id': False})
+        return [e for e in res]
+
+    def query_by_date(self, key, start, end=False):
+        """Returns trees(list) fulfilling the date of key lies between start and end date in format 'YYYY-MM-DD'
+        If no end date is given, the current day is taken.
+        Examples:   
+            - query_by_date(key="properties.measurements.date", start="2019-08-28", end='2022-01-01')
+            - query_by_date(key="properties.data.date", start="2019-08-28")
+     """
+        try:
+            startdate = datetime.datetime.strptime(start, '%Y-%m-%d').isoformat()
+            if end is False:
+                enddate = datetime.datetime.now().isoformat() #take today
+            else:
+                enddate = datetime.datetime.strptime(end, '%Y-%m-%d').isoformat()
+        except:
+            raise Exception("Date format is required as string 'YYYY-MM-DD' ")         
+       
+        res =  self.mongodb_col.find({key : {"$gte":startdate,"$lte":enddate}}, {'_id': False})
+        return [e for e in res]        
+
 
     def query_by_geometry(self, geom, distance=0.0):
-        """Returns list of trees(dict) that are within a defined distance (in map units of the coordinates - watch out for latlon) from search geometry which is provided as geojson dictionary or string
-            e.g. {"type": "Point", "coordinates": (0.0, 0.0)}
-        """
+        """Returns list of trees(dict) that are within a defined distance (in meters) from search geometry which is provided as GEOJSON dictionary or string; Geometry types Point and Polygon are supported, for example:
+
+        {"type": "Point", "coordinates": (0.0, 0.0)}
+     
+        { "type": "Polygon", "coordinates": [ [ [ 8.700980940620983, 49.012725603975355 ], [ 8.700972890122355, 49.011695140150906 ], [ 8.70235623413669, 49.01167501390433 ], [ 8.702310614644462, 49.012713528227415 ], [ 8.702310614644462, 49.012713528227415 ], [ 8.700980940620983, 49.012725603975355 ] ] ] }
+      
+    - Online help for geometries in MongoDB: 
+        - https://docs.mongodb.com/manual/geospatial-queries/
+        - https://pymongo.readthedocs.io/en/stable/examples/geo.html  
+    """        
         try:
             if isinstance(geom, str):
-                geom = json.loads(geom)
-            search_geometry = shapely.geometry.shape(geom)
-        except Exception as err:
-            print("Provided search geometry could not be parsed: %s" % err)
-            return []
-
-        return [tree for tree in self if tree['_geometry'].distance(search_geometry) <= distance]
-
-    def query_by_date(self, key, value, comp_op):
-        """Returns trees(list) fulfilling the date comparison on a key which contains a date ('YYYY-MM-DD')"""
-        try:
-            _date_parts = value.split("-")
-            _date = datetime.date(int(_date_parts[0]), int(_date_parts[1]), int(_date_parts[2]))
+                geom = json.loads(geom)         
         except:
-            raise Exception("Date format is required as string 'YYYY-MM-DD' ")
+            raise Exception("Could not convert search geometry to dictionary. Correct geojson?\n{}".format(geom)) 
+        
+        if geom["type"] == "Point":
+            spatial_query = {QUERY_GEOMETRY : {"$nearSphere": { "$geometry" : geom,"$maxDistance": distance}}}            
+        elif geom["type"] == "Polygon":
+            spatial_query = {QUERY_GEOMETRY : {"$geoWithin": { "$geometry" : geom}}}
+            
+        #Run query on spatial index
+        res = self.mongodb_col.find(spatial_query, {'_id': False})
+        
+        return [e for e in res]  
 
-        if comp_op not in [lt, le, eq, ne, ge, gt]:
-            raise Exception("Operator must be one of the module operator: lt, le, eq, ne, ge, gt")
-        else:
-            idx = [i for i in self.db if len(list(gen_dict_extract_date_comp(key, self.db[i], _date, comp_op)))]
-            return list(self.db[key] for key in idx)
+
+    def get_ids(self, trees) -> list:
+        """Returns ids(list) of trees(list)"""
+        try:
+                return [k['_id_x'] for k in trees]  
+        except:
+            if not isinstance(trees, list):
+                print("Input for function {}() must be a list. Given wrong type: {}.) ".format(sys._getframe().f_code.co_name, type(trees)))
+            else:
+                print("Could not get id for: {}".format(trees))
+            return None        
     
     def inner_join(self, t_lists):
         """Returns trees present in all lists"""
+        print("WARNING: Function is deprecated and just here for backward compatability. Use joining in query.")
         if len(t_lists) < 2:
             return t_lists[0]
         res = t_lists[0]
@@ -277,6 +376,7 @@ class PyTreeDB:
     
     def outer_join(self, t_lists):
         """Return trees present in either of the lists"""
+        print("WARNING: Function is deprecated and just here for backward compatability. Use joining in query.")
         if len(t_lists) < 2:
             return t_lists[0]
         res = t_lists[0]
@@ -295,26 +395,22 @@ class PyTreeDB:
             return list(set.intersection(*[set(self.get_ids(x)) for x in results]))
         elif operator == 'or':
             results_sets = [set(self.get_ids(i)) for i in results]
-            print(results_sets)
             return list(set.union(*results_sets))  # unique ids
 
-    def get_ids(self, trees):
-        """Returns ids(list) of trees(list)"""
-        if not isinstance(trees, list):
-            # in case only single tree is provided
-            trees = [trees]
-        if len(trees) >= 1:
-            return [k['properties']['id'] for k in trees]
-        else:
-            return []
 
     def to_list(self):
         """Returns list of all tree objects(dict)"""
-        return [self.db[k] for k in self.db.keys()]
+        return self.db
 
-    def get_tree_as_json(self, tree):
+    def get_tree_as_json(self, tree, indent = 4, metadata=False):
         """Returns original JSON(str) file content for a single tree(dict)"""
-        return tree['_json']
+        tree_export = copy.copy(tree)
+        if metadata == False:         #remove metadata
+            #Remove all keys with leading "_": could also be done in loop but might be slower. hardcode for the minute.
+            del tree_export["_file"]
+            del tree_export["_date"]
+            del tree_export["_id_x"]
+        return json.dumps(tree_export, indent = indent) 
 
     def validate_json(self, json_file):
         """Checks if JSON is valid and compatible for import into pytreedb. Only mandatory fields and main structure are checked"""
@@ -405,32 +501,13 @@ class PyTreeDB:
         df_general_all.to_csv(outdir + '/result_general.csv', index=False)
         df_metrics_all.to_csv(outdir + '/result_metrics.csv', index=False)
 
-    def start_server(self, host="127.0.0.1", port=5000):
-        self.host = host
-        self.port = port
-        raise Exception("Not implemented yet.")
-        """
-        from fastapi import FastAPI
-        import uvicorn
-        
-        app = FastAPI()
-       
-        @app.get("/")
-        async def root():
-            return {"message": "Hello World"}
-
-        #print ("http://127.0.0.1:5000/")
-        #print ("http://127.0.0.1:5000/openapi.json")
-        self.service = uvicorn.run("main:app", host="127.0.0.1", port=5000, log_level="info")    
-        """
-
-    def stop_server(self):
-        raise Exception("Not implemented yes.")
 
     def test(self):
         """Test routines to check all functions of the class"""
         raise Exception("Not implemented yes.")
 
 
+
 if __name__ == "__main__":
-    pass
+    print("pyTreeDB (version {}), (c) 3DGeo Research Group, Heidelberg University (2021+)".format(__version__))
+

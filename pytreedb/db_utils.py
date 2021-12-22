@@ -154,6 +154,15 @@ def download_extract_zip_tempdir(url):
     zip_ref.extractall(zip_temp_dir)
     zip_ref.close()
     return zip_temp_dir
+
+def download_file_to_tempdir(url):
+    """This function downloads a  file and puts it to a temporary directory
+    - Input: URL
+    - Return: full path to file """
+    temp_file = tempfile.NamedTemporaryFile().name
+    ssl._create_default_https_context = ssl._create_unverified_context
+    urllib.request.urlretrieve(url, temp_file)
+    return temp_file
     
 def query_yes_no(question, default="yes"):
     """Ask a yes/no question via raw_input() and return their answer.

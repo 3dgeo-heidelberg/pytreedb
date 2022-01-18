@@ -428,6 +428,20 @@ img.grayout {
     font-family: Consolas;
     font-family: var(--bs-font-monospace);
 }
+.form-check-inline {
+    margin-right: .5rem;
+}
+.form-check .form-check-input {
+    margin-right: .25rem;
+    margin-left: 0;
+}
+.form-check {
+    padding-left: 0;
+    margin-bottom: 0;
+}
+input.form-check-input {
+    margin-bottom: 0;
+}
 
 /* lg */
 

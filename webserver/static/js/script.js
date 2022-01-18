@@ -1,5 +1,5 @@
 // Global variables
-var speciesList, n_trees, jsonOutput, getEverySec; 
+var speciesList, n_trees, jsonOutput, previewTrees = [], getEverySec; 
 var numFilters = 0;
 var currReq = {
     "url": '',
@@ -138,6 +138,7 @@ searchDB = () => {
                 // Load data into html
                 $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + i + '"></pre>');
                 $('#tree-' + i).jsonViewer(trees[i]);
+                previewTrees.push(JSON.stringify(trees[i]))
                 // Show only one code block
                 if (i > 0) {
                     $('#tree-' + i).hide();
@@ -470,28 +471,39 @@ addSearchFilter = e => {
     var field = e.text;
     var newFilterID = 'paramPair' + numFilters++;
     var andOp = '<span class="andOp filterOperand" onClick="toggleOp(this)">AND</span>';
-    var addFilterCodeSnippet = 
-        '<div class="wrapper paramPair removeFilterAble" id="'+ newFilterID + '" >' +
-            '<span class="crossBtn" onclick="removeSearchFilter(this)"></span>' + andOp +
-            '<div class="dropdown normalValUI" style="display: inline-block; width: calc(100% - 4rem);">' + 
-                '<span class="fieldLabel ' + field + '">' + field + '</span><a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">---</a>' + 
-                '<ul class="dropdown-menu availableValues" aria-labelledby="fieldValue"></ul>' + 
-            '</div>' + 
-            '<span class="leftArrow parentheseArrow" onclick="moveLeft(this)"></span>' +
-            '<span class="rightArrow parentheseArrow" onclick="moveRight(this)"></span>' + 
+    var numQuality = 5;
+        
+    var normalFilterFVSnippet = 
+        '<div class="dropdown fvWrapper" style="display: inline-block; width: calc(100% - 4rem);">' + 
+            '<span class="fieldLabel ' + field + '">' + field + '</span><a class="btn btn-light dropdown-toggle fieldValue" role="button" data-bs-toggle="dropdown" aria-expanded="false">---</a>' + 
+            '<ul class="dropdown-menu availableValues" aria-labelledby="fieldValue"></ul>' + 
+        '</div>';
+    var qualityFilterFVSnippet = 
+        '<div class="fvWrapper" style="display: inline-block; width: calc(100% - 4rem);">' + 
+            '<span class="fieldLabel ' + field + '">' + field + '</span>' + 
+            '<div class="btn-light fieldValue" style="display: inline-block; color: #000">' + 
+            qualityCheckboxes(numQuality) +
+            '</div>'+
         '</div>';
     
     if ($('[id^="paramPair"]').length == 0) {  // If no filter exists yet
-        $('.addFilter:first').before(addFilterCodeSnippet);  // Insert the first filter
-        // $('.filterOperand:first').remove();
-        // $('.dropdown.normalValUI').css('width', '100%');
+        // Insert the first filter
+        if (field == 'Quality') {
+            $('.addFilter:first').before(addWholeFilterSnippet(qualityFilterFVSnippet, newFilterID, andOp));  
+        } else {
+            $('.addFilter:first').before(addWholeFilterSnippet(normalFilterFVSnippet, newFilterID, andOp));
+            // Update available values in the dropdown according to the added field filter
+            updateAvailableVals(newFilterID, field);
+        }
         $('.filterOperand:first').text('.').removeClass('andOp').removeClass('orOp').addClass('firstFilter');
     } else {  // Otherwise insert code after the last filter, and add connecting operand
-        $('[id^="paramPair"]:last').after(addFilterCodeSnippet);
+        if (field == 'Quality') {
+            $('[id^="paramPair"]:last').after(addWholeFilterSnippet(qualityFilterFVSnippet, newFilterID, andOp));
+        } else {
+            $('[id^="paramPair"]:last').after(addWholeFilterSnippet(normalFilterFVSnippet, newFilterID, andOp));
+            updateAvailableVals(newFilterID, field);
+        }
     }
-    
-    // Update available values in the dropdown according to the added field filter
-    updateAvailableVals(newFilterID, field);
 }
 //Remove filter
 removeSearchFilter = e => {
@@ -504,6 +516,27 @@ removeSearchFilter = e => {
         // $('.paramPair:first').children('.dropdown').css('width', '100%');
         $('.filterOperand:first').text('.').removeClass('andOp').removeClass('orOp').addClass('firstFilter');
     } 
+}
+// Build quality checkboxes
+qualityCheckboxes = numQuality => {
+    let out = "";
+    for (let i = 1; i <= numQuality; i++) {
+        out += 
+        '<div class="form-check form-check-inline">' +
+            '<input class="qualityCheckInput form-check-input" type="checkbox" id="qualityCheckbox' + i + '" value="' + i + '" />' +
+            '<label class="form-check-label" for="qualityCheckbox' + i + '">' + i + '</label>' +
+        '</div>';
+    }
+    return out;
+}
+// Add the complete html snippet for the new filter
+addWholeFilterSnippet = (FVSnippet, newFilterID, andOp) => {
+    return '<div class="wrapper paramPair removeFilterAble" id="'+ newFilterID + '" >' +
+        '<span class="crossBtn" onclick="removeSearchFilter(this)"></span>' + andOp +
+        FVSnippet + 
+        '<span class="leftArrow parentheseArrow" onclick="moveLeft(this)"></span>' +
+        '<span class="rightArrow parentheseArrow" onclick="moveRight(this)"></span>' + 
+    '</div>';
 }
 // After adding a filter, the available values will be updated in the dropdown
 updateAvailableVals = (newFilterID, field) => {
@@ -623,7 +656,7 @@ toggleTab = e => {
     $('.previewTree').hide();
     $('#tree-' + (e.text - 1)).show();
     // Update jsonOutput
-    jsonOutput = $('#tree-' + (e.text - 1)).text();
+    jsonOutput = previewTrees[e.text - 1];
 }
 
 // Show all species in the databank

@@ -233,6 +233,15 @@ collectFilterParams = () => {
         var inBracket3 = classlists.contains('bracket-3');
 
         if (label.startsWith('canopy')) {label = 'canopy_condition'};
+        // Read checked quality values correctly
+        if (label == "quality") {
+            value = [];
+            for (let i = 0; i < 5; i++) {
+                if ($(e).find('.qualityCheckInput')[i].checked) {
+                    value.push($(e).find('.qualityCheckInput')[i].value);
+                }
+            }
+        }
         
         currReq.filters.push(label + ':' + value);
         currReq.operands.push(op);
@@ -321,7 +330,15 @@ replicateQuery = query => {
         // Add filter to page
         addSearchFilter({'text': lab});
         // Show the value of filter
-        $('.fieldValue:last').html(val).attr('style', 'color: #212529');
+        if (lab === 'Quality') {
+            let checkedVals = val.split(',');
+            for (let i = 0; i < checkedVals.length; i++) {
+                let n = parseInt(checkedVals[i]) - 1;
+                $('.fieldValue:last').find('.qualityCheckInput')[n].checked = true;
+            }
+        } else {
+            $('.fieldValue:last').html(val).attr('style', 'color: #212529');
+        }
         // Set the operand
         if (query.operands[i] == 'OR') {toggleOp($('.filterOperand:last'));}
         // Add brackets

@@ -502,11 +502,20 @@ addSearchFilter = e => {
             qualityCheckboxes(numQuality) +
             '</div>'+
         '</div>';
+        var rangeFilterFVSnippet = 
+        '<div class="fvWrapper" style="display: inline-block; width: calc(100% - 4rem);">' + 
+            '<span class="fieldLabel ' + field + '">' + field + '</span>' + 
+            '<div class="btn-light fieldValue" style="display: inline-block; color: #606060">' +
+                '<input type="text" class="rangeInput"><span class="mx-2px">-</span><input type="text" class="rangeInput">' + 
+            '</div>'+
+        '</div>';
     
     if ($('[id^="paramPair"]').length == 0) {  // If no filter exists yet
         // Insert the first filter
-        if (field == 'Quality') {
+        if (field === 'Quality') {
             $('.addFilter:first').before(addWholeFilterSnippet(qualityFilterFVSnippet, newFilterID, andOp));  
+        } else if (field === 'DBH') {
+            $('.addFilter:first').before(addWholeFilterSnippet(rangeFilterFVSnippet, newFilterID, andOp));  
         } else {
             $('.addFilter:first').before(addWholeFilterSnippet(normalFilterFVSnippet, newFilterID, andOp));
             // Update available values in the dropdown according to the added field filter
@@ -514,8 +523,10 @@ addSearchFilter = e => {
         }
         $('.filterOperand:first').text('.').removeClass('andOp').removeClass('orOp').addClass('firstFilter');
     } else {  // Otherwise insert code after the last filter, and add connecting operand
-        if (field == 'Quality') {
+        if (field === 'Quality') {
             $('[id^="paramPair"]:last').after(addWholeFilterSnippet(qualityFilterFVSnippet, newFilterID, andOp));
+        } else if (field === 'DBH') {
+            $('[id^="paramPair"]:last').after(addWholeFilterSnippet(rangeFilterFVSnippet, newFilterID, andOp));
         } else {
             $('[id^="paramPair"]:last').after(addWholeFilterSnippet(normalFilterFVSnippet, newFilterID, andOp));
             updateAvailableVals(newFilterID, field);

@@ -30,14 +30,12 @@ window.onload = () => {
     })
     // Event handler for query import
     $('#queryUpload').change(() => {
-        console.log($('#queryUpload')[0].files[0]);
         // Instantiate file reader
         const reader = new FileReader();
         var query = {};
         reader.onload = e => {
             query = JSON.parse(reader.result);  // Parse file
             replicateQuery(query);  // Replicate the query on page, so that users can further manipulate the query
-            console.log(query);
         }
         // Read file
         reader.readAsText($('#queryUpload')[0].files[0]);
@@ -234,13 +232,17 @@ collectFilterParams = () => {
 
         if (label.startsWith('canopy')) {label = 'canopy_condition'};
         // Read checked quality values correctly
-        if (label == "quality") {
+        if (label == 'quality') {
             value = [];
             for (let i = 0; i < 5; i++) {
                 if ($(e).find('.qualityCheckInput')[i].checked) {
                     value.push($(e).find('.qualityCheckInput')[i].value);
                 }
             }
+        }
+        // Read ranged values correctly
+        if (['dbh', 'height', 'crowndia.'].includes(label)) {
+            value = $(e).find('.rangeInput')[0].value + '-' + $(e).find('.rangeInput')[1].value;
         }
         
         currReq.filters.push(label + ':' + value);
@@ -327,6 +329,7 @@ replicateQuery = query => {
         let [lab, val] = capitalizeFirstLetter(query.filters[i].split(':'));
         if (lab === 'Mode') {val = val.toUpperCase();}
         if (lab.startsWith('Canopy')) {lab = 'Canopy';}
+        if (lab === 'Dbh') {lab = 'DBH';}
         // Add filter to page
         addSearchFilter({'text': lab});
         // Show the value of filter
@@ -336,6 +339,10 @@ replicateQuery = query => {
                 let n = parseInt(checkedVals[i]) - 1;
                 $('.fieldValue:last').find('.qualityCheckInput')[n].checked = true;
             }
+        } else if (['DBH', 'Height', 'CrownDia.'].includes(lab)) {
+            let range = val.split('-');
+            $('.fieldValue:last').find('.rangeInput')[0].value = range[0];
+            $('.fieldValue:last').find('.rangeInput')[1].value = range[1];
         } else {
             $('.fieldValue:last').html(val).attr('style', 'color: #212529');
         }
@@ -502,7 +509,7 @@ addSearchFilter = e => {
             qualityCheckboxes(numQuality) +
             '</div>'+
         '</div>';
-        var rangeFilterFVSnippet = 
+    var rangeFilterFVSnippet = 
         '<div class="fvWrapper" style="display: inline-block; width: calc(100% - 4rem);">' + 
             '<span class="fieldLabel ' + field + '">' + field + '</span>' + 
             '<div class="btn-light fieldValue" style="display: inline-block; color: #606060">' +
@@ -514,10 +521,12 @@ addSearchFilter = e => {
         // Insert the first filter
         if (field === 'Quality') {
             $('.addFilter:first').before(addWholeFilterSnippet(qualityFilterFVSnippet, newFilterID, andOp));  
-        } else if (field === 'DBH') {
-            $('.addFilter:first').before(addWholeFilterSnippet(rangeFilterFVSnippet, newFilterID, andOp));  
+        } else if (field === 'DBH' || field === 'Height' || field === 'CrownDia.') {
+            $('.addFilter:first').before(addWholeFilterSnippet(rangeFilterFVSnippet, newFilterID, andOp));
+            console.log("test");
         } else {
             $('.addFilter:first').before(addWholeFilterSnippet(normalFilterFVSnippet, newFilterID, andOp));
+            console.log("no");
             // Update available values in the dropdown according to the added field filter
             updateAvailableVals(newFilterID, field);
         }
@@ -525,15 +534,16 @@ addSearchFilter = e => {
     } else {  // Otherwise insert code after the last filter, and add connecting operand
         if (field === 'Quality') {
             $('[id^="paramPair"]:last').after(addWholeFilterSnippet(qualityFilterFVSnippet, newFilterID, andOp));
-        } else if (field === 'DBH') {
+        } else if (field === 'DBH' || field === 'Height' || field === 'CrownDia.') {
             $('[id^="paramPair"]:last').after(addWholeFilterSnippet(rangeFilterFVSnippet, newFilterID, andOp));
         } else {
             $('[id^="paramPair"]:last').after(addWholeFilterSnippet(normalFilterFVSnippet, newFilterID, andOp));
             updateAvailableVals(newFilterID, field);
         }
     }
+    
 }
-//Remove filter
+// Remove filter
 removeSearchFilter = e => {
     var rFilter = $('#' + e.parentNode.id)
     var nFilter = rFilter.next()

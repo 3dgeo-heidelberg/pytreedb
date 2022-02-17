@@ -743,45 +743,32 @@ var geoJSONLayer = L.geoJSON(null, {
     }).addTo(map);
 
 // Initialise the FeatureGroup to store drawing layers
+// Source: https://github.com/geoman-io/leaflet-geoman
 var drawnItems = L.featureGroup().addTo(map);
 
-var drawPluginOptions = {
-  position: 'topright',
-  draw: {
-    polygon: {
-        allowIntersection: false,
-        showArea: true
-    },
-    polyline: false, // disable
-    circle: false, 
-    rectangle: false,
-    marker: false,
-    circlemarker: false
-    },
-  edit: {
-    featureGroup: drawnItems, //REQUIRED!!
-    poly: {
-        allowIntersection: false
-    }
-  }
-};
+// Add Leaflet-Geoman controls with some options to the map  
+map.pm.addControls({  
+    position: 'topleft',
+    drawMarker: false,
+    drawCircleMarker: false,
+    drawPolyline: false,
+    drawRectangle: false,
+    drawCircle: false,
+    dragMode: false,
+    rotateMode: false
+}); 
 
-// Initialise the draw control and pass it the FeatureGroup of drawing layers
-map.addControl(new L.Control.Draw(drawPluginOptions));
-
-map.on(L.Draw.Event.CREATED, function (e) {
-    var polyLayer = e.layer;
-    drawnItems.addLayer(polyLayer);
-
+map.on('pm:create', function (e) {
+    var poly = e.layer;
+    drawnItems.addLayer(poly);
     geoJSONLayer.eachLayer(marker => {
-        if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, polyLayer)) {
+        if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, poly)) {
             marker._icon.classList.add("grayout");
-            // map.removeLayer(marker);
         }
     });
 });
 
-map.on('draw:edited', function (e) {
+drawnItems.on('pm:update', function (e) {
     geoJSONLayer.eachLayer(marker => {
         marker._icon.classList.remove('grayout');
         drawnItems.eachLayer(poly => {
@@ -792,20 +779,29 @@ map.on('draw:edited', function (e) {
     });
 });
 
-map.on('draw:deleted', function(e) {
-    var dLayers = e.layers;
-    
+drawnItems.on('pm:cut', function(e) {
+    drawnItems.removeLayer(e.originalLayer);
+    drawnItems.addLayer(e.layer);
+    geoJSONLayer.eachLayer(marker => {
+        marker._icon.classList.remove('grayout');
+        drawnItems.eachLayer(poly => {
+            if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, poly)) {
+                marker._icon.classList.add('grayout');
+            }
+        });
+    });
+});
+
+map.on('pm:remove', function(e) {    
     if (drawnItems.getLayers().length == 0) {
         geoJSONLayer.eachLayer(marker => {
             marker._icon.classList.remove('grayout');
         });
     } else {
         geoJSONLayer.eachLayer(marker => {
-            dLayers.eachLayer(dPoly => {
-                if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, dPoly)) {
-                    marker._icon.classList.remove('grayout');
-                }
-            });
+            if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, e.layer)) {
+                marker._icon.classList.remove('grayout');
+            }
         });
     }
 });

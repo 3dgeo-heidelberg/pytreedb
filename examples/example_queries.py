@@ -11,6 +11,7 @@ print("Import new")
 mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True)
 print(mydb.get_stats())
 
+"""
 print("Import false")
 mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=False)
 print(mydb.get_stats())
@@ -131,41 +132,27 @@ print("Distance search2: ", len(mydb.query_by_geometry('{"type": "Point", "coord
 
 print("Distance search3: ", len(mydb.query_by_geometry('{ "type": "Polygon", "coordinates": [ [ [ 8.700980940620983, 49.012725603975355 ], [ 8.700972890122355, 49.011695140150906 ], [ 8.70235623413669, 49.01167501390433 ], [ 8.702310614644462, 49.012713528227415 ], [ 8.702310614644462, 49.012713528227415 ], [ 8.700980940620983, 49.012725603975355 ] ] ] }', distance=0.0)))
 
-
-
 trees_in_poly = mydb.query_by_geometry('{ "type": "Polygon", "coordinates": [ [ [ 8.700980940620983, 49.012725603975355 ], [ 8.700972890122355, 49.011695140150906 ], [ 8.70235623413669, 49.01167501390433 ], [ 8.702310614644462, 49.012713528227415 ], [ 8.702310614644462, 49.012713528227415 ], [ 8.700980940620983, 49.012725603975355 ] ] ] }', distance=0.0)
 for tree in trees_in_poly:
     print(tree['_file'])
     break
 
-
-
 # Get tree ids for a query result
 print(mydb.get_ids(mydb.query({"properties.species": "Abies alba"}, limit=10, skip=10)))
 print(mydb.get_ids(mydb.query({"properties.species": "Abies alba"}, limit=1)))
-
-##############
-### HERE######
-##############
+"""
 
 
-# Query and join results(lists) using a logical operator
-print("Join (trees) results AND:", mydb.join([mydb[0:2],mydb.to_list()], operator='and'))
-print("Join (trees) results OR :", mydb.join([mydb[0:1],mydb[0:]], operator='or'))
+print ("# Query examples for AND and OR as well as nested queries")
+#https://www.analyticsvidhya.com/blog/2020/08/query-a-mongodb-database-using-pymongo/
+print(mydb.get_ids(mydb.query({"$or":[{"properties.species": "Abies alba"}, {"properties.species": "Fagus sylvatica"}]})))
+print(mydb.get_ids(mydb.query({"$and":[{"properties.species": "Abies alba"}, {"properties.data.mode": "TLS"}]})))
+print(mydb.get_ids(mydb.query({"$and":[{"properties.species": "Abies alba"}, {"$or":[{"properties.data.mode": "TLS"}, {"properties.data.mode": "ALS"}]}]})))
 
 
-
-##############
 sys.exit()
-##############
 
 """
-#Query example: Select tree species AND
-res_fagus = mydb.query('species', 'Fagus s')
-res_ALS = mydb.query('mode', 'ALS')
-res_fagus_ALS =  mydb.join([res_fagus, res_ALS], operator='and')
-print("Fagus with ALS data: ",res_fagus_ALS)
-# print(mydb[res_fagus]) res_fagus is a list of strings (tree ids). 
 
 #Query example: Get trees with Field Inventory measurements (FI)
 res_fi = mydb.query('source', 'FI')

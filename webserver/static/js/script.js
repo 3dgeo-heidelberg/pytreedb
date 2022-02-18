@@ -327,7 +327,7 @@ replicateQuery = query => {
     for (let i = 0; i < query.filters.length; i++) {
         // Styling
         let [lab, val] = capitalizeFirstLetter(query.filters[i].split(':'));
-        if (lab === 'Mode') {val = val.toUpperCase();}
+        if (lab === 'Mode' || lab === 'Source') {val = val.toUpperCase();}
         if (lab.startsWith('Canopy')) {lab = 'Canopy';}
         if (lab === 'Dbh') {lab = 'DBH';}
         // Add filter to page
@@ -595,6 +595,14 @@ updateAvailableVals = (newFilterID, field) => {
             modes.forEach(mode => {
                 $(availableValuesEl).append(
                     '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + mode + '</a></li>'
+                );
+            })
+            break;
+        case "Source":
+            var sources = ['TLS', 'ALS', 'ULS', 'FI'];
+            sources.forEach(source => {
+                $(availableValuesEl).append(
+                    '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + source + '</a></li>'
                 );
             })
             break;

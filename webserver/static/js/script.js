@@ -187,8 +187,8 @@ processAND = (start, end, ft, op, bk) => {
                 while (brackets[left] > 0) {
                     left -= 1;
                 }
-                // brackets = brackets.map(val => {return val - 1});
                 let bracketL = processAND(left, right, filters, operands, brackets.map(val => {return val - 1}));
+                console.log(bracketL);
                 filters.splice(left, right - left + 1, bracketL);
                 operands.splice(left + 1, right - left);
                 brackets.splice(left + 1, right - left);
@@ -206,7 +206,7 @@ processAND = (start, end, ft, op, bk) => {
         let prevIsAnd = false;
         for (let i = filters.length - 1; i > 0; i--) {
             if (operands[i] == "AND" && !prevIsAnd) {
-                filters.splice(i - 1, 2, ['and', filters[i-1], filters[i]]);
+                filters.splice(i - 1, 2, {'$and': [filters[i-1], filters[i]]});
                 prevIsAnd = true;
             } else if (operands[i] == "AND" && prevIsAnd) {
                 filters[i].push(filters[i-1])
@@ -215,8 +215,14 @@ processAND = (start, end, ft, op, bk) => {
                 prevIsAnd = false;
             }
         }
-        return [filters];
+        if (filters.length > 1) {
+            return {'$or': filters};     // or obj
+        }
+        else {return filters[0];}  // and obj
     }
+}
+processOR = () => {
+    
 }
 // Collect fields and values
 collectFilterParams = () => {
@@ -224,7 +230,7 @@ collectFilterParams = () => {
     $('.paramPair').each((index, e) => {
         var op = $(e).find('.filterOperand').text();
         var label = $(e).find('.fieldLabel').text().toLowerCase();
-        var value = $(e).find('.fieldValue').text().toLowerCase();
+        var value = $(e).find('.fieldValue').text();
         var classlists = e.classList;
         var inBracket1 = classlists.contains('bracket-1');
         var inBracket2 = classlists.contains('bracket-2');
@@ -245,7 +251,9 @@ collectFilterParams = () => {
             value = $(e).find('.rangeInput')[0].value + '-' + $(e).find('.rangeInput')[1].value;
         }
         
-        currReq.filters.push(label + ':' + value);
+        let obj = {};
+        obj[label] = value;
+        currReq.filters.push(obj);
         currReq.operands.push(op);
         currReq.brackets.push( inBracket3 ? 3 : ( inBracket2 ? 2 : ( inBracket1 ? 1 : 0 ) ) );
     });
@@ -258,7 +266,7 @@ updateQueryPreview = () => {
 
     let bracketOpen = 0;
     for (let i = filters.length - 1; i > -1; i--) {
-        filters[i] = '\"' + filters[i] + '\"';
+        filters[i] = JSON.stringify(filters[i]);
             if (bracketOpen < brackets[i]) {
                 for (let n = 0; n < brackets[i] - bracketOpen; n++) {
                     filters[i] += ')';
@@ -523,10 +531,8 @@ addSearchFilter = e => {
             $('.addFilter:first').before(addWholeFilterSnippet(qualityFilterFVSnippet, newFilterID, andOp));  
         } else if (field === 'DBH' || field === 'Height' || field === 'CrownDia.') {
             $('.addFilter:first').before(addWholeFilterSnippet(rangeFilterFVSnippet, newFilterID, andOp));
-            console.log("test");
         } else {
             $('.addFilter:first').before(addWholeFilterSnippet(normalFilterFVSnippet, newFilterID, andOp));
-            console.log("no");
             // Update available values in the dropdown according to the added field filter
             updateAvailableVals(newFilterID, field);
         }

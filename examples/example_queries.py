@@ -97,7 +97,7 @@ print(len(mydb[:]))                                 # get number of all trees fu
 
 # Queries on single fields
 print("Query result <tree id>:", len(mydb.query({"properties.species": "Abies alba"}, limit=10)) )#get all trees fulfilling filter (as dict)
-print("Query results for trees with quality=3 (on any dataset): ", len(mydb.query({"properties.data.quality": "3"})))
+print("Query results for trees with quality=3 (on any dataset): ", len(mydb.query({"properties.data.quality": 3})))
 print("Query result 'leaf-on' :", len(mydb.query({'properties.data.canopy_condition': 'leaf-on'})))  # get subset of db fufilling query
 print("Query result 'leaf-off':", len(mydb.query({'properties.data.canopy_condition': 'leaf-off'})))  # get subset of db fufilling query
 print("Query result 'ALS' :", len(mydb.query({"properties.data.mode": "ALS"})))  # get subset of db fufilling query
@@ -105,8 +105,8 @@ print("Query result 'ALS' :", len(mydb.query({"properties.data.mode": "ALS"}))) 
 
 #Queries with logical operator between conditions
 #See: https://docs.mongodb.com/manual/reference/operator/query/
-print("Query results for trees with quality=3 (for ALS only): ", len(mydb.query({"$and": [{"properties.data.quality": "3"}, {"properties.data.mode": "ALS"}]})))
-print("Query results for trees with quality=3 (for TLS only): ", len(mydb.query({"$and": [{"properties.data.quality": "3"}, {"properties.data.mode": "TLS"}]})))
+print("Query results for trees with quality=3 (for ALS only): ", len(mydb.query({"$and": [{"properties.data.quality": 3}, {"properties.data.mode": "ALS"}]})))
+print("Query results for trees with quality=3 (for TLS only): ", len(mydb.query({"$and": [{"properties.data.quality": 3}, {"properties.data.mode": "TLS"}]})))
 
 #Numeric comparisons (for fields with numeric values)
 print("Numeric comparison on point count:", len(mydb.query({'properties.data.point_count': { "$gt": 100000}})))  # get subset of db fufilling query

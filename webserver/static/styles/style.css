@@ -208,8 +208,19 @@ b.func {
 }
 
 input {
+    border-radius: 5px;
+    border: none;
+    border: solid .1px #aaa;
+}
+
+input#idx {
     margin-bottom: 1rem;
     width: 100%;
+}
+
+input.rangeInput {
+    width: 45%;
+    line-height: 1rem;
 }
 
 button {
@@ -428,6 +439,7 @@ img.grayout {
     font-family: Consolas;
     font-family: var(--bs-font-monospace);
 }
+
 .form-check-inline {
     margin-right: .5rem;
 }
@@ -441,6 +453,27 @@ img.grayout {
 }
 input.form-check-input {
     margin-bottom: 0;
+}
+
+.mx-2px {
+    margin: 0 2px;
+}
+
+.DBH::after, .Height::after, .CrownDia\.::after {
+    content: ' (cm)';
+    position: absolute;
+    font-size: 0.75rem;
+    color: #888;
+    transform: translateY(3px);
+}
+.Height::after, .CrownDia\.::after {
+    content: ' (m)';
+}
+
+
+#map {
+    height: 500px;
+    width: 80%;
 }
 
 /* lg */

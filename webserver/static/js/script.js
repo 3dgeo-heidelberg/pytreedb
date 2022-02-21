@@ -4,10 +4,21 @@ var numFilters = 0;
 var currReq = {
     "url": '',
     "filters": [],
+    "qfilters": [],
     "operands": [],
     "brackets": [],
     "stringFormat": '',
     "backendQ": ''
+}
+var filterKeys = {
+    "species": "properties.species",
+    "mode": "properties.data.mode",
+    "canopy_condition": "properties.measurements.canopy_condition",
+    "quality": "properties.data.quality",
+    "source": "properties.measurements.source",
+    "dbh": "properties.measurements.DBH_cm",
+    "height": "properties.measurements.height_m",
+    "crowndia.": "properties.measurements.mean_crown_diameter_m"
 }
 // Init leaflet map
 var map = L.map('mapContainer').fitWorld();
@@ -95,8 +106,8 @@ getItem = () => {
 // Query trees via properties and value
 searchDB = () => {
     updateQueryPreview();
-    let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
-    currReq.backendQ = processAND(0, currReq.filters.length - 1, filters, operands, brackets);
+    let qfilters = currReq.qfilters, operands = currReq.operands, brackets = currReq.brackets;
+    currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets);
 
     $.post('/search', JSON.stringify({"data": currReq.backendQ}), data => {
         var trees = data['query'];
@@ -188,7 +199,6 @@ processAND = (start, end, ft, op, bk) => {
                     left -= 1;
                 }
                 let bracketL = processAND(left, right, filters, operands, brackets.map(val => {return val - 1}));
-                console.log(bracketL);
                 filters.splice(left, right - left + 1, bracketL);
                 operands.splice(left + 1, right - left);
                 brackets.splice(left + 1, right - left);
@@ -221,16 +231,14 @@ processAND = (start, end, ft, op, bk) => {
         else {return filters[0];}  // and obj
     }
 }
-processOR = () => {
-    
-}
 // Collect fields and values
 collectFilterParams = () => {
-    currReq.filters = [], currReq.operands = [], currReq.brackets = [];
+    currReq.filters = [], currReq.qfilters = [], currReq.operands = [], currReq.brackets = [];
     $('.paramPair').each((index, e) => {
         var op = $(e).find('.filterOperand').text();
         var label = $(e).find('.fieldLabel').text().toLowerCase();
-        var value = $(e).find('.fieldValue').text();
+        var value = $(e).find('.fieldValue').text();    // For query preview on client side
+        var qvalue = value;                             // For forming backend queries
         var classlists = e.classList;
         var inBracket1 = classlists.contains('bracket-1');
         var inBracket2 = classlists.contains('bracket-2');
@@ -239,21 +247,29 @@ collectFilterParams = () => {
         if (label.startsWith('canopy')) {label = 'canopy_condition'};
         // Read checked quality values correctly
         if (label == 'quality') {
-            value = [];
+            value = [], qvalue = [];
             for (let i = 0; i < 5; i++) {
-                if ($(e).find('.qualityCheckInput')[i].checked) {
-                    value.push($(e).find('.qualityCheckInput')[i].value);
+                let checkbox = $(e).find('.qualityCheckInput')[i];
+                if (checkbox.checked) {
+                    value.push(parseInt(checkbox.value));
+                    qvalue.push({'properties.data.quality': parseInt(checkbox.value)});
                 }
             }
+            qvalue = {'$and': qvalue};
         }
         // Read ranged values correctly
         if (['dbh', 'height', 'crowndia.'].includes(label)) {
-            value = $(e).find('.rangeInput')[0].value + '-' + $(e).find('.rangeInput')[1].value;
+            let lb = $(e).find('.rangeInput')[0].value,
+                gb = $(e).find('.rangeInput')[1].value;
+            value = lb + '-' + gb;
+            qvalue = {'$lt': parseFloat(gb), '$gt': parseFloat(lb)};
         }
         
         let obj = {};
-        obj[label] = value;
-        currReq.filters.push(obj);
+        obj[filterKeys[label]] = qvalue;
+        currReq.filters.push(label + ':' + value);
+        if (label == 'quality') { currReq.qfilters.push(qvalue); } 
+        else { currReq.qfilters.push(obj); }
         currReq.operands.push(op);
         currReq.brackets.push( inBracket3 ? 3 : ( inBracket2 ? 2 : ( inBracket1 ? 1 : 0 ) ) );
     });

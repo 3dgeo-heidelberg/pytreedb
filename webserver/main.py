@@ -54,44 +54,20 @@ def getStats():
 
 @app.route('/listspecies')
 def getListSpecies():
+    print(mydb.get_list_species())
     return {'species': mydb.get_list_species()}
 
 @app.route('/sharedproperties')
 def getSharedProperties():
     return {'properties': mydb.get_shared_properties()}
 
-@app.route('/trees/<fields>/<values>')
-def naiveQuery(fields, values):
-    fields = fields.split(',')
-    values = values.split(',')
-    res = []
-    if fields == [''] or values == ['']:
-        return dict()
-    j = 0
-    for i in range(len(fields)):
-        if fields[i] == 'quality':
-            if values[j] == values[j+1]:
-                res.append(mydb.query_by_numeric_comparison('quality', float(values[j]), pytreedb.eq))
-            else:
-                res.append(mydb.query_by_numeric_comparison('quality', float(values[j]), pytreedb.ge))
-                res.append(mydb.query_by_numeric_comparison('quality', float(values[j+1]), pytreedb.le))
-            j += 2
-        else:
-            res.append(mydb.query(fields[i], values[j]))
-            j += 1
-    return {'query': mydb.inner_join(res)}
-
 @app.route('/search', methods=['POST'])
 def query():
     query = request.get_json(force=True)['data']
-    res = orQuery(query)
+    print(query)
+    res = mydb.query(query, {'_id': False})
+    print(len(res))
     return {'query': res}
-
-def andQuery(li):
-    return mydb.inner_join(procSubquery(li[1:]))
-
-def orQuery(li):
-    return mydb.outer_join(procSubquery(li))
 
 def procSubquery(li):
     res = []

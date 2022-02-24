@@ -4,10 +4,21 @@ var numFilters = 0;
 var currReq = {
     "url": '',
     "filters": [],
+    "qfilters": [],
     "operands": [],
     "brackets": [],
     "stringFormat": '',
     "backendQ": ''
+}
+var filterKeys = {
+    "species": "properties.species",
+    "mode": "properties.data.mode",
+    "canopy_condition": "properties.measurements.canopy_condition",
+    "quality": "properties.data.quality",
+    "source": "properties.measurements.source",
+    "dbh": "properties.measurements.DBH_cm",
+    "height": "properties.measurements.height_m",
+    "crowndia.": "properties.measurements.mean_crown_diameter_m"
 }
 // Init leaflet map
 var map = L.map('mapContainer').fitWorld();
@@ -95,8 +106,8 @@ getItem = () => {
 // Query trees via properties and value
 searchDB = () => {
     updateQueryPreview();
-    let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
-    currReq.backendQ = processAND(0, currReq.filters.length - 1, filters, operands, brackets);
+    let qfilters = currReq.qfilters, operands = currReq.operands, brackets = currReq.brackets;
+    currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets);
 
     $.post('/search', JSON.stringify({"data": currReq.backendQ}), data => {
         var trees = data['query'];
@@ -187,7 +198,6 @@ processAND = (start, end, ft, op, bk) => {
                 while (brackets[left] > 0) {
                     left -= 1;
                 }
-                // brackets = brackets.map(val => {return val - 1});
                 let bracketL = processAND(left, right, filters, operands, brackets.map(val => {return val - 1}));
                 filters.splice(left, right - left + 1, bracketL);
                 operands.splice(left + 1, right - left);
@@ -206,7 +216,7 @@ processAND = (start, end, ft, op, bk) => {
         let prevIsAnd = false;
         for (let i = filters.length - 1; i > 0; i--) {
             if (operands[i] == "AND" && !prevIsAnd) {
-                filters.splice(i - 1, 2, ['and', filters[i-1], filters[i]]);
+                filters.splice(i - 1, 2, {'$and': [filters[i-1], filters[i]]});
                 prevIsAnd = true;
             } else if (operands[i] == "AND" && prevIsAnd) {
                 filters[i].push(filters[i-1])
@@ -215,16 +225,20 @@ processAND = (start, end, ft, op, bk) => {
                 prevIsAnd = false;
             }
         }
-        return [filters];
+        if (filters.length > 1) {
+            return {'$or': filters};     // or obj
+        }
+        else {return filters[0];}  // and obj
     }
 }
 // Collect fields and values
 collectFilterParams = () => {
-    currReq.filters = [], currReq.operands = [], currReq.brackets = [];
+    currReq.filters = [], currReq.qfilters = [], currReq.operands = [], currReq.brackets = [];
     $('.paramPair').each((index, e) => {
         var op = $(e).find('.filterOperand').text();
         var label = $(e).find('.fieldLabel').text().toLowerCase();
-        var value = $(e).find('.fieldValue').text().toLowerCase();
+        var value = $(e).find('.fieldValue').text();    // For query preview on client side
+        var qvalue = value;                             // For forming backend queries
         var classlists = e.classList;
         var inBracket1 = classlists.contains('bracket-1');
         var inBracket2 = classlists.contains('bracket-2');
@@ -233,19 +247,29 @@ collectFilterParams = () => {
         if (label.startsWith('canopy')) {label = 'canopy_condition'};
         // Read checked quality values correctly
         if (label == 'quality') {
-            value = [];
+            value = [], qvalue = [];
             for (let i = 0; i < 5; i++) {
-                if ($(e).find('.qualityCheckInput')[i].checked) {
-                    value.push($(e).find('.qualityCheckInput')[i].value);
+                let checkbox = $(e).find('.qualityCheckInput')[i];
+                if (checkbox.checked) {
+                    value.push(parseInt(checkbox.value));
+                    qvalue.push({'properties.data.quality': parseInt(checkbox.value)});
                 }
             }
+            qvalue = {'$and': qvalue};
         }
         // Read ranged values correctly
         if (['dbh', 'height', 'crowndia.'].includes(label)) {
-            value = $(e).find('.rangeInput')[0].value + '-' + $(e).find('.rangeInput')[1].value;
+            let lb = $(e).find('.rangeInput')[0].value,
+                gb = $(e).find('.rangeInput')[1].value;
+            value = lb + '-' + gb;
+            qvalue = {'$lt': parseFloat(gb), '$gt': parseFloat(lb)};
         }
         
+        let obj = {};
+        obj[filterKeys[label]] = qvalue;
         currReq.filters.push(label + ':' + value);
+        if (label == 'quality') { currReq.qfilters.push(qvalue); } 
+        else { currReq.qfilters.push(obj); }
         currReq.operands.push(op);
         currReq.brackets.push( inBracket3 ? 3 : ( inBracket2 ? 2 : ( inBracket1 ? 1 : 0 ) ) );
     });
@@ -258,7 +282,7 @@ updateQueryPreview = () => {
 
     let bracketOpen = 0;
     for (let i = filters.length - 1; i > -1; i--) {
-        filters[i] = '\"' + filters[i] + '\"';
+        filters[i] = JSON.stringify(filters[i]);
             if (bracketOpen < brackets[i]) {
                 for (let n = 0; n < brackets[i] - bracketOpen; n++) {
                     filters[i] += ')';
@@ -327,7 +351,7 @@ replicateQuery = query => {
     for (let i = 0; i < query.filters.length; i++) {
         // Styling
         let [lab, val] = capitalizeFirstLetter(query.filters[i].split(':'));
-        if (lab === 'Mode') {val = val.toUpperCase();}
+        if (lab === 'Mode' || lab === 'Source') {val = val.toUpperCase();}
         if (lab.startsWith('Canopy')) {lab = 'Canopy';}
         if (lab === 'Dbh') {lab = 'DBH';}
         // Add filter to page
@@ -523,10 +547,8 @@ addSearchFilter = e => {
             $('.addFilter:first').before(addWholeFilterSnippet(qualityFilterFVSnippet, newFilterID, andOp));  
         } else if (field === 'DBH' || field === 'Height' || field === 'CrownDia.') {
             $('.addFilter:first').before(addWholeFilterSnippet(rangeFilterFVSnippet, newFilterID, andOp));
-            console.log("test");
         } else {
             $('.addFilter:first').before(addWholeFilterSnippet(normalFilterFVSnippet, newFilterID, andOp));
-            console.log("no");
             // Update available values in the dropdown according to the added field filter
             updateAvailableVals(newFilterID, field);
         }
@@ -595,6 +617,14 @@ updateAvailableVals = (newFilterID, field) => {
             modes.forEach(mode => {
                 $(availableValuesEl).append(
                     '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + mode + '</a></li>'
+                );
+            })
+            break;
+        case "Source":
+            var sources = ['TLS', 'ALS', 'ULS', 'FI'];
+            sources.forEach(source => {
+                $(availableValuesEl).append(
+                    '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + source + '</a></li>'
                 );
             })
             break;

@@ -17,7 +17,9 @@ from flask import Flask
 from flask import request
 from flask import render_template
 
-import pytreedb.db as pytreedb
+from pytreedb import db
+import sys
+import json
 
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -35,7 +37,10 @@ def about():
 def contact():
     return render_template(r'contact.html')
 
-mydb = pytreedb.PyTreeDB(dbfile=r'D:\tmp\SYSSIFOSS\syssifoss.db') # instantiate pytreedb
+mydbfile='syssifoss.db'
+mydb = db.PyTreeDB(dbfile=mydbfile, mongodb = {"uri": "mongodb://127.0.0.1:27017/", "db": "pytreedb", "col": "syssifoss"})
+mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True)
+# mydb = pytreedb.PyTreeDB(dbfile=r'D:\tmp\SYSSIFOSS\syssifoss.db') # instantiate pytreedb
 # mydb.load_db(r'E:\tmp\SYSSIFOSS\syssifoss.db') # Jiani: loading local db file
 #mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True) # download data
 
@@ -49,44 +54,20 @@ def getStats():
 
 @app.route('/listspecies')
 def getListSpecies():
+    print(mydb.get_list_species())
     return {'species': mydb.get_list_species()}
 
 @app.route('/sharedproperties')
 def getSharedProperties():
     return {'properties': mydb.get_shared_properties()}
 
-@app.route('/trees/<fields>/<values>')
-def naiveQuery(fields, values):
-    fields = fields.split(',')
-    values = values.split(',')
-    res = []
-    if fields == [''] or values == ['']:
-        return dict()
-    j = 0
-    for i in range(len(fields)):
-        if fields[i] == 'quality':
-            if values[j] == values[j+1]:
-                res.append(mydb.query_by_numeric_comparison('quality', float(values[j]), pytreedb.eq))
-            else:
-                res.append(mydb.query_by_numeric_comparison('quality', float(values[j]), pytreedb.ge))
-                res.append(mydb.query_by_numeric_comparison('quality', float(values[j+1]), pytreedb.le))
-            j += 2
-        else:
-            res.append(mydb.query(fields[i], values[j]))
-            j += 1
-    return {'query': mydb.inner_join(res)}
-
 @app.route('/search', methods=['POST'])
 def query():
     query = request.get_json(force=True)['data']
-    res = orQuery(query)
+    print(query)
+    res = mydb.query(query, {'_id': False})
+    print(len(res))
     return {'query': res}
-
-def andQuery(li):
-    return mydb.inner_join(procSubquery(li[1:]))
-
-def orQuery(li):
-    return mydb.outer_join(procSubquery(li))
 
 def procSubquery(li):
     res = []

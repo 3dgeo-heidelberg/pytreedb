@@ -36,7 +36,6 @@ OPEN ISSUES
 ISSUES on gitlab: https://gitlab.gistools.geog.uni-heidelberg.de/giscience/3DGeo/pytreedb/-/issues
     
 MISC
-    - cpickle compress/decompress db file
     - Function to re-link all datasources in DB: i.e. change URL prefixes.
 
 DB EXPORTS (check if not yet existing...)
@@ -264,7 +263,8 @@ class PyTreeDB:
     def query(self, *args, **kwargs):
         """ General MongDB query forwarding: Returns trees (list of dict) fulfilling the arguments. Returns list of dict (=trees)
           - Example: filter = {"properties.species": "Abies alba"}   
-          - Query ops: https://docs.mongodb.com/manual/reference/operator/query/ """
+          - Query ops: https://docs.mongodb.com/manual/reference/operator/query/ 
+          - e.g. AND: https://docs.mongodb.com/manual/reference/operator/query/and/#mongodb-query-op.-and"""
         try:       
             res = self.mongodb_col.find(*args,**kwargs)
             return [e for e in res]
@@ -272,14 +272,11 @@ class PyTreeDB:
             print(ex)
             return []
 
-#############
-#===>
-#############
+#===> #############   
     def query_multi(self):
         """ Runs self.query() for each key-value-pair and returns aggregated result (i.e. outer join of single queries) """
         pass
 
-#####################
 
 
     def query_by_key_value(self, key, value, regex=True):
@@ -363,41 +360,8 @@ class PyTreeDB:
             else:
                 print("Could not get id for: {}".format(trees))
             return None        
-    
-    def inner_join(self, t_lists):
-        """Returns trees present in all lists"""
-        print("WARNING: Function is deprecated and just here for backward compatability. Use joining in query.")
-        if len(t_lists) < 2:
-            return t_lists[0]
-        res = t_lists[0]
-        for i in range(len(t_lists) - 1):
-            res = [item for item in res if item in t_lists[i+1]]
-        return res
-    
-    def outer_join(self, t_lists):
-        """Return trees present in either of the lists"""
-        print("WARNING: Function is deprecated and just here for backward compatability. Use joining in query.")
-        if len(t_lists) < 2:
-            return t_lists[0]
-        res = t_lists[0]
-        for i in range(len(t_lists) - 1):
-            res += [item for item in t_lists[i + 1] if item not in res]
-        return res
-
-    def join(self, results, operator='and'):
-        """Returns list of tree ids: Method to join list of resulting lists of trees(dict) using their 'id' by applying a logical operator on those sets"""
-        implemented_ops = ['and', 'or']
-        if operator not in implemented_ops:
-            raise Exception("Supported operators are: %s" % (str(implemented_ops)))
-        if len(results) < 2:
-            raise Exception("Provide 2 or more resulting lists.")
-        if operator == 'and':
-            return list(set.intersection(*[set(self.get_ids(x)) for x in results]))
-        elif operator == 'or':
-            results_sets = [set(self.get_ids(i)) for i in results]
-            return list(set.union(*results_sets))  # unique ids
-
-
+ 
+ 
     def to_list(self):
         """Returns list of all tree objects(dict)"""
         return self.db
@@ -426,15 +390,6 @@ class PyTreeDB:
             return True  # valid
         return False  # not valid
 
-    def print_db_html(self, outfile):
-        # flatten_json
-        # self.df.to_html(outfile)
-        raise Exception("Not implemented yes.")
-
-    def update(self):
-        # store git checksum on zip file of git / or date of file
-        # check whether it has changed => run fresh read
-        raise Exception("Not implemented yes.")
 
     def export_data(self, outdir, trees=[]):
         """Reverse of import_data(): Creates single geojson files for each tree in DB and puts it in local directory
@@ -450,10 +405,13 @@ class PyTreeDB:
                 json_filept.close()
                 print(json_filename)
 
+#===> #############   
     def export_as_numpy(self):
         """Export database as numpy array"""
         raise Exception("Not implemented yes.")
-    
+
+
+#===> #############   
     def convert_to_csv(self, outdir, trees=[]):
         """Exports trees to local csv files using pandas dataframe. Each export creates two separate csv files, 
         one for general imformations, one for metrics."""
@@ -501,6 +459,8 @@ class PyTreeDB:
         df_general_all.to_csv(outdir + '/result_general.csv', index=False)
         df_metrics_all.to_csv(outdir + '/result_metrics.csv', index=False)
 
+
+#===> #############   
 
     def test(self):
         """Test routines to check all functions of the class"""

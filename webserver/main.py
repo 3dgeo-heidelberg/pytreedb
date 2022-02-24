@@ -2,7 +2,7 @@
 # -- coding: utf-8 --
 
 """
-description
+Flask backend for PytreeDB
 """
 import webbrowser
 import requests
@@ -39,10 +39,8 @@ def contact():
 
 mydbfile='syssifoss.db'
 mydb = db.PyTreeDB(dbfile=mydbfile, mongodb = {"uri": "mongodb://127.0.0.1:27017/", "db": "pytreedb", "col": "syssifoss"})
-mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True)
-# mydb = pytreedb.PyTreeDB(dbfile=r'D:\tmp\SYSSIFOSS\syssifoss.db') # instantiate pytreedb
-# mydb.load_db(r'E:\tmp\SYSSIFOSS\syssifoss.db') # Jiani: loading local db file
-#mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True) # download data
+mydb.import_db(r'syssifoss.db', overwrite=False)
+# mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True)
 
 # automatically open in a new browser tab on start
 if __name__ == 'main':
@@ -54,7 +52,6 @@ def getStats():
 
 @app.route('/listspecies')
 def getListSpecies():
-    print(mydb.get_list_species())
     return {'species': mydb.get_list_species()}
 
 @app.route('/sharedproperties')
@@ -64,36 +61,19 @@ def getSharedProperties():
 @app.route('/search', methods=['POST'])
 def query():
     query = request.get_json(force=True)['data']
-    print(query)
     res = mydb.query(query, {'_id': False})
+    print(query)
     print(len(res))
     return {'query': res}
 
-def procSubquery(li):
-    res = []
-    for subQuery in li:
-        if isinstance(subQuery, str):  # if subQuery not nested
-            kv = subQuery.split(":")
-            res.append(mydb.query(kv[0], kv[1]))
-        elif type(subQuery) == list and subQuery[0] == "and":  # if nested AND query
-            res.append(andQuery(subQuery))
-        else:  # if nested OR query
-            res.append(orQuery(subQuery))
-    return res
-
 @app.route('/getitem/<index>')
 def getItem(index):
-    if index == '':
-        return dict()
-    print(mydb[int(index)]['_json'])
-    return {'item': mydb[int(index)]['_json']}
-    # print({'item': json.loads(mydb[int(index)]['_json'])})
-    # return {'item': json.loads(mydb[int(index)]['_json'])}
+    return {'item': mydb[int(index)]}
 
 @app.route('/exportcsv', methods=['POST'])
 def exportcsv():
     query = request.get_json(force=True)['data']
-    trees = orQuery(query)
+    trees = mydb.query(query, {'_id': False})
     # convert trees to csv files, save to disk
     outdir = r'E:\tmp\csv'
     mydb.convert_to_csv(outdir, trees)

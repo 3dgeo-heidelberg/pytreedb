@@ -75,10 +75,9 @@ getItem = () => {
         // Do get
         $.get('/getitem/' + idx, data => {
             currReq.url = '/getitem/' + idx;
-            var jsonStr = data['item'];
+            var jsonObj = data['item'];
             // Update jsonOutput
-            jsonOutput = jsonStr;
-            var jsonObj = JSON.parse(jsonStr);
+            jsonOutput = JSON.stringify(data['item']);
             // Clear previous results
             $('#jsonViewerContainer').empty();
             // Write new result
@@ -302,6 +301,7 @@ updateQueryPreview = () => {
     $('#queryPreviewArea').text(currReq.stringFormat);
     return currReq.stringFormat;
 }
+
 // Copy the query in preview to clipboard
 // Referenced source: https://www.codegrepper.com/code-examples/javascript/copy+text+to+clipboard+javascript
 copyQuery = () => {

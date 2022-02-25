@@ -1,5 +1,5 @@
 // Global variables
-var speciesList, n_trees, jsonOutput, previewTrees = [], getEverySec; 
+var speciesList, n_trees, jsonOutput, previewTrees = [], getEverySec, pcUrls = []; 
 var numFilters = 0;
 var currReq = {
     "url": '',
@@ -123,6 +123,8 @@ searchDB = () => {
             $('#savePointCButton').show();
             $('#saveCSVButton').show();
             $('#mapContainer').show();
+            // Collect pointcloud urls from results
+            collectPCUrls(trees);
             // Update for output
             jsonOutput = JSON.stringify(trees[0]);
             // Show tabs if results > 1
@@ -174,13 +176,6 @@ searchDB = () => {
     $('html,body').animate({
         scrollTop: $('#jsonSnippetSection').offset().top - 62},
         'slow');
-    
-    // dummy partial implementation Point Clouds download
-    if (currReq.filters.includes('species:pinus sylvestris')) {
-        $('#savePointCButton').removeAttr('disabled');
-    } else {
-        $('#savePointCButton').attr('disabled', 'disabled');
-    }
 }
 processAND = (start, end, ft, op, bk) => {
     let filters = ft.slice(start, end + 1); 
@@ -301,6 +296,17 @@ updateQueryPreview = () => {
     $('#queryPreviewArea').text(currReq.stringFormat);
     return currReq.stringFormat;
 }
+// Collect pointclouds urls
+collectPCUrls = trees => {
+    trees.forEach(tree => {
+        arr = tree['properties']['data'];
+        arr.forEach(obj => {
+            if (obj['file']) {
+                pcUrls.push(obj['file']);
+            }
+        });
+    });
+}
 
 // Copy the query in preview to clipboard
 // Referenced source: https://www.codegrepper.com/code-examples/javascript/copy+text+to+clipboard+javascript
@@ -386,26 +392,6 @@ cleanSearchBar = () => {
     $('#queryPreviewArea').text('Your query: ');
 }
 
-// Show download progress
-showDlProgress = () => {
-    $('#downLoadProgressSection').show();
-    getEverySec = setInterval(getDlProgress, 1000);
-}
-// Get download progress
-getDlProgress = () => {
-    $.get('/progress', response => {
-        $('#dlState').text(response['currItem'] + ' of ' + response['numAllItems'] + ' files zipped');
-        var percentage = Math.round(response['currItem']/response['numAllItems']*100);
-        $('#progressBar').attr('aria-valuenow', percentage).css('width', percentage + '%');
-        if (response['currItem'] == response['numAllItems']) {
-            clearInterval(getEverySec);
-            $('#downLoadProgressSection').hide();
-            $('#dlState').text('');
-            $('#progressBar').attr('aria-valuenow', 0).css('width', '0%');
-        }
-    })
-}
-
 // Utility function: save a string to a txt file that will pop up for the user to download
 // Source: https://stackoverflow.com/questions/283956/is-there-any-way-to-specify-a-suggested-filename-when-using-data-uri
 saveContent = (fileContents, fileName) => {
@@ -468,50 +454,49 @@ saveCSV = () => {
 savePointClouds = () => {
     var zip = new JSZip();
     var cntFilesDownloaded = 0;
-    $.get('/list_pointclouds', data => {
-        // Show progress bar if request successful
-        $('#downLoadProgressSection').show();
-        // Iterate through the list of urls
-        data['urls'].forEach((url, idx, array) => {
-            var filename = url.split('/')[4];
-            // Get request
-            $.ajax({
-                url: url,
-                beforeSend: jqXHR => {
-                    jqXHR.setRequestHeader('Accept-Encoding', 'gzip');
-                },
-                xhrFields:{
-                    responseType: 'blob'
-                }
-            }).done(file => {
-                // Add each file to the zip
-                zip.file(filename, file, {binary: true, compression : "DEFLATE"});
-                cntFilesDownloaded += 1;
-                // Update progress
-                $('#dlState').text(cntFilesDownloaded + ' of ' + array.length + ' files zipped');
-                var percentage = Math.round(cntFilesDownloaded / array.length * 100);
-                $('#progressBar').attr('aria-valuenow', percentage).css('width', percentage + '%');
-                // After all files zipped
-                if (cntFilesDownloaded === array.length) {
-                    // Show zipping status
-                    $('#pcState').text('Zipping...');
-                    $('#dlState').text('');
-                    // Create the zip file for download
-                    zip.generateAsync({type : "blob", compression : "DEFLATE"})
-                        .then(content => {
-                            var link = document.createElement('a');
-                            link.download = 'pointclouds';
-                            link.href = URL.createObjectURL(content);
-                            link.click();
-                            // Hide progress bar and reset 
-                            $('#downLoadProgressSection').hide();
-                            $('#dlState').text('');
-                            $('#progressBar').attr('aria-valuenow', 0).css('width', '0%');
-                    });
-                }
-            })
-        });
-    })
+    // Show progress bar if request successful
+    $('#downLoadProgressSection').show();
+    // Iterate through the list of urls
+    pcUrls.forEach((url, idx, array) => {
+        var filename = url.split('/')[4];
+        // Get request
+        $.ajax({
+            url: url,
+            beforeSend: jqXHR => {
+                jqXHR.setRequestHeader('Accept-Encoding', 'gzip');
+            },
+            xhrFields:{
+                responseType: 'blob'
+            }
+        }).done(file => {
+            // Add each file to the zip
+            zip.file(filename, file, {binary: true, compression : "DEFLATE"});
+            cntFilesDownloaded += 1;
+            // Update progress
+            $('#dlState').text(cntFilesDownloaded + ' of ' + array.length + ' files zipped');
+            var percentage = Math.round(cntFilesDownloaded / array.length * 100);
+            console.log(percentage);
+            $('#progressBar').attr('aria-valuenow', percentage).css('width', percentage + '%');
+            // After all files zipped
+            if (cntFilesDownloaded === array.length) {
+                // Show zipping status
+                $('#pcState').text('Zipping...');
+                // Create the zip file for download
+                zip.generateAsync({type : "blob", compression : "DEFLATE"})
+                    .then(content => {
+                        var link = document.createElement('a');
+                        link.download = 'pointclouds';
+                        link.href = URL.createObjectURL(content);
+                        link.click();
+                        // Hide progress bar and reset 
+                        $('#downLoadProgressSection').hide();
+                        $('#pcState').html('Preparing Point Clouds on server... <span id="dlState"></span>');
+                        $('#progressBar').attr('aria-valuenow', 0).css('width', '0%');
+                        cntFilesDownloaded = 0
+                });
+            }
+        })
+    });
 }
 
 // Add filter
@@ -682,35 +667,6 @@ moveRight = e => {
         classList.add('bracket-2');
     } else if (!classList.contains('bracket-3')) {
         classList.add('bracket-3');
-    }
-}
-qualityFrom = e => {
-    var qualityFromEl = e.parentNode.parentNode.previousElementSibling;
-    var qualityToEl = qualityFromEl.parentNode.nextElementSibling.nextElementSibling.children[0];
-    $(qualityFromEl).html(e.text).attr('style', 'color: #000');
-    checkQBounds(qualityFromEl, qualityToEl);
-}
-qualityTo = e => {
-    var qualityToEl = e.parentNode.parentNode.previousElementSibling;
-    var qualityFromEl = qualityToEl.parentNode.previousElementSibling.previousElementSibling.children[0];
-    $(qualityToEl).html(e.text).attr('style', 'color: #000');
-    checkQBounds(qualityFromEl, qualityToEl);
-}
-// Check if the quality lower bound is greater than upper bound 
-checkQBounds = (from, to) => {
-    var qErrEl = to.parentNode.nextElementSibling;
-    if ($(from).text() > $(to).text()) {
-        $(from).addClass('warning');
-        $(to).addClass('warning');
-        $(qErrEl).show();
-        $('#searchButton').prop('disabled', true);
-        return false;
-    } else {
-        $(from).removeClass('warning');
-        $(to).removeClass('warning');
-        $(qErrEl).hide();
-        $('#searchButton').prop('disabled', false);
-        return true;
     }
 }
 

@@ -213,7 +213,7 @@ processAND = (start, end, ft, op, bk) => {
                 filters.splice(i - 1, 2, {'$and': [filters[i-1], filters[i]]});
                 prevIsAnd = true;
             } else if (operands[i] == "AND" && prevIsAnd) {
-                filters[i].push(filters[i-1])
+                filters[i]['$and'].push(filters[i-1]);
                 filters.splice(i - 1, 1);
             } else {
                 prevIsAnd = false;
@@ -328,7 +328,7 @@ exportQuery = () => {
     if (currReq.backendQ == '') {
         let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
         currReq.backendQ = processAND(0, currReq.filters.length - 1, filters, operands, brackets);
-    }
+    };
     
     var queryJsonExp = {
         "queryString": currReq.stringFormat,
@@ -384,7 +384,7 @@ replicateQuery = query => {
         }
     }
     // Update query preview
-    $('#queryPreviewArea').text(query.queryString); 
+    // $('#queryPreviewArea').text(query.queryString); 
 }
 // Clean search
 cleanSearchBar = () => {

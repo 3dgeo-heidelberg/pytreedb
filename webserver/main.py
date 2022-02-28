@@ -37,6 +37,10 @@ def about():
 def contact():
     return render_template(r'contact.html')
 
+@app.route('/query/<query>')
+def showQuery(query=None):
+    return render_template(r'newIndex.html', query = query)
+
 mydbfile='syssifoss.db'
 mydb = db.PyTreeDB(dbfile=mydbfile, mongodb = {"uri": "mongodb://127.0.0.1:27017/", "db": "pytreedb", "col": "syssifoss"})
 mydb.import_db(r'syssifoss.db', overwrite=False)

@@ -11,6 +11,15 @@
         <link href="{{ url_for('static', filename='styles/style.css') }}" rel= "stylesheet">
         <link href="{{ url_for('static', filename='styles/jquery.json-viewer.css') }}" rel= "stylesheet">
         <title>PyTreeDB</title>
+        {% if query %}
+        <script type="text/javascript">
+            var byte = '{{query}}';
+            var query = JSON.parse(atob(byte));
+            window.onload = () => {
+                replicateQuery(query);
+            }
+        </script>
+        {% endif %}
     </head>
     <body>
         <nav id="navbar" class="navbar navbar-expand-lg navbar-light justify-content-end fixed-top">
@@ -118,11 +127,7 @@
                                 </ul>
                             </div>
                             <button type="button" class="btn btn-outline-success float-none" id="removeAllFilterBtn" onclick="cleanSearchBar()" style="display: inline-block; margin-right: -5rem;">Remove All</button>
-                            {% if query %}
-                            <div id="queryPreviewArea" style="margin-bottom: 0.5rem;"> {{ query }} </div>
-                            {% else %}
                             <div id="queryPreviewArea" style="margin-bottom: 0.5rem;"> Your query: </div>
-                            {% endif %}
                             <button type="button" class="btn btn-outline-success float-start" id="updateQPreviewBtn" onclick="updateQueryPreview()">
                                 Update Preview
                             </button>

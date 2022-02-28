@@ -51,6 +51,13 @@ window.onload = () => {
         // Read file
         reader.readAsText($('#queryUpload')[0].files[0]);
     })
+
+    setTimeout(() => {
+        if (typeof query !== 'undefined') {
+            replicateQuery(query);
+            searchDB();
+        }
+    }, 300);
 }
 
 window.onscroll = () => {
@@ -331,7 +338,6 @@ exportQuery = () => {
     };
     
     var queryJsonExp = {
-        "queryString": currReq.stringFormat,
         "backendQuery": currReq.backendQ,
         "filters": currReq.filters,
         "operands": currReq.operands,

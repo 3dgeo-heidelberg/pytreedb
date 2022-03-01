@@ -317,8 +317,11 @@ collectPCUrls = trees => {
 
 // Copy the query in preview to clipboard
 // Referenced source: https://www.codegrepper.com/code-examples/javascript/copy+text+to+clipboard+javascript
-copyQuery = () => {
-    let targetText = $('#queryPreviewArea').text();
+genPermalink = () => {
+    collectFilterParams();
+    let query = btoa(JSON.stringify(constrQueryExp()));
+    let targetText = window.location.protocol + '//' + window.location.host + '/query/' + query;
+    console.log(targetText);
     if (!navigator.clipboard){ // use old commandExec() way
         var $temp = $("<input>");
         $("body").append($temp);
@@ -328,6 +331,7 @@ copyQuery = () => {
     } else{
         navigator.clipboard.writeText(targetText);
     }    
+    alert('Link for the current query is successfully copied to your clipboard.');
 }
 // Export query for future use
 exportQuery = () => {
@@ -337,12 +341,7 @@ exportQuery = () => {
         currReq.backendQ = processAND(0, currReq.filters.length - 1, filters, operands, brackets);
     };
     
-    var queryJsonExp = {
-        "backendQuery": currReq.backendQ,
-        "filters": currReq.filters,
-        "operands": currReq.operands,
-        "brackets": currReq.brackets
-    };
+    var queryJsonExp = constrQueryExp();
     saveJsonContent(JSON.stringify(queryJsonExp), 'query_exported');
     querySaved = true;
 }
@@ -396,6 +395,15 @@ replicateQuery = query => {
 cleanSearchBar = () => {
     $('.paramPair').remove();
     $('#queryPreviewArea').text('Your query: ');
+}
+// Construct current query in object format for exportation
+constrQueryExp = () => {
+    return queryExp = {
+        "backendQuery": currReq.backendQ,
+        "filters": currReq.filters,
+        "operands": currReq.operands,
+        "brackets": currReq.brackets
+    };
 }
 
 // Utility function: save a string to a txt file that will pop up for the user to download

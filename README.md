@@ -12,7 +12,7 @@
 ## 💻 Download and Installation
 
 ### Installation
-Install and update using pip:
+Install and update using [pip](https://pypi.org/):
 
 `$ pip install -U pytreedb`
 
@@ -21,7 +21,7 @@ Install and update using pip:
 conda env create -f conda-environment.yml
 ```
 
-### Dependencies
+### Software Dependencies
 
 
 

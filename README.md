@@ -16,11 +16,15 @@ Install and update using [pip](https://pypi.org/):
 
 `$ pip install -U pytreedb`
 
-### Using Anaconda
+### Using Anaconda / Conda Environment
 
 ```
 conda env create -f conda-environment.yml
 ```
+
+### Connect to MongoDB
+xxx
+Install 
 
 ### Known Issues
 - add here
@@ -42,6 +46,9 @@ Usage: `set FLASK_APP=main.py | python -m flask run`
 ### Run it as a server
 Usage: `set FLASK_APP=main.py | python -m flask run`
 
+
+## Test Data
+xxx
 
 ## Citation
 Please cite the following publication when using pytreedb in your research and reference the appropriate release version. All releases of pytreedb are listed on Zenodo where you will find the citation information including DOI.

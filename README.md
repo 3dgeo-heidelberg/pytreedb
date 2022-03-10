@@ -37,7 +37,9 @@ xx
 
 ## ℹ Documentation
 
-As a starting point, please have a look to the [examples](examples) and [notebooks](Jupyter Notebooks) available in the repository. Each of the subfolders contains a readme.md for further details. 
+As a starting point, please have a look to the [examples](examples) and [notebooks](Jupyter Notebooks) available in the repository. Each of the subfolders contains a readme.md for further details.
+
+==> _CREATE VIDEO OF USAGE as code (notebook slideshow) and as server on 3DGeo Youtube and put here._
 
 ### Use the pytreedb class
 Usage: 
@@ -60,13 +62,14 @@ Please cite the following publication when using pytreedb in your research and r
 
 ```
 article{pytreedb,
-title = {pytreedb is cool},
+author = {Bernhard Höfle and Jiani Qu and Lukas Winiwarter and Hannah Weiser and Jannika Schäfer and Fabian E. Fassnacht}
+title = {pytreedb: Library for point clouds of tree vegetation objects},
 journal = {The Journal of Open Source Software},
 year = {2022},
+number = {},
 volume = {-},
 doi = {-},
 url = {-},
-author = {Bernhard Höfle and Jiani Qu and Lukas Winiwarter and ...}
 } 
  ```
 

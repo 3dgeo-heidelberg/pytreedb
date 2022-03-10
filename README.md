@@ -6,7 +6,7 @@
 1. a standard Python library for usage in your scripts during runtime and 
 2. it can also be used as a server application using the [Flask](https://pypi.org/project/Flask/) web application framework. 
 
-[MongoDB](https://www.mongodb.com/) is used as  or cloud-based database backend via the [PyMongo](https://pypi.org/project/pymongo/) driver. This enables scaling to large datasets, e.g. connecting to [MongoDB Atlas Cloud](https://www.mongodb.com/cloud/atlas) for big datasets.
+[MongoDB](https://www.mongodb.com/) is used as database backend via the [PyMongo](https://pypi.org/project/pymongo/) driver. This enables scaling to large datasets, e.g. connecting to [MongoDB Atlas Cloud](https://www.mongodb.com/cloud/atlas) for big datasets.
 
 ## 💻 Download and Installation
 

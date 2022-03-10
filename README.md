@@ -63,7 +63,7 @@ Please cite the following publication when using pytreedb in your research and r
 ```
 article{pytreedb,
 author = {Bernhard Höfle and Jiani Qu and Lukas Winiwarter and Hannah Weiser and Jannika Schäfer and Fabian E. Fassnacht}
-title = {pytreedb: Library for point clouds of tree vegetation objects},
+title = {pytreedb: library for point clouds of tree vegetation objects},
 journal = {The Journal of Open Source Software},
 year = {2022},
 number = {},

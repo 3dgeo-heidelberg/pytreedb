@@ -2,7 +2,7 @@
 
 `pytreedb` is a Python software package providing an object-based database to handle vegetation tree objects that were captured as 3D point clouds. The main objective is to provide a Python library which enables the view of trees as objects by enabling the storage and sharing of single tree-based point clouds and all relevant (forest intentory) tree measurements. The data includes all tree related information, measurements, metadata, geoinformation and also links to the 3D point clouds as LAS. As `GeoJSON` is used as data format to provide all tree-related information, exchange and visualization with other software (e.g. GIS) and also modification of the datasets is straightforward.
 
-[https://www.mongodb.com/](MongoDB) is used as local or cloud-based database backend via the ([https://pypi.org/project/pymongo/](PyMongo) driver.
+[MongoDB](https://www.mongodb.com/) is used as  or cloud-based database backend via the [PyMongo](https://pypi.org/project/pymongo/] driver.
 
 `pytreedb` can be used as 
 1. a standard Python library for usage in your scripts during runtime and 

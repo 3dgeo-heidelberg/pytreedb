@@ -57,7 +57,7 @@ python -m flask run
 ## Test Data
 xxx
 
-## Citation and Funding
+## Citation
 Please cite the following publication when using pytreedb in your research and reference the appropriate release version. All releases of pytreedb are listed on Zenodo where you will find the citation information including DOI.
 
 ```
@@ -72,7 +72,7 @@ doi = {-},
 url = {-},
 } 
  ```
-
+## Funding / Acknowledgements
 The initial software development was supported by the DFG - German Research Foundation (Grant no. 411263134) within the research project [SYSSIFOSS](https://uni-heidelberg.de/syssifoss).
 
 ## Contact / Bugs / Feature Requests

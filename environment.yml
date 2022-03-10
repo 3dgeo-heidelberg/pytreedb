@@ -1,0 +1,19 @@
+name: pytreedb
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
+  - notebook
+  - jupyter
+  - numpy
+  - pandas
+  - pytest
+  - flask
+  - requests
+  - pymongo
+  - pip:
+
+prefix: D:\anaconda3\envs\pytreedb
+

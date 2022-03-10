@@ -27,7 +27,7 @@ dl_progress = {'currItem': 0, 'numAllItems': 0}
 
 @app.route('/')
 def index():
-    return render_template(r'newIndex.html', server=request.remote_addr)
+    return render_template(r'index.html', server=request.remote_addr)
 
 @app.route('/about')
 def about():

@@ -62,7 +62,7 @@ year = {2022},
 volume = {-},
 doi = {-},
 url = {-},
-author = {Bernhard H\"ofle and Jiani Qu and Lukas Winiwarter and ...}
+author = {Bernhard Höfle and Jiani Qu and Lukas Winiwarter and ...}
 } 
  ```
 

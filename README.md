@@ -18,9 +18,7 @@ Install and update using [pip](https://pypi.org/):
 ### Using Anaconda / Conda Environment
 Simply use the given Conda environment file [environment.yml](environment.yml) provided in this distribution.
 
-```
-conda env create --file environment.yml
-```
+`$ conda env create --file environment.yml`
 
 ### Connect to MongoDB
 xxx
@@ -32,7 +30,6 @@ Install
 ### Software Dependencies
 
 xx
-
 
 ## ℹ Documentation
 
@@ -50,7 +47,6 @@ Usage from main directory in command line:
 set FLASK_APP=webserver/main.py
 python -m flask run
 ```
-
 
 
 ## Test Data

@@ -39,7 +39,7 @@ xx
 
 As a starting point, please have a look to the [examples](examples) and [notebooks](Jupyter Notebooks) available in the repository. Each of the subfolders contains a readme.md for further details.
 
-==> _CREATE VIDEO OF USAGE as code (notebook slideshow) and as server on 3DGeo Youtube and put here._
+==> _CREATE VIDEO or GIFs of usage as code (notebook slideshow) and as server on 3DGeo Youtube and put here._
 
 ### Use the pytreedb class
 Usage: 

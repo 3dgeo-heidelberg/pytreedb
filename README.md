@@ -40,12 +40,16 @@ xx
 As a starting point, please have a look to the [examples](examples) and [notebooks](Jupyter Notebooks) available in the repository. Each of the subfolders contains a readme.md for further details. 
 
 ### Use the pytreedb class
-Usage: `set FLASK_APP=main.py | python -m flask run`
-
+Usage: 
 
 
 ### Run it as a server
-Usage: `set FLASK_APP=main.py | python -m flask run`
+Usage from main directory in command line:
+```
+set FLASK_APP=webserver/main.py
+python -m flask run
+```
+
 
 
 ## Test Data

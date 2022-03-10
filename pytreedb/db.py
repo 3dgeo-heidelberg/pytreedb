@@ -27,24 +27,9 @@ from pytreedb.db_conf import *
 import pymongo
 from bson.son import SON
 
-
-""" 
----------------------
-OPEN ISSUES
----------------------
-
+"""
 ISSUES on gitlab: https://gitlab.gistools.geog.uni-heidelberg.de/giscience/3DGeo/pytreedb/-/issues
-    
-MISC
-    - Function to re-link all datasources in DB: i.e. change URL prefixes.
-
-DB EXPORTS (check if not yet existing...)
-    - Export as geojson
-    - Export as Numpy array
-    - Export as Shapefile with flattened attributes: see flatten_json code
-    - Export for R
-    - Export for potree
-    - Export as input for HELIOS: XML => Select data source (i.e. point cloud)
+ 
 
 """
 
@@ -52,7 +37,7 @@ class PyTreeDB:
     def __init__(self, dbfile, mongodb = {"uri": "mongodb://127.0.0.1:27017/", "db": "pytreedb", "col": "syssifoss"}):
         self.dbfile = dbfile     # local file holding self.db
         self.mongodb = mongodb  # dict holding mongodb connection infos
-        self.db = list()            # data container  -> list of dictionaries 
+        self.db = list()            # data container  -> list of dictionaries (single dicts equal json files)
         self.data = None            # path to input data imported with import (path of last import)      
         self.stats = {"n_trees": None, "n_species": None}  # dictionary holding summary statistics about database
         self.i = 0  # needed for iterator            
@@ -104,7 +89,7 @@ class PyTreeDB:
             "Copying of PyTreeDb object is not yet safe. Lifehack: Make a new database and import the other db.")
 
     def save(self,dbfile=None, sync=False):
-        """Saves database to compressed serialized version."""
+        """Saves database to compressed serialized version as local file."""
         if dbfile is None:
             dbfile = self.dbfile    #if no filename is given as arg - just overwrite existing file in self.dbfile
         try:           
@@ -235,11 +220,11 @@ class PyTreeDB:
         f_json.close() #close input file
 
     def get_db_file(self):
-        """Returns name/path to pickle file of DB"""
+        """Returns name/path to local file of DB"""
         return self.dbfile
 
     def del_db_file(self):
-        """Delete associated pickle db file"""
+        """Delete associated local db file"""
         return os.remove(self.dbfile)
 
     def get_stats(self):
@@ -271,13 +256,6 @@ class PyTreeDB:
         except Exception as ex:
             print(ex)
             return []
-
-#===> #############   
-    def query_multi(self):
-        """ Runs self.query() for each key-value-pair and returns aggregated result (i.e. outer join of single queries) """
-        pass
-
-
 
     def query_by_key_value(self, key, value, regex=True):
         """ Returns trees (list) fulfilling the regex or exact matching of value for a given key (including nested path of key). Keys must written exactly the same, e.g. key = properties.species, value="Quercus *", regex=True"""
@@ -321,7 +299,6 @@ class PyTreeDB:
         res =  self.mongodb_col.find({key : {"$gte":startdate,"$lte":enddate}}, {'_id': False})
         return [e for e in res]        
 
-
     def query_by_geometry(self, geom, distance=0.0):
         """Returns list of trees(dict) that are within a defined distance (in meters) from search geometry which is provided as GEOJSON dictionary or string; Geometry types Point and Polygon are supported, for example:
 
@@ -349,7 +326,6 @@ class PyTreeDB:
         
         return [e for e in res]  
 
-
     def get_ids(self, trees) -> list:
         """Returns ids(list) of trees(list)"""
         try:
@@ -360,7 +336,6 @@ class PyTreeDB:
             else:
                 print("Could not get id for: {}".format(trees))
             return None        
- 
  
     def to_list(self):
         """Returns list of all tree objects(dict)"""
@@ -405,13 +380,7 @@ class PyTreeDB:
                 json_filept.close()
                 print(json_filename)
 
-#===> #############   
-    def export_as_numpy(self):
-        """Export database as numpy array"""
-        raise Exception("Not implemented yes.")
 
-
-#===> #############   
     def convert_to_csv(self, outdir, trees=[]):
         """Exports trees to local csv files using pandas dataframe. Each export creates two separate csv files, 
         one for general imformations, one for metrics."""
@@ -458,14 +427,6 @@ class PyTreeDB:
         # save locally
         df_general_all.to_csv(outdir + '/result_general.csv', index=False)
         df_metrics_all.to_csv(outdir + '/result_metrics.csv', index=False)
-
-
-#===> #############   
-
-    def test(self):
-        """Test routines to check all functions of the class"""
-        raise Exception("Not implemented yes.")
-
 
 
 if __name__ == "__main__":

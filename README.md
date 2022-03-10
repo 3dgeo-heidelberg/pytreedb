@@ -73,7 +73,7 @@ url = {-},
 } 
  ```
 
-The initial software development was supported by the DFG - German Research Foundation (Grant no. 411263134) within the research project [SYSSIFOSS](uni-heidelberg.de/syssifoss).
+The initial software development was supported by the DFG - German Research Foundation (Grant no. 411263134) within the research project [SYSSIFOSS](https://uni-heidelberg.de/syssifoss).
 
 ## Contact / Bugs / Feature Requests
 

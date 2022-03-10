@@ -17,9 +17,10 @@ Install and update using [pip](https://pypi.org/):
 `$ pip install -U pytreedb`
 
 ### Using Anaconda / Conda Environment
+Simply use the given Conda environment file [environment.yml](environment.yml) provided in this distribution.
 
 ```
-conda env create -f conda-environment.yml
+conda env create --file environment.yml
 ```
 
 ### Connect to MongoDB

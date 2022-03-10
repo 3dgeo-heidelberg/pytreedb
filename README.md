@@ -6,9 +6,7 @@
 
 `pytreedb` can be used as 
 1. a standard Python library for usage in your scripts during runtime and 
-2. it can also be used as a server application using the [https://pypi.org/project/Flask/](Flask) web application framework. 
-
-
+2. it can also be used as a server application using the [Flask](https://pypi.org/project/Flask/) web application framework. 
 
 
 ## 💻 Download and Installation

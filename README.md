@@ -16,21 +16,27 @@ Install and update using [pip](https://pypi.org/):
 
 `$ pip install -U pytreedb`
 
+### Using Anaconda
 
 ```
 conda env create -f conda-environment.yml
 ```
+
+### Known Issues
+- add here
 
 ### Software Dependencies
 
 xx
 
 
-## ℹ Documentation and Usage of pytreedb
+## ℹ Documentation
 
-As a starting point, please have a look to the [examples](examples) and [notebooks](Jupyter Notebooks) available in the repository.
+As a starting point, please have a look to the [examples](examples) and [notebooks](Jupyter Notebooks) available in the repository. Each of the subfolders contains a readme.md for further details. 
 
-Each of the subfolders contains a readme.md for further details. 
+### Use the pytreedb class
+Usage: `set FLASK_APP=main.py | python -m flask run`
+
 
 
 ### Run it as a server
@@ -54,7 +60,9 @@ author = {Bernhard H\"ofle and Jiani Qu and Lukas Winiwarter and ...}
 
 ## Contact / Bugs / Feature Requests
 
-You think you have found a bug or have specific request for a new feature. Please open a new issue in the online code repository on Github. Also for general questions please use the issue system. Scientific requests can be directed to the [3DGeo Research Group Heidelberg](https://uni-heidelberg.de/3dgeo) and its respective members.
+You think you have found a bug or have specific request for a new feature. Please open a new issue in the online code repository on Github. Also for general questions please use the issue system. 
+
+Scientific requests can be directed to the [3DGeo Research Group Heidelberg](https://uni-heidelberg.de/3dgeo) and its respective members.
 
 ## 📜 License
 

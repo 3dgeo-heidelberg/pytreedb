@@ -8,6 +8,10 @@
 
 [MongoDB](https://www.mongodb.com/) is used as database backend via the [PyMongo](https://pypi.org/project/pymongo/) driver. This enables scaling to large datasets, e.g. connecting to [MongoDB Atlas Cloud](https://www.mongodb.com/cloud/atlas) for big datasets.
 
+## Main Features
+
+
+
 ## 💻 Download and Installation
 
 ### Installation
@@ -48,6 +52,9 @@ set FLASK_APP=webserver/main.py
 python -m flask run
 ```
 
+### GeoJSON Template
+
+x
 
 ## Test Data
 xxx

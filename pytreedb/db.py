@@ -13,8 +13,7 @@ from pathlib import Path
 from operator import lt, le, eq, ne, ge, gt  # operator objects
 from functools import *
 
-#NEEDED ???
-import pandas as pd
+import pandas as pd #NEEDED ???
 
 import numpy as np
 import copy
@@ -27,11 +26,6 @@ from pytreedb.db_conf import *
 import pymongo
 from bson.son import SON
 
-"""
-ISSUES on gitlab: https://gitlab.gistools.geog.uni-heidelberg.de/giscience/3DGeo/pytreedb/-/issues
- 
-
-"""
 
 class PyTreeDB:
     def __init__(self, dbfile, mongodb = {"uri": "mongodb://127.0.0.1:27017/", "db": "pytreedb", "col": "syssifoss"}):
@@ -95,7 +89,6 @@ class PyTreeDB:
         try:           
             with gzip.open(dbfile, 'w') as output_file:
                 output_file.write(json.dumps(self.db).encode('utf-8'))
-            print ("WRITTEN: ", dbfile)
             if sync is True:
                 upload_result = self.mongodb_synchronize(clear=True)
                 print("{} trees synchronized with MongoDB server.".format(len(upload_result.inserted_ids)))   
@@ -127,7 +120,7 @@ class PyTreeDB:
             
         self.data = path  # URL or local directory used as data storage
         if urllib.parse.urlparse(path).scheme in ('http', 'https',):   # Check if data is local path or URL
-            print("Download and use data from: {}".format(path))
+            print("Download from: {}".format(path))
             data_dir = download_extract_zip_tempdir(path)
         else:
             data_dir = path    # local data
@@ -150,7 +143,7 @@ class PyTreeDB:
             
         self.data = path  # URL or local directory used as data storage
         if urllib.parse.urlparse(path).scheme in ('http', 'https',):   # Check if data is local path or URL
-            print("Download db file from: {}".format(path))
+            print("Download from: {}".format(path))
             data_file= download_file_to_tempdir(path)
         else:
             data_file = path    # local data
@@ -262,7 +255,6 @@ class PyTreeDB:
         if regex is True:
             res =  self.mongodb_col.find({key : { "$regex": value }},{'_id': False})       
         else:
-            print("else:")
             res =  self.mongodb_col.find({key : value},{'_id': False})  
         return [e for e in res]
 
@@ -365,21 +357,22 @@ class PyTreeDB:
             return True  # valid
         return False  # not valid
 
-
     def export_data(self, outdir, trees=[]):
         """Reverse of import_data(): Creates single geojson files for each tree in DB and puts it in local directory
-            Optionally list of ids of trees to be exported can be provided. [] means that all will be exported"""
+            Optionally list of ids of trees to be exported can be provided. [] means that all will be exported
+        returns list of file paths written"""
         if not os.path.exists(outdir):
             os.mkdir(outdir)
+        files_written=[]
         for tree in self:
-            if trees == [] or tree['id'] in trees:
-                json_content = tree['_json']
+            if trees == [] or tree['_id_x'] in trees:
+                json_content = self.get_tree_as_json(tree)
                 json_filename = os.path.join(outdir, tree['_file'])
                 json_filept = open(json_filename, 'w')
                 json_filept.write(json_content)
                 json_filept.close()
-                print(json_filename)
-
+                files_written.append(Path(json_filename))
+        return files_written
 
     def convert_to_csv(self, outdir, trees=[]):
         """Exports trees to local csv files using pandas dataframe. Each export creates two separate csv files, 
@@ -430,5 +423,5 @@ class PyTreeDB:
 
 
 if __name__ == "__main__":
-    print("pyTreeDB (version {}), (c) 3DGeo Research Group, Heidelberg University (2021+)".format(__version__))
+    print("pyTreeDB (version {}), (c) 3DGeo Research Group, Heidelberg University (2022+)".format(__version__))
 

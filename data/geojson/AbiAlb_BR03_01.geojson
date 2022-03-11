@@ -1,0 +1,126 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "AbiAlb_BR03_01",
+        "species": "Abies alba",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "FI",
+                "date": "2019-06-04",
+                "DBH_cm": 28.9,
+                "crown_base_height_m": 3.5,
+                "crown_base_height_green_m": null,
+                "height_m": null,
+                "mean_crown_diameter_m": 5.3,
+                "state": "alive"
+            },
+            {
+                "source": "TLS",
+                "date": "2019-06-04",
+                "canopy_condition": "leaf-on",
+                "DBH_cm": 27.8,
+                "crown_base_height_m": 2.95
+            },
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 23.686,
+                "crown_base_height_m": 14.45,
+                "crown_projection_area_convex_hull_m2": 27.834,
+                "crown_projection_area_concave_hull_m2": 24.44,
+                "mean_crown_diameter_m": 6.25
+            },
+            {
+                "source": "ULS",
+                "date": "2019-08-24",
+                "canopy_condition": "leaf-on",
+                "height_m": 23.902,
+                "crown_base_height_m": 8.05,
+                "crown_projection_area_convex_hull_m2": 27.48,
+                "crown_projection_area_concave_hull_m2": 23.968,
+                "mean_crown_diameter_m": 6.213
+            },
+            {
+                "source": "ULS",
+                "date": "2020-03-31",
+                "canopy_condition": "leaf-off",
+                "height_m": 23.885,
+                "crown_base_height_m": 8.85,
+                "crown_projection_area_convex_hull_m2": 24.546,
+                "crown_projection_area_concave_hull_m2": 22.47,
+                "mean_crown_diameter_m": 5.757
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    478069.447125,
+                    5429108.20675,
+                    232.323975
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "TLS",
+                "date": "2019-06-04",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL VZ-400",
+                "point_count": 140272,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/AbiAlb_BR03_01_2019-06-04_q5_TLS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 5
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 2850,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/AbiAlb_BR03_01_2019-07-05_q3_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-08-24",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 11389,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/AbiAlb_BR03_01_2019-08-24_q2_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2020-03-31",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 12813,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/AbiAlb_BR03_01_2020-03-31_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.70008,
+            49.014475,
+            232.323975
+        ]
+    }
+}

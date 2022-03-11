@@ -1,0 +1,85 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "CarBet_BR03_P11T23c",
+        "species": "Carpinus betulus",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "FI",
+                "date": "2019-06-04",
+                "DBH_cm": 5.5,
+                "crown_base_height_m": 3.5,
+                "crown_base_height_green_m": null,
+                "height_m": null,
+                "mean_crown_diameter_m": 9.4,
+                "state": "dead"
+            },
+            {
+                "source": "ULS",
+                "date": "2019-08-24",
+                "canopy_condition": "leaf-on",
+                "height_m": 8.31,
+                "crown_base_height_m": 8.35,
+                "crown_projection_area_convex_hull_m2": 6.652,
+                "crown_projection_area_concave_hull_m2": 4.926,
+                "mean_crown_diameter_m": 3.344
+            },
+            {
+                "source": "ULS",
+                "date": "2020-03-31",
+                "canopy_condition": "leaf-off",
+                "height_m": 8.648,
+                "crown_base_height_m": 2.95,
+                "crown_projection_area_convex_hull_m2": 9.059,
+                "crown_projection_area_concave_hull_m2": 3.01,
+                "mean_crown_diameter_m": 3.575
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    478073.088,
+                    5429137.5,
+                    232.775024
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-08-24",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 109,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/CarBet_BR03_P11T23c_2019-08-24_q3_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2020-03-31",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 411,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/CarBet_BR03_P11T23c_2020-03-31_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.700128,
+            49.014738,
+            232.775024
+        ]
+    }
+}

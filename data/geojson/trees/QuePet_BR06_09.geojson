@@ -1,0 +1,116 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "QuePet_BR06_09",
+        "species": "Quercus petraea",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 30.336,
+                "crown_base_height_m": 10.15,
+                "crown_projection_area_convex_hull_m2": 35.658,
+                "crown_projection_area_concave_hull_m2": 28.758,
+                "mean_crown_diameter_m": 7.32
+            },
+            {
+                "source": "TLS",
+                "date": "2019-07-22",
+                "canopy_condition": "leaf-on",
+                "DBH_cm": 35.2,
+                "crown_base_height_m": 10.05
+            },
+            {
+                "source": "ULS",
+                "date": "2019-09-12",
+                "canopy_condition": "leaf-on",
+                "height_m": 30.468,
+                "crown_base_height_m": 10.15,
+                "crown_projection_area_convex_hull_m2": 34.317,
+                "crown_projection_area_concave_hull_m2": 27.853,
+                "mean_crown_diameter_m": 7.016
+            },
+            {
+                "source": "ULS",
+                "date": "2020-03-27",
+                "canopy_condition": "leaf-off",
+                "height_m": 30.395,
+                "crown_base_height_m": 10.05,
+                "crown_projection_area_convex_hull_m2": 28.767,
+                "crown_projection_area_concave_hull_m2": 22.931,
+                "mean_crown_diameter_m": 6.579
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    479286.503,
+                    5427226.78425,
+                    324.742188
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 3001,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/QuePet_BR06_09_2019-07-05_q2_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            },
+            {
+                "type": "pointcloud",
+                "mode": "TLS",
+                "date": "2019-07-22",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL VZ-400",
+                "point_count": 584125,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/QuePet_BR06_09_2019-07-22_q2_TLS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-09-12",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 42668,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/QuePet_BR06_09_2019-09-12_q1_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 1
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2020-03-27",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 46367,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/QuePet_BR06_09_2020-03-27_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.71682,
+            48.997593,
+            324.742188
+        ]
+    }
+}

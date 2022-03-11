@@ -1,0 +1,116 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "PicAbi_BR08_02",
+        "species": "Picea abies",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 34.778,
+                "crown_base_height_m": 8.35,
+                "crown_projection_area_convex_hull_m2": 61.375,
+                "crown_projection_area_concave_hull_m2": 53.579,
+                "mean_crown_diameter_m": 8.933
+            },
+            {
+                "source": "TLS",
+                "date": "2019-07-24",
+                "canopy_condition": "leaf-on",
+                "DBH_cm": 52.0,
+                "crown_base_height_m": 7.85
+            },
+            {
+                "source": "ULS",
+                "date": "2019-08-24",
+                "canopy_condition": "leaf-on",
+                "height_m": 35.211,
+                "crown_base_height_m": 1.15,
+                "crown_projection_area_convex_hull_m2": 62.652,
+                "crown_projection_area_concave_hull_m2": 54.396,
+                "mean_crown_diameter_m": 9.181
+            },
+            {
+                "source": "ULS",
+                "date": "2020-03-31",
+                "canopy_condition": "leaf-off",
+                "height_m": 35.251,
+                "crown_base_height_m": 8.15,
+                "crown_projection_area_convex_hull_m2": 60.351,
+                "crown_projection_area_concave_hull_m2": 52.929,
+                "mean_crown_diameter_m": 9.024
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    478006.195375,
+                    5429011.227125,
+                    231.254761
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 6970,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PicAbi_BR08_02_2019-07-05_q2_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            },
+            {
+                "type": "pointcloud",
+                "mode": "TLS",
+                "date": "2019-07-24",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL VZ-400",
+                "point_count": 6195214,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PicAbi_BR08_02_2019-07-24_q3_TLS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-08-24",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 76436,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PicAbi_BR08_02_2019-08-24_q3_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2020-03-31",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 81978,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PicAbi_BR08_02_2020-03-31_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.69922,
+            49.0136,
+            231.254761
+        ]
+    }
+}

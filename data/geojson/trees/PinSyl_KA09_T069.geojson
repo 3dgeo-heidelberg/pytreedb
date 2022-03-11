@@ -1,0 +1,108 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "PinSyl_KA09_T069",
+        "species": "Pinus sylvestris",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 32.284,
+                "crown_base_height_m": 5.75,
+                "crown_projection_area_convex_hull_m2": 95.879,
+                "crown_projection_area_concave_hull_m2": 83.776,
+                "mean_crown_diameter_m": 11.717
+            },
+            {
+                "source": "ULS",
+                "date": "2019-09-13",
+                "canopy_condition": "leaf-on",
+                "height_m": 32.57,
+                "crown_base_height_m": 4.95,
+                "crown_projection_area_convex_hull_m2": 98.157,
+                "crown_projection_area_concave_hull_m2": 88.38,
+                "mean_crown_diameter_m": 11.874
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    458652.91525,
+                    5432158.69025,
+                    162.074295
+                ]
+            },
+            {
+                "source": "FI",
+                "date": "2019-10-17",
+                "canopy_condition": "leaf-on",
+                "DBH_cm": 79.0,
+                "crown_base_height_m": 15.3,
+                "crown_base_height_green_m": 18.4,
+                "height_m": null,
+                "mean_crown_diameter_m": 12.1,
+                "state": "alive"
+            },
+            {
+                "source": "ULS",
+                "date": "2019-12-10",
+                "canopy_condition": "leaf-off",
+                "height_m": 32.421,
+                "crown_base_height_m": 2.85,
+                "crown_projection_area_convex_hull_m2": 102.061,
+                "crown_projection_area_concave_hull_m2": 93.064,
+                "mean_crown_diameter_m": 12.121
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 13405,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PinSyl_KA09_T069_2019-07-05_q4_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 4
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-09-13",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 190228,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PinSyl_KA09_T069_2019-09-13_q3_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-12-10",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 202087,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PinSyl_KA09_T069_2019-12-10_q4_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 4
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.43424,
+            49.040919,
+            162.074295
+        ]
+    }
+}

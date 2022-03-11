@@ -1,0 +1,108 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "LarDec_BR05_P4T11",
+        "species": "Larix decidua",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 29.801,
+                "crown_base_height_m": 11.05,
+                "crown_projection_area_convex_hull_m2": 51.824,
+                "crown_projection_area_concave_hull_m2": 46.473,
+                "mean_crown_diameter_m": 8.368
+            },
+            {
+                "source": "FI",
+                "date": "2019-08-09",
+                "canopy_condition": "leaf-on",
+                "DBH_cm": 38.3,
+                "crown_base_height_m": 10.9,
+                "crown_base_height_green_m": 17.8,
+                "height_m": null,
+                "mean_crown_diameter_m": 6.1,
+                "state": "alive"
+            },
+            {
+                "source": "ULS",
+                "date": "2019-09-12",
+                "canopy_condition": "leaf-on",
+                "height_m": 30.27,
+                "crown_base_height_m": 8.45,
+                "crown_projection_area_convex_hull_m2": 45.277,
+                "crown_projection_area_concave_hull_m2": 39.729,
+                "mean_crown_diameter_m": 7.891
+            },
+            {
+                "source": "ULS",
+                "date": "2020-03-26",
+                "canopy_condition": "leaf-off",
+                "height_m": 30.131,
+                "crown_base_height_m": 8.65,
+                "crown_projection_area_convex_hull_m2": 35.13,
+                "crown_projection_area_concave_hull_m2": 30.661,
+                "mean_crown_diameter_m": 6.966
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    478763.43625,
+                    5426990.95875,
+                    303.160583
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 5779,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/LarDec_BR05_P4T11_2019-07-05_q3_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-09-12",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 46563,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/LarDec_BR05_P4T11_2019-09-12_q3_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2020-03-26",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 43776,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/LarDec_BR05_P4T11_2020-03-26_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.709681,
+            48.995453,
+            303.160583
+        ]
+    }
+}

@@ -1,0 +1,108 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "JugReg_BR05_P6T17",
+        "species": "Juglans regia",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 20.435,
+                "crown_base_height_m": 4.85,
+                "crown_projection_area_convex_hull_m2": 41.817,
+                "crown_projection_area_concave_hull_m2": 36.518,
+                "mean_crown_diameter_m": 7.77
+            },
+            {
+                "source": "FI",
+                "date": "2019-08-09",
+                "canopy_condition": "leaf-on",
+                "DBH_cm": 20.3,
+                "crown_base_height_m": 6.5,
+                "crown_base_height_green_m": 6.5,
+                "height_m": null,
+                "mean_crown_diameter_m": 7.8,
+                "state": "alive"
+            },
+            {
+                "source": "ULS",
+                "date": "2019-09-12",
+                "canopy_condition": "leaf-on",
+                "height_m": 21.396,
+                "crown_base_height_m": 0.65,
+                "crown_projection_area_convex_hull_m2": 40.136,
+                "crown_projection_area_concave_hull_m2": 34.25,
+                "mean_crown_diameter_m": 7.408
+            },
+            {
+                "source": "ULS",
+                "date": "2020-03-26",
+                "canopy_condition": "leaf-off",
+                "height_m": 21.09,
+                "crown_base_height_m": 5.15,
+                "crown_projection_area_convex_hull_m2": 29.677,
+                "crown_projection_area_concave_hull_m2": 22.776,
+                "mean_crown_diameter_m": 6.444
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    478703.209,
+                    5427051.6595,
+                    289.970428
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 4298,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/JugReg_BR05_P6T17_2019-07-05_q3_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-09-12",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 15592,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/JugReg_BR05_P6T17_2019-09-12_q3_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2020-03-26",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 10697,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/JugReg_BR05_P6T17_2020-03-26_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.708855,
+            48.995997,
+            289.970428
+        ]
+    }
+}

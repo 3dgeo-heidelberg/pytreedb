@@ -1,0 +1,107 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "FraExc_BR03_P13T08b",
+        "species": "Fraxinus excelsior",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "FI",
+                "date": "2019-06-04",
+                "DBH_cm": 30.4,
+                "crown_base_height_m": 16.9,
+                "crown_base_height_green_m": null,
+                "height_m": null,
+                "mean_crown_diameter_m": 6.0,
+                "state": "alive"
+            },
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 29.106,
+                "crown_base_height_m": 19.35,
+                "crown_projection_area_convex_hull_m2": 43.724,
+                "crown_projection_area_concave_hull_m2": 35.004,
+                "mean_crown_diameter_m": 7.816
+            },
+            {
+                "source": "ULS",
+                "date": "2019-08-24",
+                "canopy_condition": "leaf-on",
+                "height_m": 28.764,
+                "crown_base_height_m": 1.55,
+                "crown_projection_area_convex_hull_m2": 36.488,
+                "crown_projection_area_concave_hull_m2": 28.635,
+                "mean_crown_diameter_m": 7.283
+            },
+            {
+                "source": "ULS",
+                "date": "2020-03-31",
+                "canopy_condition": "leaf-off",
+                "height_m": 28.828,
+                "crown_base_height_m": 5.55,
+                "crown_projection_area_convex_hull_m2": 25.278,
+                "crown_projection_area_concave_hull_m2": 18.053,
+                "mean_crown_diameter_m": 6.11
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    478115.93175,
+                    5429145.77075,
+                    240.523773
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 2948,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/FraExc_BR03_P13T08b_2019-07-05_q3_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-08-24",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 24102,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/FraExc_BR03_P13T08b_2019-08-24_q3_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2020-03-31",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 17340,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/FraExc_BR03_P13T08b_2020-03-31_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.700713,
+            49.014814,
+            240.523773
+        ]
+    }
+}

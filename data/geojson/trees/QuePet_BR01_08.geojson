@@ -1,0 +1,138 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "QuePet_BR01_08",
+        "species": "Quercus petraea",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "TLS",
+                "date": "2019-07-03",
+                "canopy_condition": "leaf-on",
+                "DBH_cm": 19.2,
+                "crown_base_height_m": 6.15
+            },
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 17.215,
+                "crown_base_height_m": 8.35,
+                "crown_projection_area_convex_hull_m2": 23.263,
+                "crown_projection_area_concave_hull_m2": 20.365,
+                "mean_crown_diameter_m": 5.794
+            },
+            {
+                "source": "ULS",
+                "date": "2019-09-12",
+                "canopy_condition": "leaf-on",
+                "height_m": 17.563,
+                "crown_base_height_m": 3.45,
+                "crown_projection_area_convex_hull_m2": 24.576,
+                "crown_projection_area_concave_hull_m2": 20.911,
+                "mean_crown_diameter_m": 5.89
+            },
+            {
+                "source": "ULS",
+                "date": "2019-12-04",
+                "canopy_condition": "leaf-off",
+                "height_m": 17.395,
+                "crown_base_height_m": 7.55,
+                "crown_projection_area_convex_hull_m2": 18.223,
+                "crown_projection_area_concave_hull_m2": 14.699,
+                "mean_crown_diameter_m": 5.305
+            },
+            {
+                "source": "ULS",
+                "date": "2020-03-27",
+                "canopy_condition": "leaf-off",
+                "height_m": 17.324,
+                "crown_base_height_m": 7.45,
+                "crown_projection_area_convex_hull_m2": 18.652,
+                "crown_projection_area_concave_hull_m2": 15.233,
+                "mean_crown_diameter_m": 4.986
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    476777.705,
+                    5429148.08425,
+                    250.062195
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "TLS",
+                "date": "2019-07-03",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL VZ-400",
+                "point_count": 449975,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/QuePet_BR01_08_2019-07-03_q2_TLS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 2566,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/QuePet_BR01_08_2019-07-05_q2_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-09-12",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 5993,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/QuePet_BR01_08_2019-09-12_q3_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-12-04",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 6329,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/QuePet_BR01_08_2019-12-04_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2020-03-27",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 10797,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/QuePet_BR01_08_2020-03-27_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.682412,
+            49.014786,
+            250.062195
+        ]
+    }
+}

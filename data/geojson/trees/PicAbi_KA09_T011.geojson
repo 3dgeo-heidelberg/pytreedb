@@ -1,0 +1,97 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "PicAbi_KA09_T011",
+        "species": "Picea abies",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 24.682,
+                "crown_base_height_m": 0.35,
+                "crown_projection_area_convex_hull_m2": 76.433,
+                "crown_projection_area_concave_hull_m2": 62.765,
+                "mean_crown_diameter_m": 10.365
+            },
+            {
+                "source": "ULS",
+                "date": "2019-09-13",
+                "canopy_condition": "leaf-on",
+                "height_m": 25.528,
+                "crown_base_height_m": 0.95,
+                "crown_projection_area_convex_hull_m2": 61.32,
+                "crown_projection_area_concave_hull_m2": 49.791,
+                "mean_crown_diameter_m": 9.451
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    458736.871498,
+                    5432141.3755,
+                    161.6957
+                ]
+            },
+            {
+                "source": "ULS",
+                "date": "2019-12-10",
+                "canopy_condition": "leaf-off",
+                "height_m": 25.447,
+                "crown_base_height_m": 0.0,
+                "crown_projection_area_convex_hull_m2": 70.701,
+                "crown_projection_area_concave_hull_m2": 57.042,
+                "mean_crown_diameter_m": 9.719
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 9185,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PicAbi_KA09_T011_2019-07-05_q4_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 4
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-09-13",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 70613,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PicAbi_KA09_T011_2019-09-13_q3_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-12-10",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 82136,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PicAbi_KA09_T011_2019-12-10_q4_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 4
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.435391,
+            49.040769,
+            161.6957
+        ]
+    }
+}

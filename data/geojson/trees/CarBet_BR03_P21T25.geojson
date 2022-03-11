@@ -1,0 +1,97 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "CarBet_BR03_P21T25",
+        "species": "Carpinus betulus",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 21.264,
+                "crown_base_height_m": 11.15,
+                "crown_projection_area_convex_hull_m2": 83.997,
+                "crown_projection_area_concave_hull_m2": 68.057,
+                "mean_crown_diameter_m": 11.154
+            },
+            {
+                "source": "ULS",
+                "date": "2019-08-24",
+                "canopy_condition": "leaf-on",
+                "height_m": 21.116,
+                "crown_base_height_m": 8.15,
+                "crown_projection_area_convex_hull_m2": 77.213,
+                "crown_projection_area_concave_hull_m2": 61.793,
+                "mean_crown_diameter_m": 10.978
+            },
+            {
+                "source": "ULS",
+                "date": "2020-03-31",
+                "canopy_condition": "leaf-off",
+                "height_m": 20.982,
+                "crown_base_height_m": 7.75,
+                "crown_projection_area_convex_hull_m2": 63.468,
+                "crown_projection_area_concave_hull_m2": 43.219,
+                "mean_crown_diameter_m": 9.505
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    478055.297,
+                    5429187.09575,
+                    229.945648
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 5044,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/CarBet_BR03_P21T25_2019-07-05_q3_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-08-24",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 32813,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/CarBet_BR03_P21T25_2019-08-24_q3_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2020-03-31",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 30548,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/CarBet_BR03_P21T25_2020-03-31_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.699882,
+            49.015184,
+            229.945648
+        ]
+    }
+}

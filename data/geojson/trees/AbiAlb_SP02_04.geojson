@@ -1,0 +1,73 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "AbiAlb_SP02_04",
+        "species": "Abies alba",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "TLS",
+                "date": "2019-08-23",
+                "canopy_condition": "leaf-on",
+                "height_m": 8.372,
+                "DBH_cm": 11.3,
+                "crown_base_height_m": 0.45
+            },
+            {
+                "source": "ULS",
+                "date": "2020-04-01",
+                "canopy_condition": "leaf-off",
+                "height_m": 8.322,
+                "crown_base_height_m": 0.35,
+                "crown_projection_area_convex_hull_m2": 20.08,
+                "crown_projection_area_concave_hull_m2": 17.206,
+                "mean_crown_diameter_m": 5.17
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    474881.747875,
+                    5429712.62725,
+                    277.892273
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "TLS",
+                "date": "2019-08-23",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL VZ-400",
+                "point_count": 4154606,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/AbiAlb_SP02_04_2019-08-23_q2_TLS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2020-04-01",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 14463,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/AbiAlb_SP02_04_2020-04-01_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.656448,
+            49.01979,
+            277.892273
+        ]
+    }
+}

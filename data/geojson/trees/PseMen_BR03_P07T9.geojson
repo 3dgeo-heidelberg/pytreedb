@@ -1,0 +1,63 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "PseMen_BR03_P07T9",
+        "species": "Pseudotsuga menziesii",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "FI",
+                "date": "2019-06-04",
+                "DBH_cm": 51.7,
+                "crown_base_height_m": 13.2,
+                "crown_base_height_green_m": null,
+                "height_m": null,
+                "mean_crown_diameter_m": 9.4,
+                "state": "alive"
+            },
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 38.3,
+                "crown_base_height_m": 4.05,
+                "crown_projection_area_convex_hull_m2": 77.596,
+                "crown_projection_area_concave_hull_m2": 70.261,
+                "mean_crown_diameter_m": 10.569
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    478097.767,
+                    5429114.843,
+                    235.569
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 8210,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PseMen_BR03_P07T9_2019-07-05_q3_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.700467,
+            49.014535,
+            235.569
+        ]
+    }
+}

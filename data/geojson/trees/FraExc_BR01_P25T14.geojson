@@ -1,0 +1,119 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "FraExc_BR01_P25T14",
+        "species": "Fraxinus excelsior",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 7.358,
+                "crown_base_height_m": 3.35,
+                "crown_projection_area_convex_hull_m2": 15.247,
+                "crown_projection_area_concave_hull_m2": 11.23,
+                "mean_crown_diameter_m": 4.831
+            },
+            {
+                "source": "ULS",
+                "date": "2019-09-12",
+                "canopy_condition": "leaf-on",
+                "height_m": 7.147,
+                "crown_base_height_m": 2.05,
+                "crown_projection_area_convex_hull_m2": 18.202,
+                "crown_projection_area_concave_hull_m2": 15.55,
+                "mean_crown_diameter_m": 4.866
+            },
+            {
+                "source": "ULS",
+                "date": "2019-12-04",
+                "canopy_condition": "leaf-off",
+                "height_m": 7.158,
+                "crown_base_height_m": 1.05,
+                "crown_projection_area_convex_hull_m2": 15.145,
+                "crown_projection_area_concave_hull_m2": 12.708,
+                "mean_crown_diameter_m": 4.63
+            },
+            {
+                "source": "ULS",
+                "date": "2020-03-27",
+                "canopy_condition": "leaf-off",
+                "height_m": 6.507,
+                "crown_base_height_m": 2.25,
+                "crown_projection_area_convex_hull_m2": 8.438,
+                "crown_projection_area_concave_hull_m2": 5.288,
+                "mean_crown_diameter_m": 3.42
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    476840.72425,
+                    5429057.289,
+                    277.741211
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 227,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/FraExc_BR01_P25T14_2019-07-05_q3_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-09-12",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 701,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/FraExc_BR01_P25T14_2019-09-12_q3_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-12-04",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 4092,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/FraExc_BR01_P25T14_2019-12-04_q3_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2020-03-27",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 965,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/FraExc_BR01_P25T14_2020-03-27_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.683279,
+            49.013972,
+            277.741211
+        ]
+    }
+}

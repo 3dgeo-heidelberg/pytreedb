@@ -1,0 +1,129 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "PicAbi_BR01_P17T15",
+        "species": "Picea abies",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "FI",
+                "date": "2019-06-27",
+                "DBH_cm": 11.2,
+                "crown_base_height_m": 0.3,
+                "crown_base_height_green_m": 4.9,
+                "height_m": null,
+                "mean_crown_diameter_m": 3.0,
+                "state": "alive"
+            },
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 10.744,
+                "crown_base_height_m": 2.35,
+                "crown_projection_area_convex_hull_m2": 12.699,
+                "crown_projection_area_concave_hull_m2": 9.834,
+                "mean_crown_diameter_m": 4.421
+            },
+            {
+                "source": "ULS",
+                "date": "2019-09-12",
+                "canopy_condition": "leaf-on",
+                "height_m": 10.644,
+                "crown_base_height_m": 3.25,
+                "crown_projection_area_convex_hull_m2": 10.492,
+                "crown_projection_area_concave_hull_m2": 8.268,
+                "mean_crown_diameter_m": 4.139
+            },
+            {
+                "source": "ULS",
+                "date": "2019-12-04",
+                "canopy_condition": "leaf-off",
+                "height_m": 10.451,
+                "crown_base_height_m": 2.45,
+                "crown_projection_area_convex_hull_m2": 10.175,
+                "crown_projection_area_concave_hull_m2": 8.198,
+                "mean_crown_diameter_m": 4.02
+            },
+            {
+                "source": "ULS",
+                "date": "2020-03-27",
+                "canopy_condition": "leaf-off",
+                "height_m": 10.394,
+                "crown_base_height_m": 3.85,
+                "crown_projection_area_convex_hull_m2": 5.141,
+                "crown_projection_area_concave_hull_m2": 4.188,
+                "mean_crown_diameter_m": 2.809
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    476750.59975,
+                    5429069.43625,
+                    258.368927
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 1395,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PicAbi_BR01_P17T15_2019-07-05_q3_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-09-12",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 4073,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PicAbi_BR01_P17T15_2019-09-12_q3_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-12-04",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 5342,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PicAbi_BR01_P17T15_2019-12-04_q3_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2020-03-27",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 4540,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PicAbi_BR01_P17T15_2020-03-27_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.682046,
+            49.014078,
+            258.368927
+        ]
+    }
+}

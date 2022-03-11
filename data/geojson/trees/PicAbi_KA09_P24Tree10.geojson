@@ -1,0 +1,64 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "PicAbi_KA09_P24Tree10",
+        "species": "Picea abies",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 21.746,
+                "crown_base_height_m": 7.15,
+                "crown_projection_area_convex_hull_m2": 35.924,
+                "crown_projection_area_concave_hull_m2": 29.574,
+                "mean_crown_diameter_m": 7.056
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    458729.42,
+                    5432212.592,
+                    162.521042
+                ]
+            },
+            {
+                "source": "FI",
+                "date": "2019-10-17",
+                "canopy_condition": "leaf-on",
+                "DBH_cm": 25.5,
+                "crown_base_height_m": 3.7,
+                "crown_base_height_green_m": 5.4,
+                "height_m": 24.1,
+                "mean_crown_diameter_m": 4.8,
+                "state": "alive"
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 2950,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PicAbi_KA09_P24Tree10_2019-07-05_q3_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.435282,
+            49.041409,
+            162.521042
+        ]
+    }
+}

@@ -1,0 +1,53 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "FagSyl_BR01_P1Tree3",
+        "species": "Fagus sylvatica",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 28.247,
+                "crown_base_height_m": 15.45,
+                "crown_projection_area_convex_hull_m2": 52.132,
+                "crown_projection_area_concave_hull_m2": 46.424,
+                "mean_crown_diameter_m": 8.235
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    476725.817,
+                    5429018.445,
+                    259.0289
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 10193,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/FagSyl_BR01_P1Tree3_2019-07-05_q4_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 4
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.68171,
+            49.013618,
+            259.0289
+        ]
+    }
+}

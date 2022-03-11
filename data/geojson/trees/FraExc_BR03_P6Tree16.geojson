@@ -1,0 +1,63 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "FraExc_BR03_P6Tree16",
+        "species": "Fraxinus excelsior",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "FI",
+                "date": "2019-06-04",
+                "DBH_cm": 19.2,
+                "crown_base_height_m": 6.6,
+                "crown_base_height_green_m": null,
+                "height_m": null,
+                "mean_crown_diameter_m": 8.6,
+                "state": "alive"
+            },
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 19.426,
+                "crown_base_height_m": 4.95,
+                "crown_projection_area_convex_hull_m2": 37.201,
+                "crown_projection_area_concave_hull_m2": 31.748,
+                "mean_crown_diameter_m": 7.178
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    478058.861,
+                    5429126.023,
+                    230.667648
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 3601,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/FraExc_BR03_P6Tree16_2019-07-05_q3_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.699934,
+            49.014635,
+            230.667648
+        ]
+    }
+}

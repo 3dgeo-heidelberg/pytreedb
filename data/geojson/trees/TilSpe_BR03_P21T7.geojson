@@ -1,0 +1,107 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "TilSpe_BR03_P21T7",
+        "species": "Tilia spec.",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "FI",
+                "date": "2019-06-04",
+                "DBH_cm": 45.3,
+                "crown_base_height_m": -999.0,
+                "crown_base_height_green_m": -999.0,
+                "height_m": 15.0,
+                "mean_crown_diameter_m": null,
+                "state": "dead"
+            },
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 19.577,
+                "crown_base_height_m": 5.85,
+                "crown_projection_area_convex_hull_m2": 30.424,
+                "crown_projection_area_concave_hull_m2": 23.168,
+                "mean_crown_diameter_m": 6.973
+            },
+            {
+                "source": "ULS",
+                "date": "2019-08-24",
+                "canopy_condition": "leaf-on",
+                "height_m": 19.306,
+                "crown_base_height_m": 4.75,
+                "crown_projection_area_convex_hull_m2": 30.948,
+                "crown_projection_area_concave_hull_m2": 24.55,
+                "mean_crown_diameter_m": 6.933
+            },
+            {
+                "source": "ULS",
+                "date": "2020-03-31",
+                "canopy_condition": "leaf-off",
+                "height_m": 18.744,
+                "crown_base_height_m": 5.45,
+                "crown_projection_area_convex_hull_m2": 16.897,
+                "crown_projection_area_concave_hull_m2": 14.637,
+                "mean_crown_diameter_m": 5.39
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    478063.5675,
+                    5429179.25275,
+                    231.009491
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 1980,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/TilSpe_BR03_P21T7_2019-07-05_q3_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-08-24",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 6751,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/TilSpe_BR03_P21T7_2019-08-24_q3_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2020-03-31",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 19687,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/TilSpe_BR03_P21T7_2020-03-31_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.699996,
+            49.015114,
+            231.009491
+        ]
+    }
+}

@@ -1,0 +1,64 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "PinSyl_KA11_P1T02",
+        "species": "Pinus sylvestris",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 27.103,
+                "crown_base_height_m": 14.95,
+                "crown_projection_area_convex_hull_m2": 31.026,
+                "crown_projection_area_concave_hull_m2": 26.638,
+                "mean_crown_diameter_m": 6.475
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    458091.706,
+                    5431482.468,
+                    162.409897
+                ]
+            },
+            {
+                "source": "FI",
+                "date": "2019-08-22",
+                "canopy_condition": "leaf-on",
+                "DBH_cm": 39.5,
+                "crown_base_height_m": 14.2,
+                "crown_base_height_green_m": 16.5,
+                "height_m": null,
+                "mean_crown_diameter_m": 6.5,
+                "state": "alive"
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 3625,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PinSyl_KA11_P1T02_2019-07-05_q4_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 4
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.426632,
+            49.034798,
+            162.409897
+        ]
+    }
+}

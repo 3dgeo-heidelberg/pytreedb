@@ -1,0 +1,108 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "FagSyl_BR05_P4T6",
+        "species": "Fagus sylvatica",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 9.069,
+                "crown_base_height_m": 4.55,
+                "crown_projection_area_convex_hull_m2": 33.149,
+                "crown_projection_area_concave_hull_m2": 22.259,
+                "mean_crown_diameter_m": 6.972
+            },
+            {
+                "source": "FI",
+                "date": "2019-08-09",
+                "canopy_condition": "leaf-on",
+                "DBH_cm": 11.6,
+                "crown_base_height_m": 5.2,
+                "crown_base_height_green_m": 5.2,
+                "height_m": 8.8,
+                "mean_crown_diameter_m": 8.0,
+                "state": "alive"
+            },
+            {
+                "source": "ULS",
+                "date": "2019-09-12",
+                "canopy_condition": "leaf-on",
+                "height_m": 9.174,
+                "crown_base_height_m": 4.15,
+                "crown_projection_area_convex_hull_m2": 39.295,
+                "crown_projection_area_concave_hull_m2": 23.409,
+                "mean_crown_diameter_m": 7.328
+            },
+            {
+                "source": "ULS",
+                "date": "2020-03-26",
+                "canopy_condition": "leaf-off",
+                "height_m": 8.651,
+                "crown_base_height_m": 4.65,
+                "crown_projection_area_convex_hull_m2": 31.487,
+                "crown_projection_area_concave_hull_m2": 17.522,
+                "mean_crown_diameter_m": 6.854
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    478748.7915,
+                    5427003.5095,
+                    299.409119
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 369,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/FagSyl_BR05_P4T6_2019-07-05_q3_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2019-09-12",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 2844,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/FagSyl_BR05_P4T6_2019-09-12_q3_ULS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 3
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2020-03-26",
+                "canopy_condition": "leaf-off",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 3491,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/FagSyl_BR05_P4T6_2020-03-26_q2_ULS-off.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.70948,
+            48.995566,
+            299.409119
+        ]
+    }
+}

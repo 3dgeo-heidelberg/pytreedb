@@ -1,0 +1,72 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "PseMen_BR04_01",
+        "species": "Pseudotsuga menziesii",
+        "source": "http://syssifoss.db",
+        "measurements": [
+            {
+                "source": "TLS",
+                "date": "2019-07-04",
+                "canopy_condition": "leaf-on",
+                "DBH_cm": 94.3,
+                "crown_base_height_m": 9.15
+            },
+            {
+                "source": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "height_m": 51.005,
+                "crown_base_height_m": 1.65,
+                "crown_projection_area_convex_hull_m2": 126.901,
+                "crown_projection_area_concave_hull_m2": 112.378,
+                "mean_crown_diameter_m": 13.488
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    476921.987125,
+                    5429196.672875,
+                    256.17025
+                ]
+            }
+        ],
+        "measurements_metadata": [
+            {}
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "TLS",
+                "date": "2019-07-04",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL VZ-400",
+                "point_count": 5804418,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PseMen_BR04_01_2019-07-04_q2_TLS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ALS",
+                "date": "2019-07-05",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL LMS-VQ780i",
+                "point_count": 10232,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PseMen_BR04_01_2019-07-05_q2_ALS-on.laz",
+                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.684382,
+            49.015229,
+            256.17025
+        ]
+    }
+}

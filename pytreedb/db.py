@@ -47,6 +47,7 @@ class PyTreeDB:
             self.mongodb_create_indexes()        
         except:
             print("Could not connect to MongoDB server or establishing sync/indices/etc. to MongoDB: {}.".format(self.mongodb))
+            #raise
             sys.exit()          
             
     def __getitem__(self, item):

@@ -12,8 +12,8 @@ dependencies:
   - pytest
   - flask
   - requests
-  - pymongo
   - pip:
+    - pymongo[srv]
 
 prefix: D:\anaconda3\envs\pytreedb
 

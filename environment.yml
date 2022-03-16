@@ -16,6 +16,7 @@ dependencies:
   - sphinx
   - myst-parser
   - sphinxcontrib-napoleon
+  - pre-commit
   - pip:
     - pymongo[srv]
 

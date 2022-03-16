@@ -738,7 +738,9 @@ L.tileLayer(
 // Init geoJSONLayer(group)
 var geoJSONLayer = L.geoJSON(null, {
         pointToLayer: function (feature, latlng) { // Each tree will be stored in one layer
-            return L.marker(latlng);
+            var marker = L.marker(latlng);
+            marker._pmTempLayer = true;
+            return marker;
         }
     }).addTo(map);
 
@@ -762,18 +764,21 @@ map.on('pm:create', function (e) {
     var poly = e.layer;
     drawnItems.addLayer(poly);
     geoJSONLayer.eachLayer(marker => {
-        if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, poly)) {
-            marker._icon.classList.add("grayout");
-        }
+        marker._icon.classList.add('grayout');
+        drawnItems.eachLayer(poly => {
+            if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, poly)) {
+                marker._icon.classList.remove('grayout');
+            }
+        });
     });
 });
 
 drawnItems.on('pm:update', function (e) {
     geoJSONLayer.eachLayer(marker => {
-        marker._icon.classList.remove('grayout');
+        marker._icon.classList.add('grayout');
         drawnItems.eachLayer(poly => {
             if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, poly)) {
-                marker._icon.classList.add('grayout');
+                marker._icon.classList.remove('grayout');
             }
         });
     });
@@ -783,27 +788,24 @@ drawnItems.on('pm:cut', function(e) {
     drawnItems.removeLayer(e.originalLayer);
     drawnItems.addLayer(e.layer);
     geoJSONLayer.eachLayer(marker => {
-        marker._icon.classList.remove('grayout');
+        marker._icon.classList.add('grayout');
         drawnItems.eachLayer(poly => {
             if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, poly)) {
-                marker._icon.classList.add('grayout');
+                marker._icon.classList.remove('grayout');
             }
         });
     });
 });
 
 map.on('pm:remove', function(e) {    
-    if (drawnItems.getLayers().length == 0) {
-        geoJSONLayer.eachLayer(marker => {
-            marker._icon.classList.remove('grayout');
-        });
-    } else {
-        geoJSONLayer.eachLayer(marker => {
-            if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, e.layer)) {
+    geoJSONLayer.eachLayer(marker => {
+        marker._icon.classList.add('grayout');
+        drawnItems.eachLayer(poly => {
+            if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, poly)) {
                 marker._icon.classList.remove('grayout');
             }
         });
-    }
+    });
 });
 
 // Check if a marker is inside a polygon

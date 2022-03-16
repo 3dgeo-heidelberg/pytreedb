@@ -31,6 +31,7 @@ The `Python` REST interface and all clients, such as the web frontend, simply us
 Install and update using [pip](https://pypi.org/) for 1) core library and 2) server library using the core library:
 
 `$ pip install -U pytreedb`
+
 `$ pip install -U pytreedb-server`
 
 ### Using Anaconda / Conda Environment
@@ -53,12 +54,12 @@ CONN_COL = "heidelberg"
 
 ### Software Dependencies
 
-All dependencies are listed in the Anaconda  [environment.yml](environment.yml) definition and can be installed with conda or pip. When creating the conda environment from our definition file, all dependencies are resolved.
+All dependencies (i.e. required third-party Python packages) are listed in the Anaconda [environment.yml](environment.yml) definition and can be installed with conda or pip. When creating the conda environment from our definition file, all dependencies are resolved.
 
 ## :information_source: Documentation of software usage
 
 ### `PyTreeDB` class :snake:
-As a starting point, please have a look to the [examples](examples) and [notebooks](Jupyter Notebooks) available in the repository. Further, each of the subfolders contains a readme.md with respective details on the repository section.
+As a starting point, please have a look to the [examples](examples) and [Jupyter Notebooks](notebooks) available in the repository. Further, each of the subfolders contains a readme.md with respective details on the repository section.
 
 For running the Python scripts and the Jupyter Notebooks, you need to specify the information (mongodb URI, database name and connection) for connecting to the MongoDB in a `.env` file. Use the template file [sample.env](sample.env), add your values, and save the file as `.env` in the root directory.
 

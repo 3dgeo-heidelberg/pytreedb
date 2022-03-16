@@ -94,7 +94,7 @@ class PyTreeDB:
                 upload_result = self.mongodb_synchronize(clear=True)
                 print("{} trees synchronized with MongoDB server.".format(len(upload_result.inserted_ids)))   
         except:
-            raise Exception("Could not write db file {}. Path or permissions might be missing.".format (dbfile))    
+            raise Exception(f"Could not write db file {dbfile}. Path or permissions might be missing.")
 
     def load(self, dbfile, sync=True):
         """Loads existing compressed serialized version of database.
@@ -125,11 +125,13 @@ class PyTreeDB:
             data_dir = download_extract_zip_tempdir(path)
         else:
             data_dir = path    # local data
-        cnt= 0
+            if not Path(data_dir).exists():
+                raise FileNotFoundError(f"Directory {data_dir} does not exist.")
+        cnt = 0
         for f in Path(data_dir).rglob('*.*json'):
             try:
                 self.add_tree_file(f)
-                cnt+=1
+                cnt += 1
             except Exception as err:
                 print("Input file <%s> cannot be read and is ignored. %s" % (f, err))
 
@@ -358,20 +360,19 @@ class PyTreeDB:
             return True  # valid
         return False  # not valid
 
-    def export_data(self, outdir, trees=[]):
+    def export_data(self, outdir, trees: list = []):
         """Reverse of import_data(): Creates single geojson files for each tree in DB and puts it in local directory
             Optionally list of ids of trees to be exported can be provided. [] means that all will be exported
         returns list of file paths written"""
         if not os.path.exists(outdir):
             os.mkdir(outdir)
-        files_written=[]
+        files_written = []
         for tree in self:
             if trees == [] or tree['_id_x'] in trees:
                 json_content = self.get_tree_as_json(tree)
                 json_filename = os.path.join(outdir, tree['_file'])
-                json_filept = open(json_filename, 'w')
-                json_filept.write(json_content)
-                json_filept.close()
+                with open(json_filename, 'w') as json_filept:
+                    json_filept.write(json_content)
                 files_written.append(Path(json_filename))
         return files_written
 

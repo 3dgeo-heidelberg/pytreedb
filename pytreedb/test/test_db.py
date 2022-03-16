@@ -44,7 +44,7 @@ def test_export_data():
 
 #### import
 
-#p@pytest.mark.import # marker "import" can be used to run only tests with this marker
+#@pytest.mark.import
 def test_import_data(tmp_path):
     """Tests reading data (json files) from local file or from URL of ZIP archive with files named like *.*json"""
 

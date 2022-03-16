@@ -12,8 +12,8 @@ This package provides a webserver as a frontend to a `pytreedb` instance.
   
 ## Deployment for local dev
 ### Setup using `.env`
-We use the `dotenv` package to configure the server. There are two different places for configurations:
-1) The `.env`-File in the current directory contains options related to `pytreedb`: 
+We use the `dotenv` package to configure the server. Both `pytreedb` and `flask` parameters should be written to
+the `.env`-File in the current directory: 
 ```
 # path of the pytreedb package (if not installed via PIP)
 PYTREEDB_LOCATION="../pytreedb"
@@ -27,13 +27,8 @@ CONN_URI = ""
 CONN_DB = ""
 # collection to connect to
 CONN_COL = ""
-```
-2) The `.flaskenv`-File in the current directory contains options for the Flask webserver, e.g. (for the full
-list, refer to the Flask documentation):
-```
 FLASK_ENV=development
-FLASK_RUN_HOST=0.0.0.0
-FLASK_RUN_PORT=5001
+FLASK_SERVER_NAME=0.0.0.0:5001
 ```
 
 ### Configuring pytreedb dataset
@@ -52,3 +47,30 @@ python -m flask run
 ## Deployment for production
 Note that Flask is not suitable for production. 
 See https://flask.palletsprojects.com/en/2.0.x/deploying/ for deployment options
+
+
+## Usage
+In the "Get tree by index" search box, you can directly search for a tree according to its index.
+
+In the "Search the DB" area, we predefined following filters:
+
+| Filter  | Corresponding fields|
+| ------- |:-------------:|
+| Species | properties.species |
+| Mode    | properties.data.mode |
+| Canopy  | properties.data.canopy_condition |
+| Quality | properties.data.quality |
+| Source  | properties.measurements.source |
+| DBH     | properties.measurements.DBH_cm |
+| Height  | properties.measurements.height_m |
+| CrownDia. | properties.measurements.mean_crown_diameter_m |
+
+The filters have the default logic operator AND. You can toggle it between AND/OR by clicking on the preceding button of each filter.
+
+We also allow brackets with a depth of 3. By moving a filter to the right, a bracket will be added to embrace the previous filter with the current filter. If you are still unfamiliar to our search interface and not sure if you are configuring the search correctly, just press "Update Preview" button to check if it aligns to your desired query.
+
+You can export your query as a Json file to save to local, and import such a query for future use. Clicking on the "Permalink" button will also copy a link to your current query.
+
+
+## API
+...

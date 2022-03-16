@@ -13,7 +13,7 @@ var currReq = {
 var filterKeys = {
     "species": "properties.species",
     "mode": "properties.data.mode",
-    "canopy_condition": "properties.measurements.canopy_condition",
+    "canopy_condition": "properties.data.canopy_condition",
     "quality": "properties.data.quality",
     "source": "properties.measurements.source",
     "dbh": "properties.measurements.DBH_cm",
@@ -245,7 +245,10 @@ collectFilterParams = () => {
         var inBracket2 = classlists.contains('bracket-2');
         var inBracket3 = classlists.contains('bracket-3');
 
-        if (label.startsWith('canopy')) {label = 'canopy_condition'};
+        if (label.startsWith('canopy')) {
+            label = 'canopy_condition';
+            qvalue = value.toLowerCase();
+        };
         // Read checked quality values correctly
         if (label == 'quality') {
             value = [], qvalue = [];

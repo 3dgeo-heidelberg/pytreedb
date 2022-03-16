@@ -13,6 +13,7 @@ dependencies:
   - flask
   - requests
   - python-dotenv
+  - sphinx
   - pip:
     - pymongo[srv]
 

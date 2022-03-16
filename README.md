@@ -8,11 +8,12 @@
 
 `pytreedb` has three main components and usage directions:
 
-<img src="doc/_static/pytreedb_components.png"  width="30%">
-
 1. **Python library**: In case you need to access the tree database in your Python scripts during runtime of data processing and analysis. 
 2. **REST API**: In case you want to provide your datasets to any software over a REST API. The `pytreedb` server application is using the [Flask](https://pypi.org/project/Flask/) framework.
 3. **Web frontend**: In case you want to share your valuable tree data to the community. Based on the REST API we showcase in this repository how a Web frontend can be easily implemented, which provides several query options, data export and also map views of query results.
+
+<img src="doc/_static/pytreedb_components_details.png"  width="45%">
+
 
 The [`PyTreeDB`](pytreedb/db.py) class is the starting point and the core component. It is responsible, e.g., for 
 - data **import**, data **export**, data validation, automatic sync with MongoDB
@@ -20,9 +21,7 @@ The [`PyTreeDB`](pytreedb/db.py) class is the starting point and the core compon
 
 The `Python` REST interface and all clients, such as the web frontend, simply use the methods and functionality of the Python class.
 
-<img src="doc/_static/pytreedb_components_details.png"  width="45%">
-
-ℹ Please refer to our [publication](## Citation) for further details on the scientific concept behind and software design of this open source project. 
+:information_source: Please refer to our [publication](## Citation) for further details on the scientific concept behind and software design of this open source project. 
 
 ## 💻 Download and Installation
 
@@ -47,7 +46,7 @@ Install
 
 xx
 
-## ℹ Documentation of software usage
+## :information_source: Documentation of software usage
 
 As a starting point, please have a look to the [examples](examples) and [notebooks](Jupyter Notebooks) available in the repository. Each of the subfolders contains a readme.md for further details.
 

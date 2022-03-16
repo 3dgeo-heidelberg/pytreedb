@@ -5,12 +5,12 @@ import pytest
 
 # functions to test:
 
-##### import
+##### export
 # save()
 # export_data()
 # export_to_csv()
 
-#### export
+#### import
 # initiate db
 # load()
 # clear()

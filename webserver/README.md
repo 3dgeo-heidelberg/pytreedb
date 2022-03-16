@@ -2,6 +2,8 @@
 
 This package provides a webserver as a frontend to a `pytreedb` instance.
 
+<img src="../doc/_static/pytreedb_webserver_home.png" width="85%">
+
 ## Prerequisites
 - Python packages:
   - `pytreedb`
@@ -30,11 +32,8 @@ FLASK_SERVER_NAME=0.0.0.0:5001
 ```
 
 ### Configuring pytreedb dataset
-The dataset is not a prerequisite. If you don't have the dataset locally, unquote  line 43 in [main.py](main.py), so that the dataset will be downloaded and imported into a "syssifoss.db" for you upon deploying.
+The dataset is not a prerequisite. Please follow the instructions after getting Flask to running on your machine.
 
-If you already have a local `.db` dataset file, change the path in line 42 of [main.py](main.py).
-
-More examples can be found in [example_queries.py](../../examples/example_queries.py).
 
 ### Serve the webserver locally
 Under the root folder of pytreedb, run:

@@ -1,35 +1,30 @@
-name: build_wheel
-on:
-  workflow_dispatch:
+image: python:latest
 
-env:
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
-jobs:
-   build:
-     runs-on: ubuntu-20.04
-     defaults:
-       run:
-         working-directory: ${{github.workspace}}
+# Pip's cache doesn't store the python packages
+# https://pip.pypa.io/en/stable/reference/pip_install/#caching
+#
+# If you want to also cache the installed packages, you have to install
+# them in a virtualenv and cache it as well.
+cache:
+  paths:
+    - .cache/pip
+    - venv/
 
-     steps:
-      - name: Create conda environment
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          auto-update-conda: true
-          auto-activate-base: false
-          activate-environment: pytreedb
-          environment-file: environment.yml
-          use-only-tar-bz2: true
+before_script:
+  - python --version  # For debugging
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+  - pip install build
 
-      - name: Install build package
-        run: python -m pip install build
-
-      - name: Build package
-        run: python -m build
-
-      - name: Save artifacts
-        uses: actions/upload-artifact@v2
-          with:
-            name: Python wheels
-            path: |
-              ${{github.workspace}}/dist/*
+build-wheel:
+  script:
+    - python -m build
+  artifacts:
+    paths:
+      - dist/*.whl

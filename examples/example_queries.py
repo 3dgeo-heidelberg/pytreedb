@@ -1,8 +1,16 @@
 #load modules
-from pytreedb import db
 import sys
+sys.path.append("..")
+from pytreedb import db
+import os
 import json
 import numpy as np
+from dotenv import load_dotenv
+
+load_dotenv()
+conn_uri = os.environ.get("CONN_URI")
+conn_db = os.environ.get("CONN_DB")
+conn_col = os.environ.get("CONN_COL")
 
 print("##########################################")
 print("  Run some example queries and exports...")
@@ -10,7 +18,7 @@ print("##########################################")
 
 print("# Create pytreedb, define DB conn and load data") 
 mydbfile='my_first_pytree.db' #file where database is stored locally additionally to MongoDB
-mydb = db.PyTreeDB(dbfile=mydbfile, mongodb = {"uri": "mongodb://127.0.0.1:27017/", "db": "pytreedb", "col": "syssifoss"})
+mydb = db.PyTreeDB(dbfile=mydbfile, mongodb = {"uri": conn_uri, "db": conn_db, "col": conn_col})
 mydb.import_db(r'../data/db_dump/data.db', overwrite=False)
 
 print("# Print statistics and some DB infos")

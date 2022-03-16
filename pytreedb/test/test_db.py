@@ -1,7 +1,16 @@
 #!/usr/bin/env python
 # -- coding: utf-8 --
 
+import os
+import sys
 import pytest
+from pytreedb import db
+from dotenv import load_dotenv
+
+load_dotenv()
+conn_uri = os.environ.get("CONN_URI")
+conn_db = os.environ.get("CONN_DB")
+conn_col = os.environ.get("CONN_COL")
 
 # functions to test:
 

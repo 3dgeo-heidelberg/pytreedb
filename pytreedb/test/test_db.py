@@ -26,7 +26,7 @@ def test_save(tmp_path):
     test_db = "data/test/data.db"
     out_db = tmp_path / "temp.db"
 
-    mydbfile = "my_pytree.db"
+    mydbfile = tmp_path / "temp.db"
     mydb = db.PyTreeDB(
         dbfile=mydbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
     )
@@ -34,6 +34,7 @@ def test_save(tmp_path):
     mydb.save(dbfile=out_db)
 
     assert out_db.exists()
+    assert mydb.import_db(str(test_db), overwrite=True) == mydb.import_db(str(out_db), overwrite=True)
 
 
 @pytest.mark.export

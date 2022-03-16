@@ -739,6 +739,7 @@ L.tileLayer(
 var geoJSONLayer = L.geoJSON(null, {
         pointToLayer: function (feature, latlng) { // Each tree will be stored in one layer
             var marker = L.marker(latlng);
+            marker._pmTempLayer = true;
             return marker;
         }
     }).addTo(map);

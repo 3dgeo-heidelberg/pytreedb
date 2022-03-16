@@ -63,16 +63,13 @@ As a starting point, please have a look to the [examples](examples) and [Jupyter
 
 For running the Python scripts and the Jupyter Notebooks, you need to specify the information (mongodb URI, database name and connection) for connecting to the MongoDB in a `.env` file. Use the template file [sample.env](sample.env), add your values, and save the file as `.env` in the root directory.
 
-==> _CREATE VIDEO or GIFs of usage as code (notebook slideshow) and as server on 3DGeo Youtube and put here._
-
 
 ### Run it as a API server :computer:
 In order to provide a REST API to share your tree data you can use `pytreedb` in server mode. After installation of the `pytreedb-server` package you can follow the instructions here [webserver/README.md](webserver/README.md).
 
 
 ### GeoJSON Format and Template
-
-x
+The single tree information (incl. URLs to the point clouds) has to be provided as `GeoJSON` file per tree. We use a straightforward format that is a valid GeoJSON and can be opened with any GIS software. The main idea of the pytreedb GeoJSON format is to define a minimum set of tree metadata, which can be extended by any further data that is needed by the user. Thus, it is just required that your GeoJSON file complies with the minimum set to enable import into the database. The [`PyTreeDB`](pytreedb/db.py) class offers the method `validate_json` to check the validity of the file. Also the import of files checks the validity automatically and will only import tree objects that are conformal with the defined template. The used [GeoJSON template](pytreedb/db_conf.py) can also be modified for your use case and application. Note that modification (e.g. removal of mandatory fields from our template) will - most probably - require modifications for the API and web frontend component. 
 
 ## Published Test Data
 In this repository we provide metadata (incl. links to point clouds) of 1481 trees that have been captured with airborne (ALS), UAV-borne (ULS) and terrestrial (TLS) laser scanning as well as field inventory data. Please check our data publication by *Weiser et al. 2022* in *Earth System Science Data* ([https://doi.org/10.5194/essd-2022-39](https://doi.org/10.5194/essd-2022-39)) for full details.
@@ -80,7 +77,7 @@ In this repository we provide metadata (incl. links to point clouds) of 1481 tre
 The test data is provided in [`data`](data) as 1) single [GeoJSON files and as ZIP archive](data/geojson/), and 2) also as serialized and zipped [pytreedb database dump](data/db_dump) files that can be directly imported and used to start the API server. 
 
 ## Citation
-Please cite the following publication when using pytreedb in your research and reference the appropriate release version. All releases of pytreedb are listed on Zenodo where you will find the citation information including DOI.
+Please cite the following publication when using pytreedb in your research and reference the appropriate release version. All releases of pytreedb are listed on Zenodo where you will find the citation information including DOI. 
 
 ```
 article{pytreedb,

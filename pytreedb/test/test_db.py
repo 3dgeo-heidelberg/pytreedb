@@ -43,8 +43,26 @@ def test_export_data():
     pass
 
 #### import
-# initiate db
-# load()
+
+#@pytest.mark.import
+def test_import_data(tmp_path):
+    """Tests reading data (json files) from local file or from URL of ZIP archive with files named like *.*json"""
+
+    # given
+    db_file = tmp_path / "temp.db"
+    mydb = db.PyTreeDB(
+        dbfile = db_file, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
+    )
+    data_url = r"https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1"
+
+    # expected
+    cnt_trees_expected = 1491
+
+    ## TODO: Shall the import_data() function really return the number of trees?
+    assert (mydb.import_data(data_url) == cnt_trees_expected)
+
+
+
 # clear()
 # import_data()
 # import_db()

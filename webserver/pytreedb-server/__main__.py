@@ -56,6 +56,11 @@ db_download = os.environ.get("PYTREEDB_DOWNLOAD")
 
 app = Flask("pytreedb-server")
 
+# Load parameters for FLASK from the environment
+flask_vars = {key[6:]: val for key, val in dict(os.environ).items() if key.startswith("FLASK")}
+# Apply parameters
+#app.config.from_mapping(flask_vars)
+
 @app.route('/')
 def index():
     return render_template(r'index.html', server=request.remote_addr)
@@ -128,10 +133,6 @@ if __name__ == '__main__':
         mydb.import_data(db_download, overwrite=True)
     else:
         mydb.import_db(db_name, overwrite=False)
-    # Load parameters for FLASK from the environment
-    flask_vars = {key[6:]: val for key, val in dict(os.environ).items() if key.startswith("FLASK")}
-    # Apply parameters
-    app.config.from_mapping(flask_vars)
     app.config['CORS_HEADERS'] = 'Content-Type'
     dl_progress = {'currItem': 0, 'numAllItems': 0}
-    app.run()
+    app.run(port=os.environ.get("FLASK_RUN_PORT"), host=os.environ.get("FLASK_RUN_HOST"))

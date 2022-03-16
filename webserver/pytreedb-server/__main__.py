@@ -24,9 +24,20 @@ conn_uri = os.environ.get("CONN_URI")
 conn_db = os.environ.get("CONN_DB")
 conn_col = os.environ.get("CONN_COL")
 
+db_name = os.environ.get("PYTREEDB_FILENAME")
+db_download = os.environ.get("PYTREEDB_DOWNLOAD")
+
 app = Flask(__name__)
-app.config['CORS_HEADERS'] = 'Content-Type'
-dl_progress = {'currItem': 0, 'numAllItems': 0}
+# when module is loaded, start flask server
+if __name__ == '__main__':
+    mydb = db.PyTreeDB(dbfile=db_name, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col})
+    if db_download:
+        mydb.import_db(db_download, overwrite=True)
+    else:
+        mydb.import_db(db_name, overwrite=False)
+    app.config['CORS_HEADERS'] = 'Content-Type'
+    dl_progress = {'currItem': 0, 'numAllItems': 0}
+    app.run()
 
 @app.route('/')
 def index():
@@ -42,16 +53,7 @@ def contact():
 
 @app.route('/query/<query>')
 def showQuery(query=None):
-    return render_template(r'index.html', query = query)
-
-mydbfile='syssifoss.db'
-mydb = db.PyTreeDB(dbfile=mydbfile, mongodb = {"uri": conn_uri, "db": conn_db, "col": conn_col})
-mydb.import_db(r'syssifoss.db', overwrite=False)
-#mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True)
-
-# automatically open in a new browser tab on start
-if __name__ == 'main':
-    webbrowser.open_new_tab('http://127.0.0.1:5000/')
+    return render_template(r'index.html', query=query)
 
 @app.route('/stats')
 def getStats():

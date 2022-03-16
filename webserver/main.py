@@ -42,8 +42,8 @@ def showQuery(query=None):
     return render_template(r'newIndex.html', query = query)
 
 mydbfile='syssifoss.db'
-from conn_secrets import conn_str
-mydb = db.PyTreeDB(dbfile=mydbfile, mongodb = {"uri": conn_str, "db": "pytreedb", "col": "syssifoss"})
+from conn_secrets import conn_str, conn_db, conn_col
+mydb = db.PyTreeDB(dbfile=mydbfile, mongodb = {"uri": conn_str, "db": conn_db, "col": conn_col})
 mydb.import_db(r'syssifoss.db', overwrite=False)
 #mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True)
 

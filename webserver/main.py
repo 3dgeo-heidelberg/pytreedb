@@ -5,11 +5,9 @@
 Flask backend for PytreeDB
 """
 import webbrowser
-import requests
 import io
 import os
 import flask
-import threading
 import shutil
 
 from zipfile import ZipFile
@@ -18,8 +16,6 @@ from flask import request
 from flask import render_template
 
 from pytreedb import db
-import sys
-import json
 
 app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -39,7 +35,7 @@ def contact():
 
 @app.route('/query/<query>')
 def showQuery(query=None):
-    return render_template(r'newIndex.html', query = query)
+    return render_template(r'index.html', query = query)
 
 mydbfile='syssifoss.db'
 from conn_secrets import conn_str, conn_db, conn_col
@@ -99,15 +95,3 @@ def exportcsv():
         as_attachment=True,
         attachment_filename='csv.zip'
     )
-
-@app.route('/list_pointclouds')
-def listPointClouds():
-    urls = ['https://3dweb.geog.uni-heidelberg.de/database_sample/PinSyl_KA10_01_2019-07-05_q2_ALS-on.laz',
-            'https://3dweb.geog.uni-heidelberg.de/database_sample/PinSyl_KA10_01_2019-07-30_q4_TLS-on.laz',
-            'https://3dweb.geog.uni-heidelberg.de/database_sample/PinSyl_KA10_01_2019-09-13_q2_ULS-on.laz']
-    return {'urls': urls}
-    
-@app.route('/progress')
-def progress():
-    global dl_progress
-    return dl_progress

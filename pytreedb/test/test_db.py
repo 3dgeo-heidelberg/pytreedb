@@ -45,20 +45,21 @@ def test_export_data():
 #### import
 
 #p@pytest.mark.import # marker "import" can be used to run only tests with this marker
-def test_import_data():
+def test_import_data(tmp_path):
     """Tests reading data (json files) from local file or from URL of ZIP archive with files named like *.*json"""
 
     # given
-    db_file = r"data/test_data/data.db"
+    db_file = tmp_path / "temp.db"
     mydb = db.PyTreeDB(
         dbfile = db_file, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
     )
-    data_url = r"https://heibox.uni-heidelberg.de/f/92dcfa3eecb240a6b550/?dl=1"
+    data_url = r"https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1"
 
     # expected
     cnt_trees_expected = 1491
 
-    assert (mydb.import_data(db_file, data_url) == cnt_trees_expected)
+    ## TODO: Shall the import_data() function really return the number of trees?
+    assert (mydb.import_data(data_url) == cnt_trees_expected)
 
 
 

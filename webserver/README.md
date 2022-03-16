@@ -57,7 +57,7 @@ In the "Get tree by index" search box, you can directly search for a tree accord
 In the "Search the DB" area, we predefined following filters:
 
 | Filter  | Corresponding fields|
-| ------- |:-------------:|
+| ------- |-------------|
 | Species | properties.species |
 | Mode    | properties.data.mode |
 | Canopy  | properties.data.canopy_condition |
@@ -78,7 +78,7 @@ You can export your query as a Json file to save to local, and import such a que
 GET methods:
 
 | Request  | Description |
-| ------- |:-------------:|
+| ------- |-------------|
 | /stats | The number of trees and species in DB |
 | /listspecies | Unique species names in DB |
 | /sharedproperties | A list of all object.properties that are shared among all objects |
@@ -87,7 +87,7 @@ GET methods:
 POST methods:
 
 | Request  | Description | Example Message|
-| ------- |-------------|:-------------:|
+| ------- |-------------|-------------|
 | /search | Search based on a given query. Returns a Json objects containing search results |  {"properties.species": "Abies alba"} |
 | /exportcsv | Download results as csv for the given query |  {"properties.species": "Abies alba"} |
 

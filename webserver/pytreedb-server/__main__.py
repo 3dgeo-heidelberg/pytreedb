@@ -9,16 +9,17 @@ import io
 import os
 import flask
 import shutil
+import toml
 from pathlib import Path
 
 from zipfile import ZipFile
 
-from dotenv import load_dotenv
-load_dotenv()  # load before importing Flask
-
 from flask import Flask
 from flask import request
 from flask import render_template
+
+from dotenv import load_dotenv
+load_dotenv()  # load before importing Flask
 
 pytreedb_loc = os.environ.get("PYTREEDB_LOCATION")
 if pytreedb_loc:
@@ -128,6 +129,7 @@ if __name__ == '__main__':
         mydb.import_data(db_download, overwrite=True)
     else:
         mydb.import_db(db_name, overwrite=False)
+    app.config.from_file('.env', load=toml.load)
     app.config['CORS_HEADERS'] = 'Content-Type'
     dl_progress = {'currItem': 0, 'numAllItems': 0}
     app.run()

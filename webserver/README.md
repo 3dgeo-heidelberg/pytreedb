@@ -73,4 +73,20 @@ You can export your query as a Json file to save to local, and import such a que
 
 
 ## API
-...
+GET methods:
+
+| Request  | Description |
+| ------- |:-------------:|
+| /stats | The number of trees and species in DB |
+| /listspecies | Unique species names in DB |
+| /sharedproperties | A list of all object.properties that are shared among all objects |
+| /getitem/\<index> | Get a specific tree by its index |
+
+POST methods:
+
+| Request  | Description | Example Message|
+| ------- |-------------|:-------------:|
+| /search | Search based on a given query. Returns a Json objects containing search results |  {"properties.species": "Abies alba"} |
+| /exportcsv | Download results as csv for the given query |  {"properties.species": "Abies alba"} |
+
+See [example_queries](../examples/example_queries.py) for more examples on how to query.

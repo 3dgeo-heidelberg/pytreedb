@@ -22,7 +22,7 @@ mydb = db.PyTreeDB(dbfile=mydbfile, mongodb = {"uri": conn_uri, "db": conn_db, "
 mydb.import_db(r'../data/db_dump/data.db', overwrite=False)
 
 print("# Print statistics and some DB infos")
-print(" - Main stats: %s" %  mydb.get_stats())                      # Print statistiscs of trees in DB
+print(" - Main stats: %s" %  mydb.get_stats())                      # Print statistics of trees in DB
 print(" - Unique species: %s" %  mydb.get_list_species())           # Print unique species names
 print(" - Tree properties that are shared among all trees (i.e. available for all trees): %s" %  mydb.get_shared_properties())  
 

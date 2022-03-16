@@ -27,8 +27,10 @@ CONN_URI = ""
 CONN_DB = ""
 # collection to connect to
 CONN_COL = ""
-FLASK_ENV=development
-FLASK_SERVER_NAME=0.0.0.0:5001
+# FLASK settings
+
+FLASK_RUN_HOST="0.0.0.0"
+FLASK_RUN_PORT="5001"
 ```
 
 ### Configuring pytreedb dataset

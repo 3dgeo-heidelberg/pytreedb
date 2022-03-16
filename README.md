@@ -76,7 +76,9 @@ The single tree information (incl. URLs to the point clouds) has to be provided 
 ## Published Test Data
 In this repository we provide metadata (incl. links to point clouds) of 1481 trees that have been captured with airborne (ALS), UAV-borne (ULS) and terrestrial (TLS) laser scanning as well as field inventory data. Please check our data publication by *Weiser et al. 2022* in *Earth System Science Data* ([https://doi.org/10.5194/essd-2022-39](https://doi.org/10.5194/essd-2022-39)) for full details.
 
-The test data is provided in [`data`](data) as 1) single [GeoJSON files and as ZIP archive](data/geojson/), and 2) also as serialized and zipped [pytreedb database dump](data/db_dump) files that can be directly imported and used to start the API server. 
+The test data is provided in [`data`](data) as 1) single [GeoJSON files and as ZIP archive](data/geojson/), and 2) also as serialized and zipped [pytreedb database dump](data/db_dump) files that can be directly imported and used to start the API server.
+
+[<img src="doc/_static/syssifoss_data_figure_pc_viz.png" width="50%">](https://doi.org/10.5194/essd-2022-39)
 
 ## Citation
 Please cite the following publication when using pytreedb in your research and reference the appropriate release version. All releases of pytreedb are listed on Zenodo where you will find the citation information including DOI. 
@@ -94,7 +96,9 @@ url = {-},
 } 
  ```
 ## Funding / Acknowledgements
-The initial software development was supported by the DFG - German Research Foundation (Grant no. 411263134) within the research project [SYSSIFOSS](https://uni-heidelberg.de/syssifoss).
+The initial software development was supported by the **DFG - German Research Foundation** (Grant no. 411263134) within the research project [SYSSIFOSS](https://uni-heidelberg.de/syssifoss).
+
+[<img src="doc/_static/dfg_logo_englisch_blau_en.gif" width="30%">](https://www.dfg.de/en/)
 
 ## Contact / Bugs / Feature Requests
 

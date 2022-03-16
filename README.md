@@ -12,6 +12,7 @@
 2. **REST API**: In case you want to provide your datasets to any software over a REST API. The `pytreedb` server application is using the [Flask](https://pypi.org/project/Flask/) framework.
 3. **Web frontend**: In case you want to share your valuable tree data to the community. Based on the REST API we showcase in this repository how a Web frontend can be easily implemented, which provides several query options, data export and also map views of query results.
 
+
 <img src="doc/_static/pytreedb_components_details.png"  width="45%">
 
 
@@ -31,7 +32,7 @@ Install and update using [pip](https://pypi.org/):
 `$ pip install -U pytreedb`
 
 ### Using Anaconda / Conda Environment
-Simply use the given Conda environment file [environment.yml](environment.yml) provided in this distribution, which contains all dependencies.
+Simply use the given Conda environment file [environment.yml](environment.yml) provided in this distribution, which contains all dependencies to run and build resources.
 
 `$ conda env create --file environment.yml`
 
@@ -48,7 +49,7 @@ xx
 
 ## :information_source: Documentation of software usage
 
-As a starting point, please have a look to the [examples](examples) and [notebooks](Jupyter Notebooks) available in the repository. Each of the subfolders contains a readme.md for further details.
+As a starting point, please have a look to the [examples](examples) and [notebooks](Jupyter Notebooks) available in the repository. Further, each of the subfolders contains a readme.md with respective details on the repository section.
 
 For running the Python scripts and the Jupyter Notebooks, you need to specify the information (mongodb URI, database name and connection) for connecting to the MongoDB in a `.env` file. Use the template file [sample.env](sample.env), add your values, and save the file as `.env` in the root directory.
 

@@ -56,7 +56,7 @@ CONN_COL = "heidelberg"
 
 All dependencies (i.e. required third-party Python packages) are listed in the Anaconda [environment.yml](environment.yml) definition and can be installed with [conda / pip](#using-anaconda-environment). When creating the conda environment from our definition file, all dependencies are resolved.
 
-## :information_source: Documentation of software usage
+## Documentation of software usage
 
 ### `PyTreeDB` class :snake:
 As a starting point, please have a look to the [examples](examples) and [Jupyter Notebooks](notebooks) available in the repository. Further, each of the subfolders contains a readme.md with respective details on the repository section.

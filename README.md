@@ -16,6 +16,7 @@
 <img src="doc/_static/pytreedb_components_details.png"  width="45%">
 
 
+
 The [`PyTreeDB`](pytreedb/db.py) class is the starting point and the core component. It is responsible, e.g., for 
 - data **import**, data **export**, data validation, automatic sync with MongoDB
 - all kind of **queries**. 
@@ -27,9 +28,10 @@ The `Python` REST interface and all clients, such as the web frontend, simply us
 ## 💻 Download and Installation
 
 ### Installation
-Install and update using [pip](https://pypi.org/):
+Install and update using [pip](https://pypi.org/) for 1) core library and 2) server library using the core library:
 
 `$ pip install -U pytreedb`
+`$ pip install -U pytreedb-server`
 
 ### Using Anaconda / Conda Environment
 Simply use the given `Anaconda` environment file [environment.yml](environment.yml) provided in this distribution, which contains all dependencies to run and build resources.
@@ -51,20 +53,19 @@ CONN_COL = "heidelberg"
 
 ### Software Dependencies
 
-xx
+All dependencies are listed in the Anaconda  [environment.yml](environment.yml) definition and can be installed with conda or pip. When creating the conda environment from our definition file, all dependencies are resolved.
 
 ## :information_source: Documentation of software usage
 
-### `PyTreeDB` class
+### `PyTreeDB` class :snake:
 As a starting point, please have a look to the [examples](examples) and [notebooks](Jupyter Notebooks) available in the repository. Further, each of the subfolders contains a readme.md with respective details on the repository section.
 
 For running the Python scripts and the Jupyter Notebooks, you need to specify the information (mongodb URI, database name and connection) for connecting to the MongoDB in a `.env` file. Use the template file [sample.env](sample.env), add your values, and save the file as `.env` in the root directory.
 
 ==> _CREATE VIDEO or GIFs of usage as code (notebook slideshow) and as server on 3DGeo Youtube and put here._
 
-examples
 
-### Run it as a API server
+### Run it as a API server :computer:
 ADD INFOS how to start and use.
 
 

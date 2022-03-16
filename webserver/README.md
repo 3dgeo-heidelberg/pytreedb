@@ -12,8 +12,8 @@ This package provides a webserver as a frontend to a `pytreedb` instance.
   
 ## Deployment for local dev
 ### Setup using `.env`
-We use the `dotenv` package to configure the server. There are two different places for configurations:
-1) The `.env`-File in the current directory contains options related to `pytreedb`: 
+We use the `dotenv` package to configure the server. Both `pytreedb` and `flask` parameters should be written to
+the `.env`-File in the current directory: 
 ```
 # path of the pytreedb package (if not installed via PIP)
 PYTREEDB_LOCATION="../pytreedb"
@@ -27,13 +27,8 @@ CONN_URI = ""
 CONN_DB = ""
 # collection to connect to
 CONN_COL = ""
-```
-2) The `.flaskenv`-File in the current directory contains options for the Flask webserver, e.g. (for the full
-list, refer to the Flask documentation):
-```
 FLASK_ENV=development
-FLASK_RUN_HOST=0.0.0.0
-FLASK_RUN_PORT=5001
+FLASK_SERVER_NAME=0.0.0.0:5001
 ```
 
 ### Configuring pytreedb dataset

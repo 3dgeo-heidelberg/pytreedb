@@ -49,3 +49,30 @@ python -m flask run
 ## Deployment for production
 Note that Flask is not suitable for production. 
 See https://flask.palletsprojects.com/en/2.0.x/deploying/ for deployment options
+
+
+## Usage
+In the "Get tree by index" search box, you can directly search for a tree according to its index.
+
+In the "Search the DB" area, we predefined following filters:
+
+| Filter  | Corresponding fields|
+| ------- |:-------------:|
+| Species | properties.species |
+| Mode    | properties.data.mode |
+| Canopy  | properties.data.canopy_condition |
+| Quality | properties.data.quality |
+| Source  | properties.measurements.source |
+| DBH     | properties.measurements.DBH_cm |
+| Height  | properties.measurements.height_m |
+| CrownDia. | properties.measurements.mean_crown_diameter_m |
+
+The filters have the default logic operator AND. You can toggle it between AND/OR by clicking on the preceding button of each filter.
+
+We also allow brackets with a depth of 3. By moving a filter to the right, a bracket will be added to embrace the previous filter with the current filter. If you are still unfamiliar to our search interface and not sure if you are configuring the search correctly, just press "Update Preview" button to check if it aligns to your desired query.
+
+You can export your query as a Json file to save to local, and import such a query for future use. Clicking on the "Permalink" button will also copy a link to your current query.
+
+
+## API
+...

@@ -16,6 +16,7 @@
 <img src="doc/_static/pytreedb_components_details.png"  width="45%">
 
 
+
 The [`PyTreeDB`](pytreedb/db.py) class is the starting point and the core component. It is responsible, e.g., for 
 - data **import**, data **export**, data validation, automatic sync with MongoDB
 - all kind of **queries**. 
@@ -27,46 +28,49 @@ The `Python` REST interface and all clients, such as the web frontend, simply us
 ## 💻 Download and Installation
 
 ### Installation
-Install and update using [pip](https://pypi.org/):
+Install and update using [pip](https://pypi.org/) for 1) core library and 2) server library using the core library:
 
 `$ pip install -U pytreedb`
 
+`$ pip install -U pytreedb-server`
+
 ### Using Anaconda / Conda Environment
-Simply use the given Conda environment file [environment.yml](environment.yml) provided in this distribution, which contains all dependencies to run and build resources.
+Simply use the given `Anaconda` environment file [environment.yml](environment.yml) provided in this distribution, which contains all dependencies to run and build resources.
 
 `$ conda env create --file environment.yml`
 
-### Connect to MongoDB
-xxx
-Install 
+### Connect to MongoDB (localhost / server / Atlas cloud)
+`pytreedb` requires a working connection to a `MongoDB` database. It does not matter where the MongoDB is running as connection is simply made via `pymongo` (see code in [examples](examples) and our [Jupyter notebooks](notebooks)). We successfully tested localhost, server and [MongoDB Atlas cloud](https://www.mongodb.com/basics/mongodb-atlas-tutorial) connections. For your own MongoDB installation, just follow the [official installation instructions](https://docs.mongodb.com/manual/installation/)).
 
-### Known Issues
-- add here
+The required **MongoDB connection** with credentials is made with a `.env` file (_yes, the file has no name_) that you place in the folder of your Python scripts or search path. [dotenv](https://pypi.org/project/python-dotenv/) is used for providing credentials - 1) URI to server, 2) database and 3) collection name - outside your source code (see [sample.env](sample.env) as template).
+
+Example `.env` file for connection to MongoDB Atlas cloud where <username> and <password> need to be replaced with real ones:
+
+```
+CONN_URI = "mongodb+srv://<username>:<password>@cluster0.jh4vn.mongodb.net/pytreedb?retryWrites=true&w=majority"
+CONN_DB = "pytreedb"
+CONN_COL = "heidelberg"
+```
 
 ### Software Dependencies
 
-xx
+All dependencies (i.e. required third-party Python packages) are listed in the Anaconda [environment.yml](environment.yml) definition and can be installed with conda or pip. When creating the conda environment from our definition file, all dependencies are resolved.
 
 ## :information_source: Documentation of software usage
 
-As a starting point, please have a look to the [examples](examples) and [notebooks](Jupyter Notebooks) available in the repository. Further, each of the subfolders contains a readme.md with respective details on the repository section.
+### `PyTreeDB` class :snake:
+As a starting point, please have a look to the [examples](examples) and [Jupyter Notebooks](notebooks) available in the repository. Further, each of the subfolders contains a readme.md with respective details on the repository section.
 
 For running the Python scripts and the Jupyter Notebooks, you need to specify the information (mongodb URI, database name and connection) for connecting to the MongoDB in a `.env` file. Use the template file [sample.env](sample.env), add your values, and save the file as `.env` in the root directory.
 
 ==> _CREATE VIDEO or GIFs of usage as code (notebook slideshow) and as server on 3DGeo Youtube and put here._
 
-### Use the pytreedb class
-Usage: 
+
+### Run it as a API server :computer:
+ADD INFOS how to start and use.
 
 
-### Run it as a server
-Usage from main directory in command line:
-```
-set FLASK_APP=webserver/main.py
-python -m flask run
-```
-
-### GeoJSON Template
+### GeoJSON Format and Template
 
 x
 

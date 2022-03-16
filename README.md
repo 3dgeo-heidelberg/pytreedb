@@ -44,6 +44,8 @@ xx
 
 As a starting point, please have a look to the [examples](examples) and [notebooks](Jupyter Notebooks) available in the repository. Each of the subfolders contains a readme.md for further details.
 
+For running the Python scripts and the Jupyter Notebooks, you need to specify the information (mongodb URI, database name and connection) for connecting to the MongoDB in a `.env` file. Use the template file [sample.env](sample.env), add your values, and save the file as `.env` in the root directory.
+
 ==> _CREATE VIDEO or GIFs of usage as code (notebook slideshow) and as server on 3DGeo Youtube and put here._
 
 ### Use the pytreedb class

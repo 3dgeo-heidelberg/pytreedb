@@ -6,6 +6,7 @@ import sys
 import pytest
 from pytreedb import db
 from dotenv import load_dotenv
+from pathlib import Path
 
 load_dotenv()
 conn_uri = os.environ.get("CONN_URI")
@@ -18,6 +19,28 @@ conn_col = os.environ.get("CONN_COL")
 # save()
 # export_data()
 # export_to_csv()
+
+@pytest.mark.export
+def test_save(tmp_path):
+    """Test function to save .db file"""
+    test_db = "data/test/data.db"
+    out_db = tmp_path / "temp.db"
+
+    mydbfile = tmp_path / "temp.db"
+    mydb = db.PyTreeDB(
+        dbfile=mydbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
+    )
+    mydb.import_db(test_db, overwrite=False)
+    mydb.save(dbfile=out_db)
+
+    assert out_db.exists()
+    assert mydb.import_db(str(test_db), overwrite=True) == mydb.import_db(str(out_db), overwrite=True)
+
+
+@pytest.mark.export
+def test_export_data():
+    """Test function to export data"""
+    pass
 
 #### import
 # initiate db

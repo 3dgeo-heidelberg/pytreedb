@@ -13,6 +13,8 @@ This package provides a webserver as a frontend to a `pytreedb` instance.
 We use the `dotenv` package to configure the server. There are two different places for configurations:
 1) The `.env`-File in the current directory contains options related to `pytreedb`: 
 ```
+# path of the pytreedb package (if not installed via PIP)
+PYTREEDB_LOCATION="../pytreedb"
 # local filename for database file
 PYTREEDB_FILENAME="syssifoss.db"
 # if set, download (and overwrite local file) data from this URL

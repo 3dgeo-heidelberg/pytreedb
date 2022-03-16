@@ -4,30 +4,56 @@
 """
 Flask backend for PytreeDB
 """
-import webbrowser
+import sys
 import io
 import os
 import flask
 import shutil
+from pathlib import Path
 
 from zipfile import ZipFile
 from flask import Flask
 from flask import request
 from flask import render_template
-
-from pytreedb import db
-
 from dotenv import load_dotenv
 
 load_dotenv()
+
+pytreedb_loc = os.environ.get("PYTREEDB_LOCATION")
+if pytreedb_loc:
+    pytreedb_loc = Path(pytreedb_loc) / ".."
+    sys.path.append(str(pytreedb_loc.absolute()))
+try:
+    from pytreedb import db
+except:
+    print("Error: Could not import pytreedb.")
+    print("       Ensure you have installed pytreedb via pip.")
+    print("       You can alternatively set the location to the pytreedb directory ")
+    print("       in an `.env`-File (see README.md for details):")
+    print("       PYTREEDB_LOCATION=\"path/to/pytreedb\"")
+    print("-- Original error follows below --")
+    raise
+
 conn_uri = os.environ.get("CONN_URI")
 conn_db = os.environ.get("CONN_DB")
 conn_col = os.environ.get("CONN_COL")
 
+if not conn_uri or not conn_db or not conn_col:
+    print("Error: connection to MongoDB not set.")
+    print("       Please provide the connection parameters in a `.env`-File.")
+    print("       Refer to README.md for more information")
+    sys.exit(1)
+
 db_name = os.environ.get("PYTREEDB_FILENAME")
+if not db_name:
+    print("Warning: no filename for the local pytreedb supplied.")
+    print("         using 'pytree.db' (in the current directory) instead.")
+    print("         To set it in the future, put an 'PYTREEDB_FILENAME' statement in a `.env`-File.")
+    print("         Refer to README.md for more information")
+
 db_download = os.environ.get("PYTREEDB_DOWNLOAD")
 
-app = Flask(__name__)
+app = Flask("pytreedb-server")
 
 @app.route('/')
 def index():

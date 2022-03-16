@@ -28,16 +28,6 @@ db_name = os.environ.get("PYTREEDB_FILENAME")
 db_download = os.environ.get("PYTREEDB_DOWNLOAD")
 
 app = Flask(__name__)
-# when module is loaded, start flask server
-if __name__ == '__main__':
-    mydb = db.PyTreeDB(dbfile=db_name, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col})
-    if db_download:
-        mydb.import_db(db_download, overwrite=True)
-    else:
-        mydb.import_db(db_name, overwrite=False)
-    app.config['CORS_HEADERS'] = 'Content-Type'
-    dl_progress = {'currItem': 0, 'numAllItems': 0}
-    app.run()
 
 @app.route('/')
 def index():
@@ -103,3 +93,14 @@ def exportcsv():
         as_attachment=True,
         attachment_filename='csv.zip'
     )
+
+# when module is loaded, start flask server
+if __name__ == '__main__':
+    mydb = db.PyTreeDB(dbfile=db_name, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col})
+    if db_download:
+        mydb.import_data(db_download, overwrite=True)
+    else:
+        mydb.import_db(db_name, overwrite=False)
+    app.config['CORS_HEADERS'] = 'Content-Type'
+    dl_progress = {'currItem': 0, 'numAllItems': 0}
+    app.run()

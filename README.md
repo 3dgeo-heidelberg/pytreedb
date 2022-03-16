@@ -34,7 +34,7 @@ Install and update using [pip](https://pypi.org/) for 1) core library and 2) ser
 
 `$ pip install -U pytreedb-server`
 
-### Using Anaconda / Conda Environment
+### Using Anaconda Environment
 Simply use the given `Anaconda` environment file [environment.yml](environment.yml) provided in this distribution, which contains all dependencies to run and build resources.
 
 `$ conda env create --file environment.yml`
@@ -54,7 +54,7 @@ CONN_COL = "heidelberg"
 
 ### Software Dependencies
 
-All dependencies (i.e. required third-party Python packages) are listed in the Anaconda [environment.yml](environment.yml) definition and can be installed with conda or pip. When creating the conda environment from our definition file, all dependencies are resolved.
+All dependencies (i.e. required third-party Python packages) are listed in the Anaconda [environment.yml](environment.yml) definition and can be installed with [conda / pip](#using-anaconda-environment). When creating the conda environment from our definition file, all dependencies are resolved.
 
 ## :information_source: Documentation of software usage
 
@@ -67,15 +67,17 @@ For running the Python scripts and the Jupyter Notebooks, you need to specify th
 
 
 ### Run it as a API server :computer:
-ADD INFOS how to start and use.
+In order to provide a REST API to share your tree data you can use `pytreedb` in server mode. After installation of the `pytreedb-server` package you can follow the instructions here [webserver/README.md](webserver/README.md).
 
 
 ### GeoJSON Format and Template
 
 x
 
-## Test Data
-xxx
+## Published Test Data
+In this repository we provide metadata (incl. links to point clouds) of 1481 trees that have been captured with airborne (ALS), UAV-borne (ULS) and terrestrial (TLS) laser scanning as well as field inventory data. Please check our data publication by *Weiser et al. 2022* in *Earth System Science Data* ([https://doi.org/10.5194/essd-2022-39](https://doi.org/10.5194/essd-2022-39)) for full details.
+
+The test data is provided in [`data`](data) as 1) single [GeoJSON files and as ZIP archive](data/geojson/), and 2) also as serialized and zipped [pytreedb database dump](data/db_dump) files that can be directly imported and used to start the API server. 
 
 ## Citation
 Please cite the following publication when using pytreedb in your research and reference the appropriate release version. All releases of pytreedb are listed on Zenodo where you will find the citation information including DOI.

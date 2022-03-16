@@ -12,12 +12,13 @@ import shutil
 from pathlib import Path
 
 from zipfile import ZipFile
+
+from dotenv import load_dotenv
+load_dotenv()  # load before importing Flask
+
 from flask import Flask
 from flask import request
 from flask import render_template
-from dotenv import load_dotenv
-
-load_dotenv()
 
 pytreedb_loc = os.environ.get("PYTREEDB_LOCATION")
 if pytreedb_loc:

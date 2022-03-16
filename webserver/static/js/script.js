@@ -762,7 +762,7 @@ map.on('pm:create', function (e) {
     var poly = e.layer;
     drawnItems.addLayer(poly);
     geoJSONLayer.eachLayer(marker => {
-        if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, poly)) {
+        if (marker instanceof L.Marker && !isMarkerInsidePolygon(marker, poly)) {
             marker._icon.classList.add("grayout");
         }
     });
@@ -785,7 +785,7 @@ drawnItems.on('pm:cut', function(e) {
     geoJSONLayer.eachLayer(marker => {
         marker._icon.classList.remove('grayout');
         drawnItems.eachLayer(poly => {
-            if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, poly)) {
+            if (marker instanceof L.Marker && !isMarkerInsidePolygon(marker, poly)) {
                 marker._icon.classList.add('grayout');
             }
         });
@@ -799,7 +799,7 @@ map.on('pm:remove', function(e) {
         });
     } else {
         geoJSONLayer.eachLayer(marker => {
-            if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, e.layer)) {
+            if (marker instanceof L.Marker && !isMarkerInsidePolygon(marker, e.layer)) {
                 marker._icon.classList.remove('grayout');
             }
         });

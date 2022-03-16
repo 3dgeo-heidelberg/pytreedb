@@ -69,6 +69,8 @@ In order to provide a REST API to share your tree data you can use `pytreedb` in
 
 
 ### GeoJSON Format and Template
+An example tree is given in [data/geojson/AbiAlb_BR03_01.geojson](data/geojson/AbiAlb_BR03_01.geojson) and the GeoJSON template for tree objects is defined here [pytreedb/db_conf.py](pytreedb/db_conf.py).
+
 The single tree information (incl. URLs to the point clouds) has to be provided as `GeoJSON` file per tree. We use a straightforward format that is a valid GeoJSON and can be opened with any GIS software. The main idea of the pytreedb GeoJSON format is to define a minimum set of tree metadata, which can be extended by any further data that is needed by the user. Thus, it is just required that your GeoJSON file complies with the minimum set to enable import into the database. The [`PyTreeDB`](pytreedb/db.py) class offers the method `validate_json` to check the validity of the file. Also the import of files checks the validity automatically and will only import tree objects that are conformal with the defined template. The used [GeoJSON template](pytreedb/db_conf.py) can also be modified for your use case and application. Note that modification (e.g. removal of mandatory fields from our template) will - most probably - require modifications for the API and web frontend component. 
 
 ## Published Test Data

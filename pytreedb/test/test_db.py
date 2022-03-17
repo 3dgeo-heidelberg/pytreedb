@@ -16,6 +16,7 @@ conn_col = os.environ.get("CONN_COL")
 
 dir_path = str(Path(__file__).parent.parent.parent)
 
+
 @pytest.mark.export
 def test_save(tmp_path):
     """Test function to save .db file"""
@@ -70,8 +71,14 @@ def test_export_data_content(tmp_path):
 
     mydb.export_data(tmp_path)
 
-    # assert input_data = exported data (check/compare contents of geojsons)
-    pass
+    first_read = list(Path(input_data).glob("*.*json"))[0]
+    first_written = list(Path(tmp_path).glob("*.*json"))[0]
+
+    with open(first_read) as f_read, open(first_written) as f_written:
+        data_read = json.load(f_read)
+        data_written = json.load(f_written)
+
+    assert data_read == data_written
 
 
 @pytest.mark.export
@@ -111,8 +118,6 @@ def test_import_data_wrong_local_path(tmp_path):
     with pytest.raises(FileNotFoundError) as e:
         mydb.import_data(my_corrupt_path)
     assert e.type is FileNotFoundError
-
-
 
 # clear()
 # import_data()

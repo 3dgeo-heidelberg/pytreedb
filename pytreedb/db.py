@@ -3,6 +3,7 @@ import json
 import os
 import datetime
 import gzip
+import csv
 
 import urllib
 import urllib.request
@@ -10,8 +11,6 @@ import urllib.request
 from pathlib import Path
 from operator import lt, le, eq, ne, ge, gt  # operator objects
 from functools import *
-
-import pandas as pd  # TODO: NEEDED ???
 
 import numpy as np
 import copy
@@ -400,53 +399,55 @@ class PyTreeDB:
         return files_written
 
     def convert_to_csv(self, outdir, trees=[]):
-        """
-        Exports trees to local csv files using pandas dataframe. Each export creates two separate csv files,
-        one for general information, one for metrics.
-        """
+        """Exports trees to local csv files. Each export creates two separate csv files, 
+        one for general imformations, one for metrics."""
         df_general_all = None
         df_metrics_all = None
         if trees == []:
             trees = self
+        csv_general = [["tree_id", "species", "lat_epsg4326", "long_epsg4326", 
+                        "elev_epsg4326", "x_epsg25832", "y_epsg25832", "z_epsg25832"]]
+        csv_metrics = []
+        metrics_header = ["tree_id"]
         for tree in trees:
-            if trees == []:
-                tree_dict = json.loads(tree['_json'].replace("NA", "NaN"))
-            else:
-                tree_dict = tree
+            general_line = []
 
             # writing "general" table: species, lat, long, elev
-            df_general = pd.DataFrame()
-            df_general["tree_id"] = [tree_dict["properties"]["id"]]
-            df_general["species"] = [tree_dict["properties"]["species"]]
-            df_general["lat_epsg4326"] = [tree_dict["geometry"]["coordinates"][1]]
-            df_general["long_epsg4326"] = [tree_dict["geometry"]["coordinates"][0]]
-            df_general["elev_epsg4326"] = [tree_dict["geometry"]["coordinates"][2]]
-
+            general_line.append(tree["properties"]["id"])
+            general_line.append(tree["properties"]["species"])
+            general_line.append(tree["geometry"]["coordinates"][1])
+            general_line.append(tree["geometry"]["coordinates"][0])
+            general_line.append(tree["geometry"]["coordinates"][2])
+            
             # writing "metrics" table: metrics in columns, one row per data source
-            n = len(tree_dict["properties"]["measurements"])
-            df_metrics = pd.DataFrame(index=np.arange(n - 1))
-            df_metrics["tree_id"] = tree_dict["properties"]["id"]
-            i = 0
-            for entry in tree_dict["properties"]["measurements"]:
-                columns = entry.keys()
-                if "position_xyz" in columns:
-                    df_general["x_epsg25832"] = entry["position_xyz"][0]
-                    df_general["y_epsg25832"] = entry["position_xyz"][1]
-                    df_general["z_epsg25832"] = entry["position_xyz"][2]
+            for entry in tree["properties"]["measurements"]:
+                keys = entry.keys()
+                if "position_xyz" in keys:
+                    general_line.append(entry["position_xyz"][0])
+                    general_line.append(entry["position_xyz"][1])
+                    general_line.append(entry["position_xyz"][2])
                 else:
-                    for col in columns:
-                        df_metrics.loc[i, col] = entry[col]
-                    i += 1
-            if df_general_all is None or df_metrics_all is None:
-                df_general_all = df_general
-                df_metrics_all = df_metrics
-            else:
-                df_general_all = pd.concat([df_general_all, df_general], ignore_index=True)
-                df_metrics_all = pd.concat([df_metrics_all, df_metrics], ignore_index=True)
-
+                    metrics_line = [tree["properties"]["id"]]
+                    for key in keys:
+                        if key not in metrics_header:
+                            metrics_header.append(key)
+                    for i in range(1, len(metrics_header)):
+                        if metrics_header[i] in keys:
+                            metrics_line.append(entry[metrics_header[i]])
+                        else:
+                            metrics_line.append("")
+                csv_metrics.append(metrics_line)
+            
+            csv_general.append(general_line)
+        csv_metrics.insert(0, metrics_header)
         # save locally
-        df_general_all.to_csv(outdir + '/result_general.csv', index=False)
-        df_metrics_all.to_csv(outdir + '/result_metrics.csv', index=False)
+        def save(filename, content):
+            with open(outdir + filename, 'w', newline = '') as file:
+                csv_writer = csv.writer(file, delimiter=',')
+                for line in content:
+                    csv_writer.writerow(line)
+        save('/result_general.csv', csv_general)
+        save('/result_metrics.csv', csv_metrics)
 
 
 if __name__ == "__main__":

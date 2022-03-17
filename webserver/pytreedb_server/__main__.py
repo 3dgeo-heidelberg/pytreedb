@@ -9,6 +9,7 @@ import io
 import os
 import flask
 import shutil
+import tempfile
 from pathlib import Path
 
 from zipfile import ZipFile
@@ -103,7 +104,7 @@ def exportcsv():
     query = request.get_json(force=True)['data']
     trees = mydb.query(query, {'_id': False})
     # convert trees to csv files, save to disk
-    outdir = r'E:\tmp\csv'
+    outdir = tempfile.mkdtemp()
     mydb.convert_to_csv(outdir, trees)
     # zip csv files
     o = io.BytesIO()

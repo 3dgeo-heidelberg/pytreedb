@@ -440,9 +440,10 @@ class PyTreeDB:
             
             csv_general.append(general_line)
         csv_metrics.insert(0, metrics_header)
+
         # save locally
         def save(filename, content):
-            with open(outdir + filename, 'w', newline = '') as file:
+            with open(str(outdir) + filename, 'w', newline='') as file:
                 csv_writer = csv.writer(file, delimiter=',')
                 for line in content:
                     csv_writer.writerow(line)

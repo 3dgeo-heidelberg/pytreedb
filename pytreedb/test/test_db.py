@@ -2,12 +2,13 @@
 # -- coding: utf-8 --
 
 import os
-import sys
 import pytest
 import json
 from pytreedb import db
 from dotenv import load_dotenv
 from pathlib import Path
+import pandas as pd
+import numpy as np
 
 load_dotenv()
 conn_uri = os.environ.get("CONN_URI")
@@ -60,7 +61,7 @@ def test_export_data(tmp_path):
 
 @pytest.mark.export
 def test_export_data_content(tmp_path):
-    """Test function to export data regarding the content of files"""
+    """Test function to export data regarding the content of geojson files"""
     my_dbfile = tmp_path / "temp.db"
     input_data = f"{dir_path}/data/test/test_geojsons"
 
@@ -82,8 +83,38 @@ def test_export_data_content(tmp_path):
 
 
 @pytest.mark.export
-def test_export_to_csv():
-    pass
+def test_convert_to_csv_general(tmp_path):
+    """Test function to export data to csv"""
+    my_dbfile = tmp_path / "temp.db"
+    input_data = f"{dir_path}/data/test/test_geojsons"
+    outdir_csv = tmp_path
+
+    mydb = db.PyTreeDB(
+        dbfile=my_dbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
+    )
+    mydb.import_data(input_data)
+    mydb.convert_to_csv(outdir_csv)
+
+    all_jsons = list(Path(input_data).glob("*.*json"))
+    i = 2
+    one_json = all_jsons[i]
+    csv_general = tmp_path / "result_general.csv"
+
+    with open(one_json) as f:
+        data_dict = json.load(f)
+    df_general = pd.read_csv(csv_general)
+
+    # table should contain as many rows as there are trees (= jsons files)
+    assert df_general.shape[0] == len(all_jsons)
+    # table should contain: tree_id, species, lat_epsg4326, long_epsg4326, elev_epsg4326
+    assert {"tree_id", "species", "lat_epsg4326", "long_epsg4326", "elev_epsg4326"}.issubset(df_general.columns)
+    # content of table should match with geojson
+    assert df_general.loc[i]["tree_id"] == data_dict["properties"]["id"]
+    assert df_general.loc[i]["species"] == data_dict["properties"]["species"]
+    np.testing.assert_equal(
+                            df_general.loc[i][["long_epsg4326", "lat_epsg4326", "elev_epsg4326"]].to_numpy(),
+                            data_dict["geometry"]["coordinates"]
+    )
 
 
 @pytest.mark.imports

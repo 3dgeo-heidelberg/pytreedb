@@ -38,12 +38,11 @@ The dataset is not a prerequisite. Please follow the instructions after getting 
 
 
 ### Serve the webserver locally
-Under the root folder of pytreedb, run:
+Under the webserver folder, run:
 
 ```
 conda activate pytreedb
-set FLASK_APP=webserver/main.py
-python -m flask run
+python -m pytreedb_server
 ```
 
 ## Deployment for production

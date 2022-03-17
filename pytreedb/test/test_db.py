@@ -98,7 +98,8 @@ def test_import_data(tmp_path):
 
 
 @pytest.mark.imports
-def test_import_data_wrong_path(tmp_path):
+def test_import_data_wrong_local_path(tmp_path):
+    """Tests importing data from a corrupt local path"""
     # given
     db_file = tmp_path / "temp.db"
     mydb = db.PyTreeDB(

@@ -119,8 +119,8 @@ class PyTreeDB:
         if overwrite is True:
             self.clear() # empty db
             
-        self.data = path  # URL or local directory used as data storage
-        if urllib.parse.urlparse(path).scheme in ('http', 'https',):   # Check if data is local path or URL
+        self.data = Path(path)  # URL or local directory used as data storage
+        if urllib.parse.urlparse(str(path)).scheme in ('http', 'https',):   # Check if data is local path or URL
             print("Download from: {}".format(path))
             data_dir = download_extract_zip_tempdir(path)
         else:
@@ -144,8 +144,8 @@ class PyTreeDB:
         if overwrite is True:
             self.clear() # empty db
             
-        self.data = path  # URL or local directory used as data storage
-        if urllib.parse.urlparse(path).scheme in ('http', 'https',):   # Check if data is local path or URL
+        self.data = Path(path)  # URL or local directory used as data storage
+        if urllib.parse.urlparse(str(path)).scheme in ('http', 'https',):   # Check if data is local path or URL
             print("Download from: {}".format(path))
             data_file= download_file_to_tempdir(path)
         else:

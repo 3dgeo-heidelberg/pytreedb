@@ -33,11 +33,11 @@ mydb.import_db(r'../data/db_dump/data.db', overwrite=False)
 print(mydb.get_stats())
 
 print("# Import and append pytreedb file from URL")
-mydb.import_db('https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=False)
+mydb.import_db('https://heibox.uni-heidelberg.de/f/2be9b438f7d94e12a091/?dl=1', overwrite=False)
 print(mydb.get_stats())
 
 print("# Fresh import pytreedb file from URL")
-mydb.import_db('https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True)
+mydb.import_db('https://heibox.uni-heidelberg.de/f/2be9b438f7d94e12a091/?dl=1', overwrite=True)
 print(mydb.get_stats())
 
 print ("# Import and thus append other serialized pytreedb file")

@@ -2,6 +2,7 @@
 # -- coding: utf-8 --
 
 import os
+import sys
 import pytest
 import json
 from pytreedb import db
@@ -13,11 +14,12 @@ conn_uri = os.environ.get("CONN_URI")
 conn_db = os.environ.get("CONN_DB")
 conn_col = os.environ.get("CONN_COL")
 
+dir_path = str(Path(__file__).parent.parent.parent)
 
 @pytest.mark.export
 def test_save(tmp_path):
     """Test function to save .db file"""
-    test_db = "data/test/data.db"
+    test_db = f"{dir_path}/data/test/data.db"
     out_db = tmp_path / "temp.db"
 
     mydbfile = tmp_path / "temp.db"
@@ -30,7 +32,7 @@ def test_save(tmp_path):
 
     assert out_db.exists()
     # TODO: use load() instead?
-    assert mydb.import_db(str(test_db), overwrite=True) == mydb.import_db(str(out_db), overwrite=True)
+    assert mydb.import_db(test_db, overwrite=True) == mydb.import_db(out_db, overwrite=True)
     assert db.hash_file(mydb.dbfile) == db.hash_file(out_db)
 
 
@@ -39,7 +41,7 @@ def test_export_data(tmp_path):
     """Test function to export data regarding writing the correct number of files"""
     my_dbfile = tmp_path / "temp.db"
 
-    test_dbfile = "data/test/data.db"
+    test_dbfile = f"{dir_path}/data/test/data.db"
     mydb = db.PyTreeDB(
         dbfile=my_dbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
     )
@@ -59,7 +61,7 @@ def test_export_data(tmp_path):
 def test_export_data_content(tmp_path):
     """Test function to export data regarding the content of files"""
     my_dbfile = tmp_path / "temp.db"
-    input_data = "data/test/test_geojsons"
+    input_data = f"{dir_path}/data/test/test_geojsons"
 
     mydb = db.PyTreeDB(
         dbfile=my_dbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}

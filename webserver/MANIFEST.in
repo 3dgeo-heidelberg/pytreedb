@@ -1,0 +1,2 @@
+graft pytreedb_server/static
+graft pytreedb_server/templates

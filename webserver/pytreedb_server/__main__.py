@@ -18,7 +18,7 @@ from flask import request
 from flask import render_template
 
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(os.path.join(os.getcwd(), '.env'))  # load from current user dir
 
 pytreedb_loc = os.environ.get("PYTREEDB_LOCATION")
 if pytreedb_loc:
@@ -54,12 +54,9 @@ if not db_name:
 
 db_download = os.environ.get("PYTREEDB_DOWNLOAD")
 
-app = Flask("pytreedb-server")
-
-# Load parameters for FLASK from the environment
-flask_vars = {key[6:]: val for key, val in dict(os.environ).items() if key.startswith("FLASK")}
-# Apply parameters
-#app.config.from_mapping(flask_vars)
+app = Flask("pytreedb-server",
+            static_folder=os.path.join(os.path.dirname(__file__), 'static'),
+            template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
 
 @app.route('/')
 def index():
@@ -132,7 +129,15 @@ if __name__ == '__main__':
     if db_download:
         mydb.import_data(db_download, overwrite=True)
     else:
-        mydb.import_db(db_name, overwrite=False)
+        try:
+            mydb.import_db(db_name, overwrite=False)
+        except:
+            print(f"Error: could not import database file '{db_name}'.")
+            print("       You probably need to download/import data beforehand, e.g.")
+            print("       by providing a link in the 'PYTREEDB_DOWNLOAD' variable in the '.env'-File.")
+            print("       Refer to README.md for more information")
+            print("-- Original error follows below --")
+            raise
     app.config['CORS_HEADERS'] = 'Content-Type'
     dl_progress = {'currItem': 0, 'numAllItems': 0}
     app.run(port=os.environ.get("FLASK_RUN_PORT"), host=os.environ.get("FLASK_RUN_HOST"))

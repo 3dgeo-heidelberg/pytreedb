@@ -5,7 +5,7 @@ Write some info screen
 
 from __future__ import absolute_import
 
-__version__ = '0.1'
+__version__ = '0.1.3'
 
 import pytreedb.db, pytreedb.db_conf, pytreedb.db_utils
 

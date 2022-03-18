@@ -438,8 +438,6 @@ class PyTreeDB:
         Optionally list of ids of trees to be exported can be provided. [] means that all will be exported
         returns list of file paths written
         """
-        df_general_all = None
-        df_metrics_all = None
         csv_metrics = []
         metrics_header = ["tree_id"]
         csv_general = [["tree_id", "species", "lat_epsg4326", "long_epsg4326",

@@ -52,7 +52,7 @@ class PyTreeDB:
         self.stats = {"n_trees": None, "n_species": None}  # dictionary holding summary statistics about database
         self.i = 0  # needed for iterator
         if self. mongodb["uri"] is None and self. mongodb["db"] is None and self. mongodb["col"] is None:         #Check if .env available and only take if mongodb is not set manually (i.e. all values are None)
-            config = dotenv_values(".env") 
+            config = dotenv_values(os.path.join(os.getcwd(), '.env')) 
             self.mongodb = { "uri": config["CONN_URI"], "db": config["CONN_DB"], "col": config["CONN_COL"]}
         try:
             # Connect MongoDB

@@ -115,7 +115,7 @@ searchDB = () => {
     let qfilters = currReq.qfilters, operands = currReq.operands, brackets = currReq.brackets;
     currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets);
 
-    $.post('/search', JSON.stringify({"data": currReq.backendQ}), data => {
+    $.post('/search', {"data": JSON.stringify(currReq.backendQ)}, data => {
         var trees = data['query'];
         currReq.url = '/search';
         // Clear previous results
@@ -436,7 +436,7 @@ saveJsonOutput = () => {
 saveAllJsons = () => {
     var outString = '{"type": "FeatureCollection", "features":';
     if (currReq.url == '/search') {
-        $.post('/search', JSON.stringify({"data": currReq.backendQ}), data => {
+        $.post('/search', {"data": JSON.stringify(currReq.backendQ)}, data => {
             outString += JSON.stringify(data['query']) + '}';
             saveJsonContent(outString, 'res_feature_collection');
         })
@@ -452,7 +452,7 @@ saveCSV = () => {
     $.ajax({
         url: '/exportcsv',
         type: "POST",
-        data: JSON.stringify({"data": currReq.backendQ}),
+        data: {"data": JSON.stringify(currReq.backendQ)},
         success: file => {
             var link = document.createElement('a');
             link.href = window.URL.createObjectURL(file);

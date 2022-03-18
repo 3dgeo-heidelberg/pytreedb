@@ -400,43 +400,47 @@ class PyTreeDB:
 
     def convert_to_csv(self, outdir, trees=[]):
         """Exports trees to local csv files. Each export creates two separate csv files, 
-        one for general imformations, one for metrics."""
+        one for general imformations, one for metrics.
+        Optionally list of ids of trees to be exported can be provided. [] means that all will be exported
+        returns list of file paths written
+        """
         df_general_all = None
         df_metrics_all = None
-        if not trees:
-            trees = self
-        csv_general = [["tree_id", "species", "lat_epsg4326", "long_epsg4326", 
-                        "elev_epsg4326", "x_epsg25832", "y_epsg25832", "z_epsg25832"]]
         csv_metrics = []
         metrics_header = ["tree_id"]
-        for tree in trees:
-            # writing "general" table: species, lat, long, elev
-            general_line = [tree["properties"]["id"],
-                            tree["properties"]["species"],
-                            tree["geometry"]["coordinates"][1],
-                            tree["geometry"]["coordinates"][0],
-                            tree["geometry"]["coordinates"][2]]
+        csv_general = [["tree_id", "species", "lat_epsg4326", "long_epsg4326",
+                        "elev_epsg4326", "x_epsg25832", "y_epsg25832", "z_epsg25832"]]
 
-            # writing "metrics" table: metrics in columns, one row per data source
-            for entry in tree["properties"]["measurements"]:
-                keys = entry.keys()
-                if "position_xyz" in keys:
-                    general_line.append(entry["position_xyz"][0])
-                    general_line.append(entry["position_xyz"][1])
-                    general_line.append(entry["position_xyz"][2])
-                else:
-                    metrics_line = [tree["properties"]["id"]]
-                    for key in keys:
-                        if key not in metrics_header:
-                            metrics_header.append(key)
-                    for i in range(1, len(metrics_header)):
-                        if metrics_header[i] in keys:
-                            metrics_line.append(entry[metrics_header[i]])
-                        else:
-                            metrics_line.append("")
-                csv_metrics.append(metrics_line)
-            
-            csv_general.append(general_line)
+        for tree in self:
+            if trees == [] or tree['_id_x'] in trees:
+
+                # writing "general" table: species, lat, long, elev
+                general_line = [tree["properties"]["id"],
+                                tree["properties"]["species"],
+                                tree["geometry"]["coordinates"][1],
+                                tree["geometry"]["coordinates"][0],
+                                tree["geometry"]["coordinates"][2]]
+
+                # writing "metrics" table: metrics in columns, one row per data source
+                for entry in tree["properties"]["measurements"]:
+                    keys = entry.keys()
+                    if "position_xyz" in keys:
+                        general_line.append(entry["position_xyz"][0])
+                        general_line.append(entry["position_xyz"][1])
+                        general_line.append(entry["position_xyz"][2])
+                    else:
+                        metrics_line = [tree["properties"]["id"]]
+                        for key in keys:
+                            if key not in metrics_header:
+                                metrics_header.append(key)
+                        for i in range(1, len(metrics_header)):
+                            if metrics_header[i] in keys:
+                                metrics_line.append(entry[metrics_header[i]])
+                            else:
+                                metrics_line.append("")
+                    csv_metrics.append(metrics_line)
+
+                csv_general.append(general_line)
         csv_metrics.insert(0, metrics_header)
 
         # save locally

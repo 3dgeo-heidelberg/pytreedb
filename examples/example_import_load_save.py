@@ -1,14 +1,7 @@
 import sys
 import os
 import json
-from dotenv import load_dotenv
-sys.path.append("..")
 from pytreedb import db
-
-load_dotenv()
-conn_uri = os.environ.get("CONN_URI")
-conn_db = os.environ.get("CONN_DB")
-conn_col = os.environ.get("CONN_COL")
 
 print("##########################################")
 print("  Run some example imports...")
@@ -17,8 +10,8 @@ print("##########################################")
 print("# Create pytreedb - incl. local file and mongoDB connection") 
 mydbfile='my_first_pytree.db' #file where database is stored locally additionally to MongoDB
 
-print("# Define (local) MongoDB connection")
-mydb = db.PyTreeDB(dbfile=mydbfile, mongodb = {"uri": conn_uri, "db": conn_db, "col": conn_col})
+print("# Create PyTreeDB object and read MongoDB connection from local .env file")
+mydb = db.PyTreeDB(dbfile=mydbfile)
 
 print("# Fresh import data from into pytreedb from URL which provides zipped folder with geojson files of each tree to be added")
 mydb.import_data(r'https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1', overwrite=True)

@@ -8,7 +8,6 @@ dependencies:
   - notebook
   - jupyter
   - numpy
-  - pandas
   - pytest
   - flask
   - requests

@@ -130,9 +130,10 @@ def test_convert_subset_to_csv_general(tmp_path):
     mydb.import_data(input_data)
 
     all_jsons = list(Path(input_data).glob("*.*json"))
-    i = 2
+    i = 0
+    trees = [i, i+2]
     one_json = all_jsons[i]
-    mydb.convert_to_csv(outdir_csv, trees=[i])
+    mydb.convert_to_csv(outdir_csv, trees=trees)
 
     csv_general = tmp_path / "result_general.csv"
 
@@ -141,14 +142,14 @@ def test_convert_subset_to_csv_general(tmp_path):
     df_general = pd.read_csv(csv_general)
 
     # table should contain as many rows as there are trees (= jsons files)
-    assert df_general.shape[0] == 1
+    assert df_general.shape[0] == len(trees)
     # table should contain: tree_id, species, lat_epsg4326, long_epsg4326, elev_epsg4326
     assert {"tree_id", "species", "lat_epsg4326", "long_epsg4326", "elev_epsg4326"}.issubset(df_general.columns)
     # content of table should match with geojson
-    assert df_general["tree_id"] == data_dict["properties"]["id"]
-    assert df_general["species"] == data_dict["properties"]["species"]
+    assert df_general.loc[i]["tree_id"] == data_dict["properties"]["id"]
+    assert df_general.loc[i]["species"] == data_dict["properties"]["species"]
     np.testing.assert_equal(
-                            df_general.loc[["long_epsg4326", "lat_epsg4326", "elev_epsg4326"]].to_numpy(),
+                            df_general.loc[i][["long_epsg4326", "lat_epsg4326", "elev_epsg4326"]].to_numpy(),
                             data_dict["geometry"]["coordinates"]
     )
 

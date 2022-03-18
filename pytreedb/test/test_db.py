@@ -129,8 +129,8 @@ def test_convert_to_csv_general(tmp_path, i, trees):
 
 @pytest.mark.export
 @pytest.mark.parametrize('i, trees',
-                         [(2, None),
-                          (0, [0, 2])
+                         [(4, None),
+                          (1, [1, 3])
                           ])
 def test_convert_to_csv_metrics(tmp_path, i, trees):
     """Test function to export data to csv - checking the source-specific tree metrics"""
@@ -162,9 +162,13 @@ def test_convert_to_csv_metrics(tmp_path, i, trees):
             n_cols += n_source
 
     df_metrics = pd.read_csv(csv_metrics)
+    some_columns = list(data_dict["properties"]["measurements"][0].keys())
+    print(some_columns)
 
-    # table should contain as many rows as there are trees
+    # table should contain n_trees x n_source (= number of sources for tree metrics) entries
     assert df_metrics.shape[0] == n_cols
+    # check for the measurements of the last trees if all dict keys are in the table
+    assert set(data_dict["properties"]["measurements"][0].keys()).issubset(df_metrics.columns)
 
 
 @pytest.mark.imports

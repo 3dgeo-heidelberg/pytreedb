@@ -26,14 +26,23 @@ from bson.son import SON
 class PyTreeDB:
     """ This class is the starting point and the core component of pytreedb
 
-    :param str dbfile: local file holding self.db
-    :param dict mongodb: dict holding mongodb connection infos
-    :param list db: data container  -> list of dictionaries (single dicts equal json files)
-    :param str data:  path to input data imported with import (path of last import)
-    :param self.i: needed for iterator
+    :ivar str dbfile: local file holding self.db
+    :ivar dict mongodb: dict holding mongodb connection infos
+    :ivar list db: list of dictionaries (single dicts equal json files)
+    :ivar str data: path to input data imported with import (path of last import)
+    :ivar dict stats: dictionary holding summary statistics about database
+    :ivar int i: needed for iterator
 
     """
+
     def __init__(self, dbfile, mongodb={"uri": "mongodb://127.0.0.1:27017/", "db": "pytreedb", "col": "syssifoss"}):
+        """ This function initializes a class object
+
+        :param str dbfile: local file holding self.db
+        :param dict mongodb: dict holding mongodb connection infos
+
+        """
+
         self.dbfile = dbfile  # local file holding self.db
         self.mongodb = mongodb  # dict holding mongodb connection infos
         self.db = list()  # data container  -> list of dictionaries (single dicts equal json files)

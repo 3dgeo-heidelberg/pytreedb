@@ -129,5 +129,5 @@ print("Files written: %s" % files_written)
 
 print()
 print(" - Export metrics as CSV")
-#mydb.convert_to_csv("D:/tmp/")
+print(mydb.convert_to_csv(os.getcwd(), trees=[]))
 

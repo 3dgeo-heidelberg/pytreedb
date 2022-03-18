@@ -200,3 +200,13 @@ def query_yes_no(question, default="yes"):
             return valid[choice]
         else:
             sys.stdout.write("Please respond with 'yes' or 'no' " "(or 'y' or 'n').\n")
+
+def write_list_to_csv(outfile_name, content_list, none_str=''):
+    """ Write 2D list to CSV file. """
+    try:
+        with open(outfile_name, "w") as f:
+            for row in content_list:
+                f.write("%s\n" % ','.join(none_str if col is None else str(col) for col in row))
+    except:
+        print("Could not write CSV file {}. Check path and file write permissions.".format(outfile_name))
+        sys.exit()

@@ -23,7 +23,7 @@ The [`PyTreeDB`](pytreedb/db.py) class is the starting point and the core compon
 
 The `Python` REST interface and all clients, such as the web frontend, simply use the methods and functionality of the Python class.
 
-:information_source: Please refer to our [publication](## Citation) for further details on the scientific concept behind and software design of this open source project. 
+:information_source: Please refer to our [scientific publication](#citation) for further details on the scientific concept behind and software design of this open source project. 
 
 ## 💻 Download and Installation
 
@@ -34,7 +34,8 @@ Install and update using [pip](https://pypi.org/) for 1) core library and 2) ser
 
 `$ pip install -U pytreedb-server`
 
-### Using Anaconda Environment
+### Using Anaconda 
+ironment
 Simply use the given `Anaconda` environment file [environment.yml](environment.yml) provided in this distribution, which contains all dependencies to run and build resources.
 
 `$ conda env create --file environment.yml`
@@ -60,8 +61,6 @@ All dependencies (i.e. required third-party Python packages) are listed in the A
 
 ### `PyTreeDB` class :snake:
 As a starting point, please have a look to the [examples](examples) and [Jupyter Notebooks](notebooks) available in the repository. Further, each of the subfolders contains a readme.md with respective details on the repository section.
-
-For running the Python scripts and the Jupyter Notebooks, you need to specify the information (mongodb URI, database name and connection) for connecting to the MongoDB in a `.env` file. Use the template file [sample.env](sample.env), add your values, and save the file as `.env` in the root directory.
 
 
 ### Run it as a API server :computer:

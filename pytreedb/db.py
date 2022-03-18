@@ -477,11 +477,9 @@ class PyTreeDB:
 
         output_files=[]
         if filename_general is not None: 
-            write_list_to_csv(outdir / filename_general, csv_general)
-            output_files.append(str(outdir / filename_general))
+            output_files.append(write_list_to_csv(outdir / filename_general, csv_general))
         if filename_metrics is not None:
-            write_list_to_csv(outdir / filename_metrics, csv_metrics)
-            output_files.append(str(outdir / filename_metrics))
+            output_files.append(write_list_to_csv(outdir / filename_metrics, csv_metrics))
         return output_files
 
 if __name__ == "__main__":

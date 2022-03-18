@@ -207,6 +207,7 @@ def write_list_to_csv(outfile_name, content_list, none_str=''):
         with open(outfile_name, "w") as f:
             for row in content_list:
                 f.write("%s\n" % ','.join(none_str if col is None else str(col) for col in row))
+        return outfile_name
     except:
         print("Could not write CSV file {}. Check path and file write permissions.".format(outfile_name))
-        sys.exit()
+        return None

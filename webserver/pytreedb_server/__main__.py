@@ -10,6 +10,7 @@ import os
 import flask
 import shutil
 import tempfile
+import json
 from pathlib import Path
 
 from zipfile import ZipFile
@@ -89,7 +90,7 @@ def getSharedProperties():
 
 @app.route('/search', methods=['POST'])
 def query():
-    query = request.get_json(force=True)['data']
+    query = json.loads(request.form['data'])
     res = mydb.query(query, {'_id': False})
     print(query)
     print(len(res))
@@ -101,7 +102,7 @@ def getItem(index):
 
 @app.route('/exportcsv', methods=['POST'])
 def exportcsv():
-    query = request.get_json(force=True)['data']
+    query = json.loads(request.form['data'])
     trees = mydb.query(query, {'_id': False})
     # convert trees to csv files, save to disk
     outdir = tempfile.mkdtemp()

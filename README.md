@@ -45,12 +45,17 @@ Simply use the given `Anaconda` environment file [environment.yml](environment.y
 
 The required **MongoDB connection** with credentials is made with a `.env` file (_yes, the file has no name_) that you place in the folder of your Python scripts or search path. [dotenv](https://pypi.org/project/python-dotenv/) is used for providing credentials - 1) URI to server, 2) database and 3) collection name - outside your source code (see [sample.env](sample.env) as template).
 
-Example `.env` file for connection to MongoDB Atlas cloud where <username> and <password> need to be replaced with real ones:
+Example `.env` file for connection to local MongoDB installation. ℹ️ Replace <database_name> and <collection_name> with your settings:
+```
+CONN_URI = "mongodb://127.0.0.1:27017/"
+CONN_DB = "<database_name>"
+CONN_COL = "<collection_name>"
+```
+
+Example CONN_URI in `.env` file for connection to MongoDB Atlas cloud where the respective settings need to be replaced with yours:
 
 ```
-CONN_URI = "mongodb+srv://<username>:<password>@cluster0.jh4vn.mongodb.net/pytreedb?retryWrites=true&w=majority"
-CONN_DB = "pytreedb"
-CONN_COL = "heidelberg"
+CONN_URI = "mongodb+srv://<username>:<password>@<your_cluster_details>.mongodb.net/<database_name>?retryWrites=true&w=majority"
 ```
 
 ### Software Dependencies

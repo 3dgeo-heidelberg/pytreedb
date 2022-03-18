@@ -12,6 +12,8 @@ from pathlib import Path
 from operator import lt, le, eq, ne, ge, gt  # operator objects
 from functools import *
 
+from dotenv import dotenv_values #.env  for DB credentials
+
 import numpy as np
 import copy
 
@@ -22,15 +24,36 @@ from pytreedb.db_conf import *
 import pymongo
 from bson.son import SON
 
-
 class PyTreeDB:
-    def __init__(self, dbfile, mongodb={"uri": "mongodb://127.0.0.1:27017/", "db": "pytreedb", "col": "syssifoss"}):
+    """ This class is the starting point and the core component of pytreedb
+
+    :ivar str dbfile: local file holding self.db
+    :ivar dict mongodb: dict holding mongodb connection infos
+    :ivar list db: list of dictionaries (single dicts equal json files)
+    :ivar str data: path to input data imported with import (path of last import)
+    :ivar dict stats: dictionary holding summary statistics about database
+    :ivar int i: needed for iterator
+
+    """
+
+    def __init__(self, dbfile, mongodb={"uri": None, "db": None, "col": None}):
+
+        """ This function initializes a class object
+
+        :param str dbfile: local file holding self.db
+        :param dict mongodb: dict holding mongodb connection infos
+
+        """
+
         self.dbfile = dbfile  # local file holding self.db
         self.mongodb = mongodb  # dict holding mongodb connection infos
         self.db = list()  # data container  -> list of dictionaries (single dicts equal json files)
         self.data = None  # path to input data imported with import (path of last import)
         self.stats = {"n_trees": None, "n_species": None}  # dictionary holding summary statistics about database
-        self.i = 0  # needed for iterator            
+        self.i = 0  # needed for iterator
+        if self. mongodb["uri"] is None and self. mongodb["db"] is None and self. mongodb["col"] is None:         #Check if .env available and only take if mongodb is not set manually (i.e. all values are None)
+            config = dotenv_values(os.path.join(os.getcwd(), '.env')) 
+            self.mongodb = { "uri": config["CONN_URI"], "db": config["CONN_DB"], "col": config["CONN_COL"]}
         try:
             # Connect MongoDB
             self.mongodb_client = pymongo.MongoClient(self.mongodb["uri"])  # Check MongoDB connection
@@ -95,7 +118,11 @@ class PyTreeDB:
 
     def load(self, dbfile, sync=True):
         """Loads existing compressed serialized version of database.
-           - sync: synchronize MongoDB immediately after loading (clears MongoDB first)."""
+
+        :param str dbfile: data base file
+        :param bool sync: synchronize MongoDB immediately after loading (clears MongoDB first)
+
+        """
         try:
             with gzip.open(dbfile, 'r') as input_file:
                 self.db = json.loads(input_file.read().decode('utf-8'))
@@ -112,7 +139,14 @@ class PyTreeDB:
 
     def import_data(self, path, overwrite=False):
         """Read data (json files) from local file or from URL of ZIP archive with files named like *.*json.
-           Returns number of trees added"""
+
+        :param str path: path to input file
+        :raises FileNotFoundError: in case file is not found
+        :raises: exception in case the input file cannot be read
+        :return: number of added trees
+        :rtype: int
+
+        """
         if overwrite is True:
             self.clear()  # empty db
 

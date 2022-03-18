@@ -391,6 +391,7 @@ class PyTreeDB:
         """Returns list of all tree objects(dict)"""
         return self.db
 
+    # TODO: static method - make function from method & move to db_utils.py?
     def get_tree_as_json(self, tree, indent=4, metadata=False):
         """Returns original JSON(str) file content for a single tree(dict)"""
         tree_export = copy.copy(tree)
@@ -401,6 +402,7 @@ class PyTreeDB:
             del tree_export["_id_x"]
         return json.dumps(tree_export, indent=indent)
 
+    # TODO: static method - make function from method & move to db_utils.py?
     def validate_json(self, json_file):
         """
         Checks if JSON is valid and compatible for import into pytreedb.
@@ -437,31 +439,42 @@ class PyTreeDB:
                 files_written.append(Path(json_filename))
         return files_written
 
-    def convert_to_csv(self, outdir, trees=[], filename_general='result_general.csv', filename_metrics='result_metrics.csv'):
+    def convert_to_csv(self, outdir, trees=None,
+                       filename_general='result_general.csv',
+                       filename_metrics='result_metrics.csv'):
         """Exports trees to local csv files. Each export creates two separate csv files, 
-        one for general imformations, one for metrics.
+        one for general information, one for metrics.
         Optionally list of ids of trees to be exported can be provided. [] means that all will be exported
         returns list of file paths written
         """
         outdir = Path(outdir)
         csv_metrics = []
         metrics_header = ["tree_id"]
-        csv_general = [["tree_id", "species", "lat_epsg4326", "long_epsg4326", "elev_epsg4326", "x_epsg25832", "y_epsg25832", "z_epsg25832"]]
-        if trees == []:
+        csv_general = []
+        general_header = ["tree_id", "species",
+                          "lat_epsg4326", "long_epsg4326", "elev_epsg4326"]
+        if not trees:
             data = self.db
         else:
             data = self[trees]
         for tree in data:
             # writing "general" table: species, lat, long, elev
-            general_line = [tree["properties"]["id"],  tree["properties"]["species"], tree["geometry"]["coordinates"][1], tree["geometry"]["coordinates"][0], tree["geometry"]["coordinates"][2]]
+            general_line = [tree["properties"]["id"],
+                            tree["properties"]["species"],
+                            tree["geometry"]["coordinates"][1],
+                            tree["geometry"]["coordinates"][0],
+                            tree["geometry"]["coordinates"][2]]
             # writing "metrics" table: metrics in columns, one row per data source
             for entry in tree["properties"]["measurements"]:
                 keys = entry.keys()
                 if "position_xyz" in keys:
+                    crs = entry["crs"]
                     general_line.append(entry["position_xyz"][0])
                     general_line.append(entry["position_xyz"][1])
                     general_line.append(entry["position_xyz"][2])
-                else:
+                    general_line.append(crs)
+                    general_header += ["x", "y", "z", "xyz_crs"]
+                elif "source" in keys:
                     metrics_line = [tree["properties"]["id"]]
                     for key in keys:
                         if key not in metrics_header:
@@ -469,10 +482,12 @@ class PyTreeDB:
                     for i in range(1, len(metrics_header)):
                         if metrics_header[i] in keys:
                             metrics_line.append(entry[metrics_header[i]])
-                        else:
-                            metrics_line.append("")
                 csv_metrics.append(metrics_line)
             csv_general.append(general_line)
+        # remove duplicate values from list
+        general_header = list(dict.fromkeys(general_header))
+
+        csv_general.insert(0, general_header)
         csv_metrics.insert(0, metrics_header)
 
         output_files=[]
@@ -481,6 +496,7 @@ class PyTreeDB:
         if filename_metrics is not None:
             output_files.append(write_list_to_csv(outdir / filename_metrics, csv_metrics))
         return output_files
+
 
 if __name__ == "__main__":
     print("pyTreeDB (version {}), (c) 3DGeo Research Group, Heidelberg University (2022+)".format(__version__))

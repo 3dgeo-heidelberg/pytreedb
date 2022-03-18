@@ -24,6 +24,17 @@ from bson.son import SON
 
 
 class PyTreeDB:
+    """ This class is the starting point and the core component of pytreedb
+
+    :param str dbfile: local file holding self.db
+    :param dict mongodb: dict holding mongodb connection infos
+    :param list db: data container  -> list of dictionaries (single dicts equal json files)
+    :param str data:  path to input data imported with import (path of last import)
+    :param self.i: needed for iterator
+
+
+
+    """
     def __init__(self, dbfile, mongodb={"uri": "mongodb://127.0.0.1:27017/", "db": "pytreedb", "col": "syssifoss"}):
         self.dbfile = dbfile  # local file holding self.db
         self.mongodb = mongodb  # dict holding mongodb connection infos
@@ -95,7 +106,11 @@ class PyTreeDB:
 
     def load(self, dbfile, sync=True):
         """Loads existing compressed serialized version of database.
-           - sync: synchronize MongoDB immediately after loading (clears MongoDB first)."""
+
+        :param str dbfile: data base file
+        :param bool sync: synchronize MongoDB immediately after loading (clears MongoDB first)
+
+        """
         try:
             with gzip.open(dbfile, 'r') as input_file:
                 self.db = json.loads(input_file.read().decode('utf-8'))
@@ -112,7 +127,14 @@ class PyTreeDB:
 
     def import_data(self, path, overwrite=False):
         """Read data (json files) from local file or from URL of ZIP archive with files named like *.*json.
-           Returns number of trees added"""
+
+        :param str path: path to input file
+        :raises FileNotFoundError: in case file is not found
+        :raises: exception in case the input file cannot be read
+        :return: number of added trees
+        :rtype: int
+
+        """
         if overwrite is True:
             self.clear()  # empty db
 

@@ -88,7 +88,7 @@ def test_export_data_content(tmp_path):
                           (0, [0, 2])
                           ])
 def test_convert_to_csv_general(tmp_path, i, trees):
-    """Test function to export data to csv"""
+    """Test function to export data to csv - checking the general tree info"""
     my_dbfile = tmp_path / "temp.db"
     input_data = f"{dir_path}/data/test/test_geojsons"
     outdir_csv = tmp_path
@@ -114,7 +114,7 @@ def test_convert_to_csv_general(tmp_path, i, trees):
 
     df_general = pd.read_csv(csv_general)
 
-    # table should contain as many rows as there are trees (= jsons files)
+    # table should contain as many rows as there are trees
     assert df_general.shape[0] == n
     # table should contain: tree_id, species, lat_epsg4326, long_epsg4326, elev_epsg4326
     assert {"tree_id", "species", "lat_epsg4326", "long_epsg4326", "elev_epsg4326"}.issubset(df_general.columns)
@@ -125,6 +125,46 @@ def test_convert_to_csv_general(tmp_path, i, trees):
                             df_general.loc[i][["long_epsg4326", "lat_epsg4326", "elev_epsg4326"]].to_numpy(),
                             data_dict["geometry"]["coordinates"]
     )
+
+
+@pytest.mark.export
+@pytest.mark.parametrize('i, trees',
+                         [(2, None),
+                          (0, [0, 2])
+                          ])
+def test_convert_to_csv_metrics(tmp_path, i, trees):
+    """Test function to export data to csv - checking the source-specific tree metrics"""
+    my_dbfile = tmp_path / "temp.db"
+    input_data = f"{dir_path}/data/test/test_geojsons"
+    outdir_csv = tmp_path
+
+    mydb = db.PyTreeDB(
+        dbfile=my_dbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
+    )
+    mydb.import_data(input_data)
+
+    all_jsons = list(Path(input_data).glob("*.*json"))
+    one_json = all_jsons[i]
+    csv_metrics = tmp_path / "result_metrics.csv"
+
+    if trees:
+        mydb.convert_to_csv(outdir_csv, trees=trees)
+        all_jsons = [all_jsons[tree] for tree in trees]
+    else:
+        mydb.convert_to_csv(outdir_csv)
+
+    n_cols = 0
+    n_trees = len(all_jsons)
+    for tree_json in all_jsons:
+        with open(tree_json) as f:
+            data_dict = json.load(f)
+            n_source = len(data_dict["properties"]["measurements"])
+            n_cols += n_source
+
+    df_metrics = pd.read_csv(csv_metrics)
+
+    # table should contain as many rows as there are trees
+    assert df_metrics.shape[0] == n_cols
 
 
 @pytest.mark.imports

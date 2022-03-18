@@ -403,22 +403,20 @@ class PyTreeDB:
         one for general imformations, one for metrics."""
         df_general_all = None
         df_metrics_all = None
-        if trees == []:
+        if not trees:
             trees = self
         csv_general = [["tree_id", "species", "lat_epsg4326", "long_epsg4326", 
                         "elev_epsg4326", "x_epsg25832", "y_epsg25832", "z_epsg25832"]]
         csv_metrics = []
         metrics_header = ["tree_id"]
         for tree in trees:
-            general_line = []
-
             # writing "general" table: species, lat, long, elev
-            general_line.append(tree["properties"]["id"])
-            general_line.append(tree["properties"]["species"])
-            general_line.append(tree["geometry"]["coordinates"][1])
-            general_line.append(tree["geometry"]["coordinates"][0])
-            general_line.append(tree["geometry"]["coordinates"][2])
-            
+            general_line = [tree["properties"]["id"],
+                            tree["properties"]["species"],
+                            tree["geometry"]["coordinates"][1],
+                            tree["geometry"]["coordinates"][0],
+                            tree["geometry"]["coordinates"][2]]
+
             # writing "metrics" table: metrics in columns, one row per data source
             for entry in tree["properties"]["measurements"]:
                 keys = entry.keys()

@@ -32,8 +32,6 @@ class PyTreeDB:
     :param str data:  path to input data imported with import (path of last import)
     :param self.i: needed for iterator
 
-
-
     """
     def __init__(self, dbfile, mongodb={"uri": "mongodb://127.0.0.1:27017/", "db": "pytreedb", "col": "syssifoss"}):
         self.dbfile = dbfile  # local file holding self.db

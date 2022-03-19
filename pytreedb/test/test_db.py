@@ -15,13 +15,13 @@ conn_uri = os.environ.get("CONN_URI")
 conn_db = os.environ.get("CONN_DB")
 conn_col = os.environ.get("CONN_COL")
 
-dir_path = str(Path(__file__).parent.parent.parent)
+root_path = str(Path(__file__).parent.parent.parent)
 
 
 @pytest.mark.export
 def test_save(tmp_path):
     """Test function to save .db file"""
-    test_db = f"{dir_path}/data/test/data.db"
+    test_db = f"{root_path}/data/test/data.db"
     out_db = tmp_path / "temp.db"
 
     mydbfile = tmp_path / "temp.db"
@@ -43,7 +43,7 @@ def test_export_data(tmp_path):
     """Test function to export data regarding writing the correct number of files"""
     my_dbfile = tmp_path / "temp.db"
 
-    test_dbfile = f"{dir_path}/data/test/data.db"
+    test_dbfile = f"{root_path}/data/test/data.db"
     mydb = db.PyTreeDB(
         dbfile=my_dbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
     )
@@ -63,7 +63,7 @@ def test_export_data(tmp_path):
 def test_export_data_content(tmp_path):
     """Test function to export data regarding the content of geojson files"""
     my_dbfile = tmp_path / "temp.db"
-    input_data = f"{dir_path}/data/test/test_geojsons"
+    input_data = f"{root_path}/data/test/test_geojsons"
 
     mydb = db.PyTreeDB(
         dbfile=my_dbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
@@ -83,14 +83,15 @@ def test_export_data_content(tmp_path):
 
 
 @pytest.mark.export
-@pytest.mark.parametrize('i, trees',
-                         [(2, None),
-                          (0, [0, 2])
+@pytest.mark.parametrize('dir_name, i, trees, ncols_expected',
+                         [("test_geojsons", 2, None, 9),
+                          ("test_geojsons", 0, [0, 2], 9),
+                          ("test_geojson_no_position", 0, None, 5)
                           ])
-def test_convert_to_csv_general(tmp_path, i, trees):
+def test_convert_to_csv_general(tmp_path, dir_name, i, trees, ncols_expected):
     """Test function to export data to csv - checking the general tree info"""
     my_dbfile = tmp_path / "temp.db"
-    input_data = f"{dir_path}/data/test/test_geojsons"
+    input_data = f"{root_path}/data/test/{dir_name}"
     outdir_csv = tmp_path
 
     mydb = db.PyTreeDB(
@@ -118,7 +119,10 @@ def test_convert_to_csv_general(tmp_path, i, trees):
     assert df_general.shape[0] == n
     # table should contain: tree_id, species, lat_epsg4326, long_epsg4326, elev_epsg4326
     assert {"tree_id", "species", "lat_epsg4326", "long_epsg4326", "elev_epsg4326"}.issubset(df_general.columns)
-    # content of table should match with geojson
+    # table should contain expected number of cols
+    # (9 if position is given in custom reference system as "measurement", otherwise 5)
+    assert len(df_general.columns) == ncols_expected
+    # content of table should match contents of geojson
     assert df_general.loc[i]["tree_id"] == data_dict["properties"]["id"]
     assert df_general.loc[i]["species"] == data_dict["properties"]["species"]
     np.testing.assert_equal(
@@ -135,7 +139,7 @@ def test_convert_to_csv_general(tmp_path, i, trees):
 def test_convert_to_csv_metrics(tmp_path, i, trees):
     """Test function to export data to csv - checking the source-specific tree metrics"""
     my_dbfile = tmp_path / "temp.db"
-    input_data = f"{dir_path}/data/test/test_geojsons"
+    input_data = f"{root_path}/data/test/test_geojsons"
     outdir_csv = tmp_path
 
     mydb = db.PyTreeDB(

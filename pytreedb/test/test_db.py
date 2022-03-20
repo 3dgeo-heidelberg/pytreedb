@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 import pandas as pd
 import numpy as np
+import pytreedb.db_utils
 
 load_dotenv()
 conn_uri = os.environ.get("CONN_URI")
@@ -69,7 +70,7 @@ def test_save(tmp_path):
     assert out_db.exists()
     # TODO: use load() instead?
     assert mydb.import_db(test_db, overwrite=True) == mydb.import_db(out_db, overwrite=True)
-    assert db.hash_file(mydb.dbfile) == db.hash_file(out_db)
+    assert pytreedb.db_utils.hash_file(mydb.dbfile) == pytreedb.db_utils.hash_file(out_db)
 
 
 @pytest.mark.export

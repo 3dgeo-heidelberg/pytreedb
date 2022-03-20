@@ -201,6 +201,7 @@ def query_yes_no(question, default="yes"):
         else:
             sys.stdout.write("Please respond with 'yes' or 'no' " "(or 'y' or 'n').\n")
 
+
 def write_list_to_csv(outfile_name, content_list, none_str=''):
     """ Write 2D list to CSV file. """
     try:

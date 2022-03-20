@@ -1,29 +1,25 @@
-from .__init__ import __version__
-import json
-import os
+import copy
 import datetime
 import gzip
-import csv
-from typing import Union
-
+import json
+import os
+import sys
 import urllib
 import urllib.request
-
 from pathlib import Path
-from operator import lt, le, eq, ne, ge, gt  # operator objects
-from functools import *
-
-from dotenv import dotenv_values #.env  for DB credentials
+from typing import Union
 
 import numpy as np
-import copy
-
-# import own sub-modules
-from pytreedb.db_utils import *
-from pytreedb.db_conf import *
-
 import pymongo
-from bson.son import SON
+from dotenv import dotenv_values  # .env  for DB credentials
+
+# import config values
+from pytreedb.db_conf import TEMPLATE_GEOJSON, INDEX_FIELDS, INDEX_UNIQUE_FIELDS, INDEX_GEOM_SPHERE_FIELDS, \
+    QUERY_SPECIES_FIELDNAME, QUERY_GEOMETRY
+# import own sub-modules
+from pytreedb.db_utils import flatten_json, download_extract_zip_tempdir, download_file_to_tempdir, write_list_to_csv
+from .__init__ import __version__
+
 
 class PyTreeDB:
     """ This class is the starting point and the core component of pytreedb

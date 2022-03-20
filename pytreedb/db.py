@@ -4,6 +4,7 @@ import os
 import datetime
 import gzip
 import csv
+from typing import Union
 
 import urllib
 import urllib.request
@@ -27,7 +28,7 @@ from bson.son import SON
 class PyTreeDB:
     """ This class is the starting point and the core component of pytreedb
 
-    :ivar str dbfile: local file holding self.db
+    :ivar Union[str, Path] dbfile: local file holding self.db
     :ivar dict mongodb: dict holding mongodb connection infos
     :ivar list db: list of dictionaries (single dicts equal json files)
     :ivar str data: path to input data imported with import (path of last import)
@@ -36,11 +37,11 @@ class PyTreeDB:
 
     """
 
-    def __init__(self, dbfile, mongodb={"uri": None, "db": None, "col": None}):
+    def __init__(self, dbfile: Union[str, Path], mongodb: dict = {"uri": None, "db": None, "col": None}):
 
         """ This function initializes a class object
 
-        :param str dbfile: local file holding self.db
+        :param Union[str, Path] dbfile: local file holding self.db
         :param dict mongodb: dict holding mongodb connection infos
 
         """
@@ -56,7 +57,8 @@ class PyTreeDB:
                 config = dotenv_values(os.path.join(os.getcwd(), '.env')) 
                 self.mongodb = { "uri": config["CONN_URI"], "db": config["CONN_DB"], "col": config["CONN_COL"]}
         except:
-            print(f"Could not find or load expected .env file in current working directory. Consider changend workind directory before initiating class.")
+            print("Could not find or load expected .env file in current working directory. "
+                  "Consider changend workind directory before initiating class.")
             # raise
             sys.exit()         
         try:
@@ -64,7 +66,7 @@ class PyTreeDB:
             self.mongodb_client = pymongo.MongoClient(self.mongodb["uri"])  # Check MongoDB connection
             # Check if collection exists.
             if not self.mongodb["col"] in self.mongodb_client[self.mongodb["db"]].list_collection_names():
-                print("Collection: {} created.".format(self.mongodb["col"]))
+                print(f"Collection: {self.mongodb['col']} created.")
                 # Connect and create connection if not yet there.
             # MongoDB collection to be queried
             self.mongodb_col = self.mongodb_client[self.mongodb["db"]][self.mongodb["col"]]
@@ -190,7 +192,7 @@ class PyTreeDB:
             with gzip.open(data_file, 'r') as input_file:
                 data = json.loads(input_file.read().decode('utf-8'))
         except:
-            raise Exception("Could not read db file {}. File might be not existing or corrupt.".format(data_file))
+            raise Exception(f"Could not read db file {data_file}. File might be not existing or corrupt.")
 
         cnt = 0
         for tree_dict in data:  # add each single tree
@@ -499,4 +501,4 @@ class PyTreeDB:
 
 
 if __name__ == "__main__":
-    print("pyTreeDB (version {}), (c) 3DGeo Research Group, Heidelberg University (2022+)".format(__version__))
+    print(f"pyTreeDB (version {__version__}), (c) 3DGeo Research Group, Heidelberg University (2022+)")

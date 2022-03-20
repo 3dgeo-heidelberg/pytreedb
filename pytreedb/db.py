@@ -33,7 +33,7 @@ class PyTreeDB:
 
     """
 
-    def __init__(self, dbfile: Union[str, Path], mongodb: dict = {"uri": None, "db": None, "col": None}):
+    def __init__(self, dbfile: Union[str, Path], mongodb=None):
 
         """ This function initializes a class object
 
@@ -42,21 +42,22 @@ class PyTreeDB:
 
         """
 
+        if mongodb is None:
+            try:
+                config = dotenv_values(os.path.join(os.getcwd(), '.env'))
+                self.mongodb = {"uri": config["CONN_URI"], "db": config["CONN_DB"], "col": config["CONN_COL"]}
+            except:
+                print("Could not find or load expected .env file in current working directory. "
+                      "Consider changend workind directory before initiating class.")
+                # raise
+                sys.exit()
         self.dbfile = dbfile  # local file holding self.db
         self.mongodb = mongodb  # dict holding mongodb connection infos
         self.db = list()  # data container  -> list of dictionaries (single dicts equal json files)
         self.data = None  # path to input data imported with import (path of last import)
         self.stats = {"n_trees": None, "n_species": None}  # dictionary holding summary statistics about database
         self.i = 0  # needed for iterator
-        try:
-            if self. mongodb["uri"] is None and self. mongodb["db"] is None and self. mongodb["col"] is None:         #Check if .env available and only take if mongodb is not set manually (i.e. all values are None)
-                config = dotenv_values(os.path.join(os.getcwd(), '.env')) 
-                self.mongodb = { "uri": config["CONN_URI"], "db": config["CONN_DB"], "col": config["CONN_COL"]}
-        except:
-            print("Could not find or load expected .env file in current working directory. "
-                  "Consider changend workind directory before initiating class.")
-            # raise
-            sys.exit()         
+
         try:
             # Connect MongoDB
             self.mongodb_client = pymongo.MongoClient(self.mongodb["uri"])  # Check MongoDB connection
@@ -204,6 +205,7 @@ class PyTreeDB:
         # Create indices on fields
         try:
             for idx in INDEX_FIELDS:
+                # TODO: Local variable "resp" not used, call function without "resp = "?
                 resp = self.mongodb_col.create_index(idx)
             for idx in INDEX_UNIQUE_FIELDS:
                 resp = self.mongodb_col.create_index(idx, unique=True)
@@ -273,6 +275,7 @@ class PyTreeDB:
         try:
             setlist = [set(self.db[i]['properties'].keys()) for i in range(0, len(self.db))]
             return sorted(list(set.intersection(*setlist)))
+        # TODO: "ex" not used: add expected Exception and/or remove "as ex"?
         except Exception as ex:
             return []
 
@@ -382,15 +385,14 @@ class PyTreeDB:
                     f"Given wrong type: {type(trees)}.) ")
             else:
                 print(f"Could not get id for: {trees}")
-            return None
-            # TODO: return [] ?
+            return []
 
     def to_list(self):
         """Returns list of all tree objects(dict)"""
         return self.db
 
-    # TODO: static method - make function from method & move to db_utils.py?
-    def get_tree_as_json(self, tree, indent=4, metadata=False):
+    @staticmethod
+    def get_tree_as_json(tree, indent=4, metadata=False):
         """Returns original JSON(str) file content for a single tree(dict)"""
         tree_export = copy.copy(tree)
         if metadata is False:  # remove metadata
@@ -400,8 +402,8 @@ class PyTreeDB:
             del tree_export["_id_x"]
         return json.dumps(tree_export, indent=indent)
 
-    # TODO: static method - make function from method & move to db_utils.py?
-    def validate_json(self, json_file):
+    @staticmethod
+    def validate_json(json_file):
         """
         Checks if JSON is valid and compatible for import into pytreedb.
         Only mandatory fields and main structure are checked
@@ -418,7 +420,7 @@ class PyTreeDB:
             return True  # valid
         return False  # not valid
 
-    def export_data(self, outdir, trees: list = []):
+    def export_data(self, outdir, trees=None):
         """
         Reverse of import_data():
         Creates single geojson files for each tree in DB and puts it in local directory
@@ -429,7 +431,7 @@ class PyTreeDB:
             os.mkdir(outdir)
         files_written = []
         for tree in self:
-            if trees == [] or tree['_id_x'] in trees:
+            if trees is None or tree['_id_x'] in trees:
                 json_content = self.get_tree_as_json(tree)
                 json_filename = os.path.join(outdir, tree['_file'])
                 with open(json_filename, 'w') as json_filept:
@@ -488,7 +490,7 @@ class PyTreeDB:
         csv_general.insert(0, general_header)
         csv_metrics.insert(0, metrics_header)
 
-        output_files=[]
+        output_files = []
         if filename_general is not None: 
             output_files.append(write_list_to_csv(outdir / filename_general, csv_general))
         if filename_metrics is not None:

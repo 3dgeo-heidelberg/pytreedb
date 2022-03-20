@@ -199,7 +199,6 @@ def test_convert_to_csv_metrics(tmp_path, i, trees):
             n_cols += n_source
 
     df_metrics = pd.read_csv(csv_metrics)
-    some_columns = list(data_dict["properties"]["measurements"][0].keys())
 
     # table should contain n_trees x n_source (= number of sources for tree metrics) entries
     assert df_metrics.shape[0] == n_cols
@@ -207,8 +206,6 @@ def test_convert_to_csv_metrics(tmp_path, i, trees):
     assert set(data_dict["properties"]["measurements"][0].keys()).issubset(df_metrics.columns)
     # get one measurement of last tree and check if in df
     assert data_dict["properties"]["measurements"][0]["height_m"] in df_metrics.values
-
-
 
 # clear()
 # import_data()

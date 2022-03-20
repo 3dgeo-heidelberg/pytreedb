@@ -18,6 +18,40 @@ conn_col = os.environ.get("CONN_COL")
 root_path = str(Path(__file__).parent.parent.parent)
 
 
+@pytest.mark.imports
+@pytest.mark.parametrize('data_path, n_trees_expected',
+                         [(r"https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1", 1491),
+                          (f"{root_path}/data/test/test_geojsons", 6)
+                          ])
+def test_import_data(tmp_path, data_path, n_trees_expected):
+    """Tests reading data (json files) from local file or from URL of ZIP archive with files named like *.*json"""
+
+    # given
+    db_file = tmp_path / "temp.db"
+    mydb = db.PyTreeDB(
+        dbfile=db_file, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
+    )
+
+    # TODO: Shall the import_data() function really return the number of trees?
+    assert (mydb.import_data(data_path) == n_trees_expected)
+
+
+@pytest.mark.imports
+def test_import_data_wrong_local_path(tmp_path):
+    """Tests importing data from a corrupt local path"""
+    # given
+    db_file = tmp_path / "temp.db"
+    mydb = db.PyTreeDB(
+        dbfile=db_file, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
+    )
+    my_corrupt_path = "corrupt/path/to/folder"
+
+    # Check if raises error
+    with pytest.raises(FileNotFoundError) as e:
+        mydb.import_data(my_corrupt_path)
+    assert e.type is FileNotFoundError
+
+
 @pytest.mark.export
 def test_save(tmp_path):
     """Test function to save .db file"""
@@ -148,7 +182,6 @@ def test_convert_to_csv_metrics(tmp_path, i, trees):
     mydb.import_data(input_data)
 
     all_jsons = list(Path(input_data).glob("*.*json"))
-    one_json = all_jsons[i]
     csv_metrics = tmp_path / "result_metrics.csv"
 
     if trees:
@@ -158,7 +191,6 @@ def test_convert_to_csv_metrics(tmp_path, i, trees):
         mydb.convert_to_csv(outdir_csv)
 
     n_cols = 0
-    n_trees = len(all_jsons)
     for tree_json in all_jsons:
         with open(tree_json) as f:
             data_dict = json.load(f)
@@ -167,46 +199,15 @@ def test_convert_to_csv_metrics(tmp_path, i, trees):
 
     df_metrics = pd.read_csv(csv_metrics)
     some_columns = list(data_dict["properties"]["measurements"][0].keys())
-    print(some_columns)
 
     # table should contain n_trees x n_source (= number of sources for tree metrics) entries
     assert df_metrics.shape[0] == n_cols
     # check for the measurements of the last trees if all dict keys are in the table
     assert set(data_dict["properties"]["measurements"][0].keys()).issubset(df_metrics.columns)
+    # get one measurement of last tree and check if in df
+    assert data_dict["properties"]["measurements"][0]["height_m"] in df_metrics.values
 
 
-@pytest.mark.imports
-def test_import_data(tmp_path):
-    """Tests reading data (json files) from local file or from URL of ZIP archive with files named like *.*json"""
-
-    # given
-    db_file = tmp_path / "temp.db"
-    mydb = db.PyTreeDB(
-        dbfile=db_file, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
-    )
-    data_url = r"https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1"
-
-    # expected
-    cnt_trees_expected = 1491
-
-    # TODO: Shall the import_data() function really return the number of trees?
-    assert (mydb.import_data(data_url) == cnt_trees_expected)
-
-
-@pytest.mark.imports
-def test_import_data_wrong_local_path(tmp_path):
-    """Tests importing data from a corrupt local path"""
-    # given
-    db_file = tmp_path / "temp.db"
-    mydb = db.PyTreeDB(
-        dbfile=db_file, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
-    )
-    my_corrupt_path = "corrupt/path/to/folder"
-
-    # Check if raises error
-    with pytest.raises(FileNotFoundError) as e:
-        mydb.import_data(my_corrupt_path)
-    assert e.type is FileNotFoundError
 
 # clear()
 # import_data()

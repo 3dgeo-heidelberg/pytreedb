@@ -38,7 +38,7 @@ Install and update using [pip](https://pypi.org/) for 1) core library and 2) ser
 ironment
 Simply use the given `Anaconda` environment file [environment.yml](environment.yml) provided in this distribution, which contains all dependencies to run and build resources.
 
-`$ conda env create --file environment.yml`
+`$ conda env create --file environment.yml --force`
 
 ### Connect to MongoDB (localhost / server / Atlas cloud)
 `pytreedb` requires a working connection to a `MongoDB` database. It does not matter where the MongoDB is running as connection is simply made via `pymongo` (see code in [examples](examples) and our [Jupyter notebooks](notebooks)). We successfully tested localhost, server and [MongoDB Atlas cloud](https://www.mongodb.com/basics/mongodb-atlas-tutorial) connections. For your own MongoDB installation, just follow the [official installation instructions](https://docs.mongodb.com/manual/installation/)).

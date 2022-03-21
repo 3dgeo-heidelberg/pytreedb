@@ -45,10 +45,10 @@ class PyTreeDB:
         if mongodb is None:
             try:
                 config = dotenv_values(os.path.join(os.getcwd(), '.env'))
-                self.mongodb = {"uri": config["CONN_URI"], "db": config["CONN_DB"], "col": config["CONN_COL"]}
+                mongodb = {"uri": config["CONN_URI"], "db": config["CONN_DB"], "col": config["CONN_COL"]}
             except:
                 print("Could not find or load expected .env file in current working directory. "
-                      "Consider changend workind directory before initiating class.")
+                      "Consider changing working directory before initiating class.")
                 # raise
                 sys.exit()
         self.dbfile = dbfile  # local file holding self.db

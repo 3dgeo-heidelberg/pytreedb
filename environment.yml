@@ -19,5 +19,3 @@ dependencies:
   - pip:
     - pymongo[srv]
 
-prefix: D:\anaconda3\envs\pytreedb
-

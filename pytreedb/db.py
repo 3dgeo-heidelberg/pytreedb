@@ -17,7 +17,7 @@ from dotenv import dotenv_values  # .env  for DB credentials
 from pytreedb.db_conf import TEMPLATE_GEOJSON, INDEX_FIELDS, INDEX_UNIQUE_FIELDS, INDEX_GEOM_SPHERE_FIELDS, \
     QUERY_SPECIES_FIELDNAME, QUERY_GEOMETRY
 # import own sub-modules
-from pytreedb.db_utils import flatten_json, download_extract_zip_tempdir, download_file_to_tempdir, write_list_to_csv
+from pytreedb.db_utils import flatten_json, download_extract_zip_tempdir, download_file_to_tempdir, write_list_to_csv, hash_file
 from .__init__ import __version__
 
 

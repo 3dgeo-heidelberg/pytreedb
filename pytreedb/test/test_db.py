@@ -41,6 +41,7 @@ def mydb(tmp_path):
     )
     return mydb
 
+
 @pytest.mark.imports
 @pytest.mark.parametrize('data_path, n_trees_expected',
                          [(r"https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1", 1491),
@@ -200,6 +201,18 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
     # get one measurement of last tree and check if in df
     assert data_dict["properties"]["measurements"][0]["height_m"] in df_metrics.values
 
+
+@pytest.mark.export
+@pytest.mark.parametrize('filter_dict, n_expected',
+                         [({"properties.species": "Abies alba"}, 25),
+                          ({"properties.data.mode": "TLS"}, 264),
+                          ({"properties.measurements.source": "FI"}, 1060)
+                          ])
+def test_query_single(mydb, filter_dict, n_expected):
+    test_dbfile = f"{root_path}/data/test/data.db"
+    mydb.load(test_dbfile)
+
+    assert len(mydb.query(filter_dict)) == n_expected
 
 # clear()
 # import_data()

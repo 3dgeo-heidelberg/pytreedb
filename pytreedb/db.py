@@ -159,6 +159,7 @@ class PyTreeDB:
     def import_data(self, path: Union[PathLike, URL], overwrite: bool = False):
         """Read data (json files) from local file or from URL of ZIP archive with files named like *.*json.
 
+        :param bool overwrite:
         :param str path: path to input folder or URL of ZIP archive
         :raises FileNotFoundError: in case file is not found
         :raises: exception in case the input file cannot be read

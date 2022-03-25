@@ -202,7 +202,7 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
     assert data_dict["properties"]["measurements"][0]["height_m"] in df_metrics.values
 
 
-@pytest.mark.export
+@pytest.mark.query
 @pytest.mark.parametrize('filter_dict, n_expected',
                          [({"properties.species": "Abies alba"}, 25),
                           ({"properties.data.mode": "TLS"}, 264),
@@ -211,6 +211,20 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
 def test_query_single(mydb, filter_dict, n_expected):
     test_dbfile = f"{root_path}/data/test/data.db"
     mydb.load(test_dbfile)
+
+    assert len(mydb.query(filter_dict)) == n_expected
+
+
+@pytest.mark.query
+@pytest.mark.parametrize('filter_dict, n_expected',
+                         [({'properties.data.point_count': {"$gt": 100000}}, 3),
+                          ({'properties.measurements.DBH_cm': {"$gt": 25}}, 3),
+                          ({'properties.measurements.height_m': {"$lt": 30}}, 5),
+                          ({'properties.data.quality': {"$lte": 2}}, 4)
+                          ])
+def test_query_numeric_comparison(mydb, filter_dict, n_expected):
+    input_data = f"{root_path}/data/test/test_geojsons"
+    mydb.import_data(input_data)
 
     assert len(mydb.query(filter_dict)) == n_expected
 

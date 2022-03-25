@@ -44,7 +44,7 @@ def mydb(tmp_path):
 
 @pytest.mark.imports
 @pytest.mark.parametrize('data_path, n_trees_expected',
-                         [(r"https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1", 1491),
+                         [(r"https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1sdf", 1491),
                           (f"{root_path}/data/test/test_geojsons", 6)
                           ])
 def test_import_data(mydb, data_path, n_trees_expected):
@@ -64,6 +64,7 @@ def test_import_data_wrong_local_path(mydb):
     with pytest.raises(FileNotFoundError) as e:
         mydb.import_data(my_corrupt_path)
     assert e.type is FileNotFoundError
+#todo: same with wrong URL etc.
 
 
 @pytest.mark.export

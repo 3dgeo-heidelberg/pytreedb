@@ -8,6 +8,8 @@ import urllib.request
 import zipfile
 from operator import *
 import datetime
+from urllib.error import URLError
+import socket
 
 
 def flatten_json(y):
@@ -161,12 +163,21 @@ def download_extract_zip_tempdir(url):
     """This function downloads a ZIP file and extracts it to a temporary directory
     - Input: URL
     - Return: full path to directory with extracted files """
+    # Todo: Add error handling: raise urllib.error.URLError if URL does not exist?
     zip_temp_file = tempfile.NamedTemporaryFile().name
     zip_temp_dir = tempfile.TemporaryDirectory().name
     ssl._create_default_https_context = ssl._create_unverified_context
-    urllib.request.urlretrieve(url, zip_temp_file)
+    try:
+        urllib.request.urlretrieve(url,  zip_temp_file)
+    except (socket.gaierror, urllib.error.URLError) as err:
+        raise ConnectionError(
+            f"could not download {url} due to {err}"
+        )
     # unzip dataset
-    zip_ref = zipfile.ZipFile(zip_temp_file, 'r')
+    try:
+        zip_ref = zipfile.ZipFile(zip_temp_file, 'r')
+    except zipfile.BadZipFile as e:
+        raise zipfile.BadZipFile(f"Problem reading zip file from URL: {e}")
     zip_ref.extractall(zip_temp_dir)
     zip_ref.close()
     return zip_temp_dir

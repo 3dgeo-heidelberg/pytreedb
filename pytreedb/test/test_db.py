@@ -232,7 +232,8 @@ def test_query_numeric_comparison(mydb, filter_dict, n_expected):
 @pytest.mark.query
 @pytest.mark.parametrize('filter_dict, n_expected',
                          [({"$and": [{"properties.data.quality": 1}, {"properties.data.mode": "TLS"}]}, 34),
-                          ({"$and": [{"properties.data.quality": {"$lte": 2}}, {"properties.data.canopy_condition": "leaf-off"}]}, 1036)
+                          ({"$and": [{"properties.data.quality": {"$lte": 2}},
+                                     {"properties.data.canopy_condition": "leaf-off"}]}, 1036)
                           ])
 def test_query_logical(mydb, filter_dict, n_expected):
     test_dbfile = f"{root_path}/data/test/data.db"

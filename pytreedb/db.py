@@ -7,7 +7,7 @@ import sys
 import urllib
 import urllib.request
 from pathlib import Path
-from typing import Union
+from typing import Union, TypeVar, NewType
 
 import numpy as np
 import pymongo
@@ -19,6 +19,15 @@ from pytreedb.db_conf import TEMPLATE_GEOJSON, INDEX_FIELDS, INDEX_UNIQUE_FIELDS
 # import own sub-modules
 from pytreedb.db_utils import flatten_json, download_extract_zip_tempdir, download_file_to_tempdir, write_list_to_csv, hash_file
 from .__init__ import __version__
+
+PathLike = TypeVar("PathLike", str, os.PathLike, None)
+_Url = NewType('_Url', str)
+
+
+def URL(s: str) -> _Url:
+    if not s.startswith('https://') or s.startswith('http://'):
+        raise TypeError(f"{s} is not a valid URL")
+    return _Url(s)
 
 
 class PyTreeDB:
@@ -33,7 +42,7 @@ class PyTreeDB:
 
     """
 
-    def __init__(self, dbfile: Union[str, Path], mongodb=None):
+    def __init__(self, dbfile: PathLike, mongodb: dict = None):
 
         """ This function initializes a class object
 
@@ -107,8 +116,14 @@ class PyTreeDB:
         raise Exception(
             "Copying of PyTreeDb object is not yet safe. Lifehack: Make a new database and import the other db.")
 
-    def save(self, dbfile=None, sync=False):
-        """Saves database to compressed serialized version as local file."""
+    def save(self, dbfile: PathLike = None, sync: bool = False):
+        """
+        Saves database to compressed serialized version as local file.
+
+        :param dbfile: local file path, where the database should be saved
+        :param bool sync: synchronize MongoDB immediately after saving (clears MongoDB first)
+
+        """
         if dbfile is None:
             dbfile = self.dbfile  # if no filename is given as arg - just overwrite existing file in self.dbfile
         try:
@@ -120,10 +135,10 @@ class PyTreeDB:
         except:
             raise Exception(f"Could not write db file {dbfile}. Path or permissions might be missing.")
 
-    def load(self, dbfile, sync=True):
+    def load(self, dbfile, sync: bool = True):
         """Loads existing compressed serialized version of database.
 
-        :param str dbfile: data base file
+        :param str dbfile: data base file which should be loaded
         :param bool sync: synchronize MongoDB immediately after loading (clears MongoDB first)
 
         """
@@ -141,10 +156,10 @@ class PyTreeDB:
         self.__init__(self.dbfile, self.mongodb)
         self.mongodb_clear_col()
 
-    def import_data(self, path, overwrite=False):
+    def import_data(self, path: Union[PathLike, URL], overwrite: bool = False):
         """Read data (json files) from local file or from URL of ZIP archive with files named like *.*json.
 
-        :param str path: path to input file
+        :param str path: path to input folder or URL of ZIP archive
         :raises FileNotFoundError: in case file is not found
         :raises: exception in case the input file cannot be read
         :return: number of added trees
@@ -174,7 +189,7 @@ class PyTreeDB:
         self.save(self.dbfile, sync=True)
         return cnt
 
-    def import_db(self, path, overwrite=False):
+    def import_db(self, path, overwrite: bool = False):
         """Read data from local db file or from URL. Returns number of trees added"""
         if overwrite is True:
             self.clear()  # empty db
@@ -218,7 +233,7 @@ class PyTreeDB:
         # print("Dropping all MongoDB indexes.")
         self.mongodb_col.drop_indexes()  # drop all existing indices
 
-    def mongodb_synchronize(self, clear=True):
+    def mongodb_synchronize(self, clear: bool = True):
         # Bulk import into Mongodb
         if clear is True:  # empty collection first
             self.mongodb_clear_col()
@@ -294,7 +309,7 @@ class PyTreeDB:
             print(ex)
             return []
 
-    def query_by_key_value(self, key, value, regex=True):
+    def query_by_key_value(self, key, value, regex: bool = True):
         """
         Returns trees (list) fulfilling the regex or exact matching of value for a given key
         (including nested path of key).
@@ -320,7 +335,7 @@ class PyTreeDB:
         res = self.mongodb_col.find({QUERY_SPECIES_FIELDNAME: {"$regex": regex}}, {'_id': False})
         return [e for e in res]
 
-    def query_by_date(self, key, start, end=False):
+    def query_by_date(self, key, start, end: bool = False):
         """
         Returns trees(list) fulfilling the date of key lies between start and end date in format 'YYYY-MM-DD'
         If no end date is given, the current day is taken.
@@ -340,7 +355,7 @@ class PyTreeDB:
         res = self.mongodb_col.find({key: {"$gte": startdate, "$lte": enddate}}, {'_id': False})
         return [e for e in res]
 
-    def query_by_geometry(self, geom, distance=0.0):
+    def query_by_geometry(self, geom, distance: float = 0.0):
         """Returns list of trees(dict) that are within a defined distance (in meters) from search geometry which is
         provided as GEOJSON dictionary or string; Geometry types Point and Polygon are supported, for example:
 
@@ -392,7 +407,7 @@ class PyTreeDB:
         return self.db
 
     @staticmethod
-    def get_tree_as_json(tree, indent=4, metadata=False):
+    def get_tree_as_json(tree, indent=4, metadata: bool = False):
         """Returns original JSON(str) file content for a single tree(dict)"""
         tree_export = copy.copy(tree)
         if metadata is False:  # remove metadata

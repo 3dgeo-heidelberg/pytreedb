@@ -264,7 +264,7 @@ class PyTreeDB:
         """Clear MongoDB collection"""
         self.mongodb_col.delete_many({})  # clear collection
 
-    def add_tree(self, tree):  # todo: add type annotations
+    def add_tree(self, tree: dict):  # todo: add type annotations
         """
         Add single tree object from dict
         :param tree:
@@ -286,11 +286,12 @@ class PyTreeDB:
             raise ValueError(f"File '{filenamepath}' is not a valid format for pytreedb."
                              f"See template in db_conf.py")
         # Add data
-        with open(filenamepath) as f_json:
+        with open(filenamepath, "r") as f_json:
             json_string = json.loads(f_json.read())
+            print(json_string)
             tree_dict = json_string.copy()
             tree_dict['_file'] = Path(filenamepath).name
-            self.add_tree(tree_dict)
+        self.add_tree(tree_dict)
 
     def get_db_file(self):
         """Return name/path to local file of DB"""
@@ -392,12 +393,13 @@ class PyTreeDB:
         res = self.mongodb_col.find({key: {"$gte": startdate, "$lte": enddate}}, {'_id': False})
         return [e for e in res]
 
-    def query_by_geometry(self, geom, distance: float = 0.0):
-        """Returns list of trees(dict) that are within a defined distance (in meters) from search geometry which is
+    def query_by_geometry(self, geom: TreeJSON, distance: float = 0.0) -> list[dict]:
+        """
+        Returns list of trees(dict) that are within a defined distance (in meters) from search geometry which is
         provided as GEOJSON dictionary or string; Geometry types Point and Polygon are supported, for example:
 
         {"type": "Point", "coordinates": (0.0, 0.0)}
-     
+
         { "type": "Polygon",
         "coordinates": [[[8.700980940620983, 49.012725603975355],
                          [8.700972890122355, 49.011695140150906],
@@ -405,11 +407,15 @@ class PyTreeDB:
                          [8.702310614644462, 49.012713528227415],
                          [8.702310614644462, 49.012713528227415],
                          [8.700980940620983, 49.012725603975355]]]}
-      
-    - Online help for geometries in MongoDB: 
+
+    - Online help for geometries in MongoDB:
         - https://docs.mongodb.com/manual/geospatial-queries/
-        - https://pymongo.readthedocs.io/en/stable/examples/geo.html  
-    """
+        - https://pymongo.readthedocs.io/en/stable/examples/geo.html
+
+        :param geom:
+        :param float distance: distance from search geometry in meters
+        :return:
+        """
         try:
             if isinstance(geom, str):
                 geom = json.loads(geom)
@@ -453,6 +459,7 @@ class PyTreeDB:
         """
         Returns original JSON(str) file content for a single tree
         :param dict tree: Dictionary describing a single tree in the database
+        :param dict tree: Dictionary describing a single tree in the database
         :param int indent: pretty-print with that given indent level
         :param bool metadata: include metadata in output JSON
         :return: JSON string of the tree object
@@ -476,8 +483,7 @@ class PyTreeDB:
         :rtype: bool
         """
         keys_template = list(flatten_json(json.loads(TEMPLATE_GEOJSON)).keys())
-        with open(json_file, "r") as infile:
-            keys_json = list(flatten_json(json.loads(infile).read()).keys())
+        keys_json = list(flatten_json(json.loads(open(json_file, 'r').read())).keys())
         fnd = 0
         for k in keys_template:
             if k in keys_json:
@@ -518,7 +524,7 @@ class PyTreeDB:
         one for general information, one for metrics.
         Optionally list of ids of trees to be exported can be provided. [] means that all will be exported
         returns list of file paths written
-        :param PathLike outdir: Path to output directory 
+        :param PathLike outdir: Path to output directory
         :param trees:
         :param filename_general: Name of the file, in which general tree info will be written
         :param filename_metrics: Name of the file, in which specific tree metrics per measurement will be written

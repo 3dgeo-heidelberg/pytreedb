@@ -7,7 +7,7 @@ import sys
 import urllib
 import urllib.request
 from pathlib import Path
-from typing import Union, TypeVar, NewType
+from typing import Union, TypeVar, NewType, TypedDict
 
 import numpy as np
 import pymongo
@@ -17,7 +17,8 @@ from dotenv import dotenv_values  # .env  for DB credentials
 from pytreedb.db_conf import TEMPLATE_GEOJSON, INDEX_FIELDS, INDEX_UNIQUE_FIELDS, INDEX_GEOM_SPHERE_FIELDS, \
     QUERY_SPECIES_FIELDNAME, QUERY_GEOMETRY
 # import own sub-modules
-from pytreedb.db_utils import flatten_json, download_extract_zip_tempdir, download_file_to_tempdir, write_list_to_csv, hash_file
+from pytreedb.db_utils import flatten_json, download_extract_zip_tempdir, download_file_to_tempdir, write_list_to_csv, \
+    hash_file
 from .__init__ import __version__
 
 PathLike = TypeVar("PathLike", str, os.PathLike, None)
@@ -29,6 +30,13 @@ def URL(s: str) -> _Url:
     if not s.startswith('https://') or s.startswith('http://'):
         raise TypeError(f"{s} is not a valid URL")
     return _Url(s)
+
+
+# very basic tree type; details checked with validate_json() function
+class TreeJSON(TypedDict):
+    type: str
+    properties: dict
+    geometry: dict
 
 
 class PyTreeDB:
@@ -285,25 +293,32 @@ class PyTreeDB:
             self.add_tree(tree_dict)
 
     def get_db_file(self):
-        """Returns name/path to local file of DB"""
+        """Return name/path to local file of DB"""
         return self.dbfile
 
     def del_db_file(self):
         """Delete associated local db file"""
         return os.remove(self.dbfile)
 
-    def get_stats(self):
+    def get_stats(self) -> dict:
+        """return basic database statistics: number of trees and number of species
+        :return: dictionary holding the database statistics
+        """
         self.stats["n_trees"] = len(self.db)
         self.stats["n_species"] = len(self.get_list_species())
         return self.stats
 
-    def get_list_species(self):
+    def get_list_species(self) -> list[str]:
         """Returns list of unique names of species stored in DB"""
         res = self.mongodb_col.distinct("properties.species")
         return list(res)
 
-    def get_shared_properties(self):  # this is currently not done in DB, but sequentially on list(dict).
-        """Returns all object.properties that are shared among all objects"""
+    def get_shared_properties(self) -> list[str]:  # this is currently not done in DB, but sequentially on list(dict).
+        """
+        Returns all object.properties that are shared among all objects
+        :return: list of shared properties
+        :rtype: list[str]
+        """
         try:
             setlist = [set(self.db[i]['properties'].keys()) for i in range(0, len(self.db))]
             return sorted(list(set.intersection(*setlist)))
@@ -331,6 +346,11 @@ class PyTreeDB:
         Returns trees (list) fulfilling the regex or exact matching of value for a given key
         (including nested path of key).
         Keys must written exactly the same, e.g. key = properties.species, value="Quercus *", regex=True
+
+        :param key:
+        :param value:
+        :param regex:
+        :return:
         """
         if regex is True:
             res = self.mongodb_col.find({key: {"$regex": value}}, {'_id': False})
@@ -406,8 +426,13 @@ class PyTreeDB:
 
         return [e for e in res]
 
-    def get_ids(self, trees) -> list:
-        """Returns ids(list) of trees(list)"""
+    def get_ids(self, trees: list) -> list[int]:
+        """
+        Returns ids of trees
+        :param trees: list of trees todo: more detail to type: list[str]/list[dict]/list[treeJSON]?
+        :return: list with IDs of trees
+        :rtype: list[int]
+        """
         try:
             return [k['_id_x'] for k in trees]
         except:
@@ -424,8 +449,15 @@ class PyTreeDB:
         return self.db
 
     @staticmethod
-    def get_tree_as_json(tree, indent=4, metadata: bool = False):
-        """Returns original JSON(str) file content for a single tree(dict)"""
+    def get_tree_as_json(tree: dict, indent: bool = 4, metadata: bool = False) -> TreeJSON:
+        """
+        Returns original JSON(str) file content for a single tree
+        :param dict tree: Dictionary describing a single tree in the database
+        :param int indent: pretty-print with that given indent level
+        :param bool metadata: include metadata in output JSON
+        :return: JSON string of the tree object
+        :rtype: TreeJSON
+        """
         tree_export = copy.copy(tree)
         if metadata is False:  # remove metadata
             # Remove all keys with leading "_": could also be done in loop but might be slower. hardcode for the minute.
@@ -435,13 +467,17 @@ class PyTreeDB:
         return json.dumps(tree_export, indent=indent)
 
     @staticmethod
-    def validate_json(json_file):
+    def validate_json(json_file: PathLike):
         """
         Checks if JSON is valid and compatible for import into pytreedb.
         Only mandatory fields and main structure are checked
+        :param json_file: path to json file
+        :return: Content of JSON file is valid or not
+        :rtype: bool
         """
         keys_template = list(flatten_json(json.loads(TEMPLATE_GEOJSON)).keys())
-        keys_json = list(flatten_json(json.loads(open(json_file, 'r').read())).keys())
+        with open(json_file, "r") as infile:
+            keys_json = list(flatten_json(json.loads(infile).read()).keys())
         fnd = 0
         for k in keys_template:
             if k in keys_json:
@@ -452,12 +488,15 @@ class PyTreeDB:
             return True  # valid
         return False  # not valid
 
-    def export_data(self, outdir, trees=None):
+    def export_data(self, outdir, trees=None) -> list[PathLike]:
         """
         Reverse of import_data():
         Creates single geojson files for each tree in DB and puts it in local directory
-        Optionally list of ids of trees to be exported can be provided. [] means that all will be exported
-        returns list of file paths written
+        Optionally list of ids of trees to be exported can be provided. None (default) means that all will be exported
+        :param PathLike outdir: Path to output directory
+        :param trees: todo
+        :return: List of file paths that have been written
+        :rtype: PathLike
         """
         if not os.path.exists(outdir):
             os.mkdir(outdir)
@@ -471,13 +510,20 @@ class PyTreeDB:
                 files_written.append(Path(json_filename))
         return files_written
 
-    def convert_to_csv(self, outdir, trees=None,
-                       filename_general='result_general.csv',
-                       filename_metrics='result_metrics.csv'):
-        """Exports trees to local csv files. Each export creates two separate csv files, 
+    def convert_to_csv(self, outdir: PathLike, trees=None,
+                       filename_general: str = 'result_general.csv',
+                       filename_metrics: str = 'result_metrics.csv') -> list[PathLike]:
+        """
+        Exports trees to local csv files. Each export creates two separate csv files,
         one for general information, one for metrics.
         Optionally list of ids of trees to be exported can be provided. [] means that all will be exported
         returns list of file paths written
+        :param PathLike outdir: Path to output directory 
+        :param trees:
+        :param filename_general: Name of the file, in which general tree info will be written
+        :param filename_metrics: Name of the file, in which specific tree metrics per measurement will be written
+        :return: List of file paths that have been written
+        :rtype: list[PathLike]
         """
         outdir = Path(outdir)
         csv_metrics = []
@@ -523,7 +569,7 @@ class PyTreeDB:
         csv_metrics.insert(0, metrics_header)
 
         output_files = []
-        if filename_general is not None: 
+        if filename_general is not None:
             output_files.append(write_list_to_csv(outdir / filename_general, csv_general))
         if filename_metrics is not None:
             output_files.append(write_list_to_csv(outdir / filename_metrics, csv_metrics))

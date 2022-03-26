@@ -16,10 +16,10 @@ def flatten_json(y):
     """
     The code recursively extracts values out of the object into a flattened dictionary.
     json_normalize can be applied to the output of flatten_object to produce a python dataframe
-       Source: https://towardsdatascience.com/flattening-json-objects-in-python-f5343c794b10
-       Example:
-           flat = flatten_json(sample_object2)
-           json_normalize(flat)
+    Source: https://towardsdatascience.com/flattening-json-objects-in-python-f5343c794b10
+    Example:
+        flat = flatten_json(sample_object2)
+        json_normalize(flat)
     """
     out = {}
 

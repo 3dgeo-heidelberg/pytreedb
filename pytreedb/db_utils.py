@@ -10,9 +10,10 @@ from operator import *
 import datetime
 from urllib.error import URLError
 import socket
+from ._types import PathLike, URL
 
 
-def flatten_json(y):
+def flatten_json(y: dict) -> dict:
     """
     The code recursively extracts values out of the object into a flattened dictionary.
     json_normalize can be applied to the output of flatten_object to produce a python dataframe
@@ -20,6 +21,8 @@ def flatten_json(y):
     Example:
         flat = flatten_json(sample_object2)
         json_normalize(flat)
+    :param dict y: A dictionary
+    :return: flattened dictionary
     """
     out = {}
 
@@ -43,6 +46,9 @@ def gen_dict_extract(key_, dict_):
     """
     Returns all values for the provided key in dict
     Source: https://stackoverflow.com/questions/9807634/find-all-occurrences-of-a-key-in-nested-dictionaries-and-lists
+    :param key_:
+    :param dict_:
+    :return:
     """
     if hasattr(dict_, 'items'):
         for k, v in dict_.items():
@@ -58,7 +64,13 @@ def gen_dict_extract(key_, dict_):
 
 
 def gen_dict_extract_regex(key_, dict_, regex_):
-    """ Returns all values for the provided key and a value search string provided as regular expression in dict """
+    """
+    Returns all values for the provided key and a value search string provided as regular expression in dict
+    :param key_:
+    :param dict_:
+    :param regex_:
+    :return:
+    """
     if hasattr(dict_, 'items'):
         for k, v in dict_.items():
             if v is None:
@@ -75,7 +87,13 @@ def gen_dict_extract_regex(key_, dict_, regex_):
 
 
 def gen_dict_extract_exact(key_, dict_, exact_):
-    """ Returns all values for the provided key and a exact comparison of value search string"""
+    """
+    Returns all values for the provided key and a exact comparison of value search string
+    :param key_:
+    :param dict_:
+    :param exact_:
+    :return:
+    """
     if hasattr(dict_, 'items'):
         for k, v in dict_.items():
             if k == key_ and v == exact_:
@@ -99,7 +117,13 @@ def gen_dict_extract_numeric_comp(key_, dict_, exact_, operator_):
         ne(a, b)
         ge(a, b)
         gt(a, b)
-   """
+
+    :param key_:
+    :param dict_:
+    :param exact_:
+    :param operator_:
+    :return:
+    """
 
     if hasattr(dict_, 'items'):
         for k, v in dict_.items():
@@ -117,6 +141,12 @@ def gen_dict_extract_numeric_comp(key_, dict_, exact_, operator_):
 def gen_dict_extract_date_comp(key_, dict_, date_, operator_):
     """
     Returns all values for the provided key and a comparison of the date provided as date object of datetime module
+
+    :param key_:
+    :param dict_:
+    :param date_:
+    :param operator_:
+    :return:
     """
 
     if hasattr(dict_, 'items'):
@@ -137,10 +167,13 @@ def gen_dict_extract_date_comp(key_, dict_, date_, operator_):
                         yield result
 
 
-def hash_file(filename):
+def hash_file(filename: PathLike) -> str:
     """
     This function returns the SHA-1 hash of the file passed into it
-    [source: https://www.programiz.com/python-programming/examples/hash-file}
+    [source: https://www.programiz.com/python-programming/examples/hash-file]
+    :param PathLike filename: Path to the file for which to return the SHA-1 hash
+    :return: SHA-1 hash
+    :rtype: str
     """
 
     # make a hash object
@@ -159,16 +192,20 @@ def hash_file(filename):
     return h.hexdigest()
 
 
-def download_extract_zip_tempdir(url):
-    """This function downloads a ZIP file and extracts it to a temporary directory
-    - Input: URL
-    - Return: full path to directory with extracted files """
-    # Todo: Add error handling: raise urllib.error.URLError if URL does not exist?
+def download_extract_zip_tempdir(url: URL) -> PathLike:
+    """
+    This function downloads a ZIP file and extracts it to a temporary directory
+
+    :param URL url: URL to zip file
+    :return: full path to directory with extracted files
+    :rtype: PathLike
+
+    """
     zip_temp_file = tempfile.NamedTemporaryFile().name
     zip_temp_dir = tempfile.TemporaryDirectory().name
     ssl._create_default_https_context = ssl._create_unverified_context
     try:
-        urllib.request.urlretrieve(url,  zip_temp_file)
+        urllib.request.urlretrieve(url, zip_temp_file)
     except (socket.gaierror, urllib.error.URLError) as err:
         raise ConnectionError(
             f"could not download {url} due to {err}\n"
@@ -184,21 +221,29 @@ def download_extract_zip_tempdir(url):
     return zip_temp_dir
 
 
-def download_file_to_tempdir(url):
-    """This function downloads a  file and puts it to a temporary directory
-    - Input: URL
-    - Return: full path to file """
+def download_file_to_tempdir(url: URL):
+    """
+    This function downloads a file and puts it to a temporary directory
+
+    :param URL url: URL fo the file to download
+    :return: full path to temporary directory
+    :rtype: PathLike
+
+    """
     temp_file = tempfile.NamedTemporaryFile().name
     ssl._create_default_https_context = ssl._create_unverified_context
     urllib.request.urlretrieve(url, temp_file)
     return temp_file
 
 
-def query_yes_no(question, default="yes"):
-    """Ask a yes/no question via raw_input() and return their answer.
-    - question: String is the query that's shown to the user in shell
-    - default:String is the presumed answer if the user just hits <Enter>
-    The return value is True for "yes" or False for "no".
+def query_yes_no(question: str, default: str = "yes"):
+    """
+    Ask a yes/no question via raw_input() and return their answer.
+
+    :param str question: query that's shown to the user in shell
+    :param str default: presumed answer if the user just hits <Enter>
+    :return: True for "yes" or False for "no"
+
     """
     valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
     prompt = " [Y/n] "
@@ -214,13 +259,22 @@ def query_yes_no(question, default="yes"):
             sys.stdout.write("Please respond with 'yes' or 'no' " "(or 'y' or 'n').\n")
 
 
-def write_list_to_csv(outfile_name, content_list, none_str=''):
-    """ Write 2D list to CSV file. """
+def write_list_to_csv(outfile_name: str, content_list: list, none_str: str = '') -> str:
+    """
+    Write 2D list to CSV file.
+
+    :param str outfile_name: Name of the output file
+    :param list content_list: List to write to CSV
+    :param none_str: String to write for NaN values
+    :return: Name of output file
+    :rtype: str
+
+    """
     try:
         with open(outfile_name, "w") as f:
             for row in content_list:
                 f.write("%s\n" % ','.join(none_str if col is None else str(col) for col in row))
         return outfile_name
     except:
-        print("Could not write CSV file {}. Check path and file write permissions.".format(outfile_name))
+        print(f"Could not write CSV file {outfile_name}. Check path and file write permissions.")
         return None

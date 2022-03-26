@@ -7,7 +7,7 @@ import sys
 import urllib
 import urllib.request
 from pathlib import Path
-from typing import Union, TypeVar, NewType, TypedDict
+from typing import Union, TypeVar, NewType
 
 import numpy as np
 import pymongo
@@ -20,20 +20,7 @@ from pytreedb.db_conf import TEMPLATE_GEOJSON, INDEX_FIELDS, INDEX_UNIQUE_FIELDS
 from pytreedb.db_utils import flatten_json, download_extract_zip_tempdir, download_file_to_tempdir, write_list_to_csv, \
     hash_file
 from .__init__ import __version__
-
-PathLike = TypeVar("PathLike", str, os.PathLike, None)
-
-JSONString = NewType("JSONString", str)
-DateString = NewType("DateString", str)
-
-_Url = NewType('_Url', str)
-
-
-def URL(s: str) -> _Url:
-    if not s.startswith('https://') or s.startswith('http://'):
-        raise TypeError(f"{s} is not a valid URL")
-    return _Url(s)
-
+from ._types import PathLike, JSONString, DateString, URL
 
 class PyTreeDB:
     """ This class is the starting point and the core component of pytreedb
@@ -299,7 +286,6 @@ class PyTreeDB:
         # Add data
         with open(filenamepath, "r") as f_json:
             json_string = json.loads(f_json.read())
-            print(json_string)
             tree_dict = json_string.copy()
             tree_dict['_file'] = Path(filenamepath).name
         self.add_tree(tree_dict)
@@ -389,7 +375,7 @@ class PyTreeDB:
     def query_by_key_exists(self, key: str) -> list[dict]:
         """
         Returns trees having a given key defined inside dict (no matter which value)
-        
+
         :param str key: Key which has to exist in dictionary
         :return: list of trees (tree dictionaries) fulfilling the query
         :rtype: list[dict]

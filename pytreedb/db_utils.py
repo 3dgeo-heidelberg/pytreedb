@@ -171,7 +171,8 @@ def download_extract_zip_tempdir(url):
         urllib.request.urlretrieve(url,  zip_temp_file)
     except (socket.gaierror, urllib.error.URLError) as err:
         raise ConnectionError(
-            f"could not download {url} due to {err}"
+            f"could not download {url} due to {err}\n"
+            f"The URL you provided might be corrupt."
         )
     # unzip dataset
     try:

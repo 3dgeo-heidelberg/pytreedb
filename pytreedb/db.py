@@ -32,13 +32,6 @@ def URL(s: str) -> _Url:
     return _Url(s)
 
 
-# very basic tree type; details checked with validate_json() function
-class TreeJSON(TypedDict):
-    type: str
-    properties: dict
-    geometry: dict
-
-
 class PyTreeDB:
     """ This class is the starting point and the core component of pytreedb
 
@@ -264,7 +257,7 @@ class PyTreeDB:
         """Clear MongoDB collection"""
         self.mongodb_col.delete_many({})  # clear collection
 
-    def add_tree(self, tree: dict):  # todo: add type annotations
+    def add_tree(self, tree: dict):
         """
         Add single tree object from dict
         :param tree:
@@ -393,7 +386,7 @@ class PyTreeDB:
         res = self.mongodb_col.find({key: {"$gte": startdate, "$lte": enddate}}, {'_id': False})
         return [e for e in res]
 
-    def query_by_geometry(self, geom: TreeJSON, distance: float = 0.0) -> list[dict]:
+    def query_by_geometry(self, geom: str, distance: float = 0.0) -> list[dict]:
         """
         Returns list of trees(dict) that are within a defined distance (in meters) from search geometry which is
         provided as GEOJSON dictionary or string; Geometry types Point and Polygon are supported, for example:
@@ -412,9 +405,10 @@ class PyTreeDB:
         - https://docs.mongodb.com/manual/geospatial-queries/
         - https://pymongo.readthedocs.io/en/stable/examples/geo.html
 
-        :param geom:
+        :param str geom: json string representing a geometry todo add custom type?
         :param float distance: distance from search geometry in meters
-        :return:
+        :return: list of trees
+        :rtype: list[dict]
         """
         try:
             if isinstance(geom, str):
@@ -435,7 +429,7 @@ class PyTreeDB:
     def get_ids(self, trees: list) -> list[int]:
         """
         Returns ids of trees
-        :param trees: list of trees todo: more detail to type: list[str]/list[dict]/list[treeJSON]?
+        :param trees: list of trees todo: more detail to type: list[str]/list[dict]/custom type?
         :return: list with IDs of trees
         :rtype: list[int]
         """
@@ -455,7 +449,7 @@ class PyTreeDB:
         return self.db
 
     @staticmethod
-    def get_tree_as_json(tree: dict, indent: bool = 4, metadata: bool = False) -> TreeJSON:
+    def get_tree_as_json(tree: dict, indent: bool = 4, metadata: bool = False) -> str:  # todo: custom type for json string?
         """
         Returns original JSON(str) file content for a single tree
         :param dict tree: Dictionary describing a single tree in the database
@@ -463,7 +457,7 @@ class PyTreeDB:
         :param int indent: pretty-print with that given indent level
         :param bool metadata: include metadata in output JSON
         :return: JSON string of the tree object
-        :rtype: TreeJSON
+        :rtype: str
         """
         tree_export = copy.copy(tree)
         if metadata is False:  # remove metadata

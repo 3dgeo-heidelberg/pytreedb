@@ -266,9 +266,32 @@ def test_query_logical(mydb, filter_dict, n_expected):
 
     assert len(mydb.query(filter_dict)) == n_expected
 
+
+def test_query_by_key_exists():
+    pass
+
+
+def test_query_by_species_regex():
+    pass
+
+
+def test_query_by_key_value():
+    pass
+
+
+def test_query_by_date():
+    pass
+
+
+def test_query_by_geometry():
+    pass
+
+
+def test_get_ids_query_res():
+    pass
+
+
 # clear()
-# import_data()
-# import_db()
 
 # query
 

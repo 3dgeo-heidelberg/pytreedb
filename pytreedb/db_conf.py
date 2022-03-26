@@ -1,22 +1,31 @@
-#This file contains format specifications and related database field configurations. In case the geojson format and the fields to be queried are changed, this needs to be specified here.
-######################################################################################
+"""
+This file contains format specifications and related database field configurations.
+In case the geojson format and the fields to be queried are changed, this needs to be specified here.
+"""
 
 import pymongo
 
-#INDICES: Define queries and MongoDB indices here
-#https://pymongo.readthedocs.io/en/stable/api/pymongo/collection.html#pymongo.collection.Collection.create_index
+# INDICES: Define queries and MongoDB indices here
+# https://pymongo.readthedocs.io/en/stable/api/pymongo/collection.html#pymongo.collection.Collection.create_index
 # Examples:
 #   - Single field: [ ("species",1)]
 #   - Compound idx: [("properties.species",1), ("properties.data.mode",1)]
-INDEX_FIELDS = [[ ("species",1)], [("properties.data.mode",1)], [("properties.data.date",1)], [("properties.data.canopy_condition",1)], [("properties.data.quality",1)], [ ("properties.species",1)], [("properties.species",1), ("properties.data.mode",1)]]
-INDEX_UNIQUE_FIELDS =  [] #[[("properties.id",1)]]
-INDEX_GEOM_SPHERE_FIELDS =  [("geometry", pymongo.GEOSPHERE)]
+INDEX_FIELDS = [[("species", 1)],
+                [("properties.data.mode", 1)],
+                [("properties.data.date", 1)],
+                [("properties.data.canopy_condition", 1)],
+                [("properties.data.quality", 1)],
+                [("properties.species", 1)],
+                [("properties.species", 1),
+                 ("properties.data.mode", 1)]]
+INDEX_UNIQUE_FIELDS = []  # [[("properties.id", 1)]]
+INDEX_GEOM_SPHERE_FIELDS = [("geometry", pymongo.GEOSPHERE)]
 
-#QUERY FIELDS
-QUERY_SPECIES_FIELDNAME =  "properties.species"
+# QUERY FIELDS
+QUERY_SPECIES_FIELDNAME = "properties.species"
 QUERY_GEOMETRY = "geometry"
 
-#GEOJSON Format Specification: Minimal format of input geojson. This variable is used to validate the input format
+# GEOJSON Format Specification: Minimal format of input geojson. This variable is used to validate the input format
 TEMPLATE_GEOJSON = """{
     "type": "Feature",
     "properties": {
@@ -56,4 +65,3 @@ TEMPLATE_GEOJSON = """{
         ]
     }   
 }"""
-

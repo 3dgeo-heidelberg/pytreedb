@@ -21,6 +21,7 @@ from pytreedb.db_utils import flatten_json, download_extract_zip_tempdir, downlo
 from .__init__ import __version__
 
 PathLike = TypeVar("PathLike", str, os.PathLike, None)
+
 _Url = NewType('_Url', str)
 
 
@@ -33,7 +34,7 @@ def URL(s: str) -> _Url:
 class PyTreeDB:
     """ This class is the starting point and the core component of pytreedb
 
-    :ivar Union[str, Path] dbfile: local file holding self.db
+    :ivar PathLike dbfile: local file holding self.db
     :ivar dict mongodb: dict holding mongodb connection infos
     :ivar list db: list of dictionaries (single dicts equal json files)
     :ivar str data: path to input data imported with import (path of last import)
@@ -43,11 +44,10 @@ class PyTreeDB:
     """
 
     def __init__(self, dbfile: PathLike, mongodb: dict = None):
-
         """ This function initializes a class object
 
-        :param Union[str, Path] dbfile: local file holding self.db
-        :param dict mongodb: dict holding mongodb connection infos
+        :param PathLike dbfile: local file holding self.db
+        :param dict mongodb: dictionary holding mongodb connection infos
 
         """
 
@@ -135,7 +135,7 @@ class PyTreeDB:
         except:
             raise Exception(f"Could not write db file {dbfile}. Path or permissions might be missing.")
 
-    def load(self, dbfile, sync: bool = True):
+    def load(self, dbfile: PathLike, sync: bool = True):
         """Loads existing compressed serialized version of database.
 
         :param str dbfile: data base file which should be loaded
@@ -159,8 +159,8 @@ class PyTreeDB:
     def import_data(self, path: Union[PathLike, URL], overwrite: bool = False):
         """Read data (json files) from local file or from URL of ZIP archive with files named like *.*json.
 
-        :param bool overwrite:
         :param str path: path to input folder or URL of ZIP archive
+        :param bool overwrite: Overwrite current data in database (clears database and then adds data)
         :raises FileNotFoundError: in case file is not found
         :raises: exception in case the input file cannot be read
         :return: number of added trees
@@ -190,8 +190,14 @@ class PyTreeDB:
         self.save(self.dbfile, sync=True)
         return cnt
 
-    def import_db(self, path, overwrite: bool = False):
-        """Read data from local db file or from URL. Returns number of trees added"""
+    def import_db(self, path: PathLike, overwrite: bool = False):
+        """
+        Read data from local db file or from URL. Returns number of trees added
+
+        :param PathLike path: local database file or URL
+        :param bool overwrite: Overwrite current data in database (clears database and then adds data)
+        :return:
+        """
         if overwrite is True:
             self.clear()  # empty db
 
@@ -217,8 +223,7 @@ class PyTreeDB:
         return cnt
 
     def mongodb_create_indexes(self):
-        # print("Create MongoDB indexes.")
-        # Create indices on fields
+        """Create indices on fields"""
         try:
             for idx in INDEX_FIELDS:
                 # TODO: Local variable "resp" not used, call function without "resp = "?
@@ -231,10 +236,15 @@ class PyTreeDB:
             print(f"Could not create index: {idx} defined in db_conf.py")
 
     def mongodb_drop_indexes(self):
-        # print("Dropping all MongoDB indexes.")
-        self.mongodb_col.drop_indexes()  # drop all existing indices
+        """Drop all existing indices"""
+        self.mongodb_col.drop_indexes()
 
-    def mongodb_synchronize(self, clear: bool = True):
+    def mongodb_synchronize(self, clear: bool = True):  # todo: add type for return
+        """
+        Bulk import into MongoDB
+        :param bool clear: Clear MongoDB collection first
+        :return: #todo
+        """
         # Bulk import into Mongodb
         if clear is True:  # empty collection first
             self.mongodb_clear_col()
@@ -243,30 +253,36 @@ class PyTreeDB:
         return result
 
     def mongodb_clear_col(self):
-        # print("Clear MongoDB collection.")
+        """Clear MongoDB collection"""
         self.mongodb_col.delete_many({})  # clear collection
 
-    def add_tree(self, tree):
-        """Add single tree object from dict"""
+    def add_tree(self, tree):  # todo: add type annotations
+        """
+        Add single tree object from dict
+        :param tree:
+        :return:
+        """
         tree_dict = tree.copy()
         # Add meta data 
         tree_dict['_id_x'] = len(self.db)  # store id (increment) for faster operations on result sets
         tree_dict['_date'] = datetime.datetime.now().isoformat()  # Get insertion date
         self.db.append(tree_dict)  # add to list
 
-    def add_tree_file(self, filenamepath):
-        """Add single tree object from JSON file to db and add meta info"""
+    def add_tree_file(self, filenamepath: PathLike):
+        """
+        Add single tree object from JSON file to db and add meta info
+        :param filenamepath: path to JSON file
+        """
         # Validate input file first
         if self.validate_json(filenamepath) is False:
-            print(f"File '{filenamepath}' is not a valid format for pydtreedb. See template in treedb_format.py")
-            return
+            raise ValueError(f"File '{filenamepath}' is not a valid format for pytreedb."
+                             f"See template in db_conf.py")
         # Add data
-        f_json = open(filenamepath)  # open input file
-        json_string = json.loads(f_json.read())
-        tree_dict = json_string.copy()
-        tree_dict['_file'] = Path(filenamepath).name
-        self.add_tree(tree_dict)
-        f_json.close()  # close input file
+        with open(filenamepath) as f_json:
+            json_string = json.loads(f_json.read())
+            tree_dict = json_string.copy()
+            tree_dict['_file'] = Path(filenamepath).name
+            self.add_tree(tree_dict)
 
     def get_db_file(self):
         """Returns name/path to local file of DB"""

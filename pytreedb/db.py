@@ -7,7 +7,7 @@ import sys
 import urllib
 import urllib.request
 from pathlib import Path
-from typing import Union, TypeVar, NewType
+from typing import Union
 
 import numpy as np
 import pymongo
@@ -21,6 +21,7 @@ from pytreedb.db_utils import flatten_json, download_extract_zip_tempdir, downlo
     hash_file
 from .__init__ import __version__
 from ._types import PathLike, JSONString, DateString, URL
+
 
 class PyTreeDB:
     """ This class is the starting point and the core component of pytreedb

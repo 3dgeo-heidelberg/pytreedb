@@ -10,7 +10,8 @@ from operator import *
 import datetime
 from urllib.error import URLError
 import socket
-from ._types import PathLike, URL
+from ._types import PathLike, URL, DateString
+from typing import Iterator
 
 
 def flatten_json(y: dict) -> dict:
@@ -42,12 +43,12 @@ def flatten_json(y: dict) -> dict:
     return out
 
 
-def gen_dict_extract(key_, dict_):
+def gen_dict_extract(key_: str, dict_: dict) -> Iterator:
     """
     Returns all values for the provided key in dict
     Source: https://stackoverflow.com/questions/9807634/find-all-occurrences-of-a-key-in-nested-dictionaries-and-lists
-    :param key_:
-    :param dict_:
+    :param str key_:
+    :param dict dict_:
     :return:
     """
     if hasattr(dict_, 'items'):
@@ -63,12 +64,12 @@ def gen_dict_extract(key_, dict_):
                         yield result
 
 
-def gen_dict_extract_regex(key_, dict_, regex_):
+def gen_dict_extract_regex(key_: str, dict_: dict, regex_: str) -> Iterator:
     """
     Returns all values for the provided key and a value search string provided as regular expression in dict
-    :param key_:
-    :param dict_:
-    :param regex_:
+    :param str key_:
+    :param dict dict_:
+    :param str regex_:
     :return:
     """
     if hasattr(dict_, 'items'):
@@ -86,12 +87,12 @@ def gen_dict_extract_regex(key_, dict_, regex_):
                         yield result
 
 
-def gen_dict_extract_exact(key_, dict_, exact_):
+def gen_dict_extract_exact(key_: str, dict_: dict, exact_: str) -> Iterator:
     """
     Returns all values for the provided key and a exact comparison of value search string
-    :param key_:
-    :param dict_:
-    :param exact_:
+    :param str key_:
+    :param dict dict_:
+    :param str exact_:
     :return:
     """
     if hasattr(dict_, 'items'):
@@ -107,7 +108,7 @@ def gen_dict_extract_exact(key_, dict_, exact_):
                         yield result
 
 
-def gen_dict_extract_numeric_comp(key_, dict_, exact_, operator_):
+def gen_dict_extract_numeric_comp(key_: str, dict_: dict, exact_: str, operator_: str) -> Iterator:
     """
     Returns all values for the provided key and a comparison of the numeric value
     Possible operators (see: ): https://docs.python.org/3.9/library/operator.html
@@ -118,10 +119,10 @@ def gen_dict_extract_numeric_comp(key_, dict_, exact_, operator_):
         ge(a, b)
         gt(a, b)
 
-    :param key_:
-    :param dict_:
-    :param exact_:
-    :param operator_:
+    :param str key_:
+    :param dict dict_:
+    :param str exact_:
+    :param str operator_:
     :return:
     """
 
@@ -138,14 +139,14 @@ def gen_dict_extract_numeric_comp(key_, dict_, exact_, operator_):
                         yield result
 
 
-def gen_dict_extract_date_comp(key_, dict_, date_, operator_):
+def gen_dict_extract_date_comp(key_: str, dict_: dict, date_: DateString, operator_: str) -> Iterator:
     """
     Returns all values for the provided key and a comparison of the date provided as date object of datetime module
 
-    :param key_:
-    :param dict_:
-    :param date_:
-    :param operator_:
+    :param str key_:
+    :param dict dict_:
+    :param DateString date_:
+    :param str operator_:
     :return:
     """
 
@@ -221,7 +222,7 @@ def download_extract_zip_tempdir(url: URL) -> PathLike:
     return zip_temp_dir
 
 
-def download_file_to_tempdir(url: URL):
+def download_file_to_tempdir(url: URL) -> PathLike:
     """
     This function downloads a file and puts it to a temporary directory
 
@@ -236,13 +237,14 @@ def download_file_to_tempdir(url: URL):
     return temp_file
 
 
-def query_yes_no(question: str, default: str = "yes"):
+def query_yes_no(question: str, default: str = "yes") -> bool:
     """
     Ask a yes/no question via raw_input() and return their answer.
 
     :param str question: query that's shown to the user in shell
     :param str default: presumed answer if the user just hits <Enter>
     :return: True for "yes" or False for "no"
+    :rtype: bool
 
     """
     valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}

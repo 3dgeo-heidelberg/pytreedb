@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 import pytreedb.db_utils
 import tempfile
+import zipfile
 
 load_dotenv()
 conn_uri = os.environ.get("CONN_URI")
@@ -30,7 +31,7 @@ root_path = str(Path(__file__).parent.parent.parent)
 #     my_dbfile.close()
 
 
-# function-scope fixture - maybe moduel-scope (see above) would be better, but then necessary to carefully handle
+# function-scope fixture - maybe module-scope (see above) would be better, but then necessary to carefully handle
 # importing data/overwriting..
 # could think about several of these fixture, each loading a different test dataset..
 @pytest.fixture()
@@ -55,7 +56,7 @@ def test_import_data(mydb, data_path, n_trees_expected):
 
 
 @pytest.mark.imports
-def test_import_data_wrong_local_path(mydb):
+def test_import_data_wrong_path(mydb):
     """Tests importing data from a corrupt local path"""
     # given
     my_corrupt_path = "corrupt/path/to/folder"
@@ -64,6 +65,30 @@ def test_import_data_wrong_local_path(mydb):
     with pytest.raises(FileNotFoundError) as e:
         mydb.import_data(my_corrupt_path)
     assert e.type is FileNotFoundError
+
+
+@pytest.mark.imports
+def test_import_data_wrong_url(mydb):
+    """Tests importing data from a corrupt URL"""
+    # given
+    my_corrupt_url = "https://heiboxx.uni-heideberg.de/f/05969694cbed4c41bcb8/?dl=1"
+
+    # Check if raises error
+    with pytest.raises(ConnectionError) as e:
+        mydb.import_data(my_corrupt_url)
+    assert e.type is ConnectionError
+
+
+@pytest.mark.imports
+def test_import_data_not_a_zip(mydb):
+    """Tests importing data from a URL which does not download a zip folder"""
+    # given
+    my_problematic_url = "https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/"
+
+    # Check if raises error
+    with pytest.raises(zipfile.BadZipFile) as e:
+        mydb.import_data(my_problematic_url)
+    assert e.type is zipfile.BadZipFile
 
 
 @pytest.mark.export
@@ -241,9 +266,32 @@ def test_query_logical(mydb, filter_dict, n_expected):
 
     assert len(mydb.query(filter_dict)) == n_expected
 
+
+def test_query_by_key_exists():
+    pass
+
+
+def test_query_by_species_regex():
+    pass
+
+
+def test_query_by_key_value():
+    pass
+
+
+def test_query_by_date():
+    pass
+
+
+def test_query_by_geometry():
+    pass
+
+
+def test_get_ids_query_res():
+    pass
+
+
 # clear()
-# import_data()
-# import_db()
 
 # query
 

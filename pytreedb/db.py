@@ -17,14 +17,16 @@ from dotenv import dotenv_values  # .env  for DB credentials
 from pytreedb.db_conf import TEMPLATE_GEOJSON, INDEX_FIELDS, INDEX_UNIQUE_FIELDS, INDEX_GEOM_SPHERE_FIELDS, \
     QUERY_SPECIES_FIELDNAME, QUERY_GEOMETRY
 # import own sub-modules
-from pytreedb.db_utils import flatten_json, download_extract_zip_tempdir, download_file_to_tempdir, write_list_to_csv, hash_file
+from pytreedb.db_utils import flatten_json, download_extract_zip_tempdir, download_file_to_tempdir, write_list_to_csv, \
+    hash_file
 from .__init__ import __version__
+from ._types import PathLike, JSONString, DateString, URL
 
 
 class PyTreeDB:
     """ This class is the starting point and the core component of pytreedb
 
-    :ivar Union[str, Path] dbfile: local file holding self.db
+    :ivar PathLike dbfile: local file holding self.db
     :ivar dict mongodb: dict holding mongodb connection infos
     :ivar list db: list of dictionaries (single dicts equal json files)
     :ivar str data: path to input data imported with import (path of last import)
@@ -33,12 +35,11 @@ class PyTreeDB:
 
     """
 
-    def __init__(self, dbfile: Union[str, Path], mongodb=None):
-
+    def __init__(self, dbfile: PathLike, mongodb: dict = None):
         """ This function initializes a class object
 
-        :param Union[str, Path] dbfile: local file holding self.db
-        :param dict mongodb: dict holding mongodb connection infos
+        :param PathLike dbfile: local file holding self.db
+        :param dict mongodb: dictionary holding mongodb connection infos
 
         """
 
@@ -74,8 +75,16 @@ class PyTreeDB:
             # raise
             sys.exit()
 
-    def __getitem__(self, item):
-        """Allow index(int) subscription on the database, list(int) and slicing access with int"""
+    def __getitem__(self, item: Union[int, list, slice, np.ndarray]) -> Union[dict, list[dict]]:
+        """
+        Allow index(int) subscription on the database, list(int) and slicing access with int
+
+        :param item: Tree index or list/array/slice of tree indices
+        :type item: int or list or slice or np.ndarray
+        :return: tree or list of trees (tree dictionaries)
+        :rtype dict or list[dict]
+
+        """
         if isinstance(item, int):
             """Returns single tree(dict)"""
             return self.db[item]
@@ -107,8 +116,14 @@ class PyTreeDB:
         raise Exception(
             "Copying of PyTreeDb object is not yet safe. Lifehack: Make a new database and import the other db.")
 
-    def save(self, dbfile=None, sync=False):
-        """Saves database to compressed serialized version as local file."""
+    def save(self, dbfile: PathLike = None, sync: bool = False):
+        """
+        Saves database to compressed serialized version as local file.
+
+        :param dbfile: local file path, where the database should be saved
+        :param bool sync: synchronize MongoDB immediately after saving (clears MongoDB first)
+
+        """
         if dbfile is None:
             dbfile = self.dbfile  # if no filename is given as arg - just overwrite existing file in self.dbfile
         try:
@@ -120,10 +135,10 @@ class PyTreeDB:
         except:
             raise Exception(f"Could not write db file {dbfile}. Path or permissions might be missing.")
 
-    def load(self, dbfile, sync=True):
+    def load(self, dbfile: PathLike, sync: bool = True):
         """Loads existing compressed serialized version of database.
 
-        :param str dbfile: data base file
+        :param str dbfile: data base file which should be loaded
         :param bool sync: synchronize MongoDB immediately after loading (clears MongoDB first)
 
         """
@@ -141,13 +156,15 @@ class PyTreeDB:
         self.__init__(self.dbfile, self.mongodb)
         self.mongodb_clear_col()
 
-    def import_data(self, path, overwrite=False):
-        """Read data (json files) from local file or from URL of ZIP archive with files named like *.*json.
+    def import_data(self, path: Union[PathLike, URL], overwrite: bool = False):
+        """
+        Read data (json files) from local file or from URL of ZIP archive with files named like *.*json.
 
-        :param str path: path to input file
+        :param str path: path to input folder or URL of ZIP archive
+        :param bool overwrite: Overwrite current data in database (clears database and then adds data)
         :raises FileNotFoundError: in case file is not found
-        :raises: exception in case the input file cannot be read
-        :return: number of added trees
+        :raises Exception: in case the input file cannot be read
+        :return: Number of trees added to database
         :rtype: int
 
         """
@@ -174,8 +191,16 @@ class PyTreeDB:
         self.save(self.dbfile, sync=True)
         return cnt
 
-    def import_db(self, path, overwrite=False):
-        """Read data from local db file or from URL. Returns number of trees added"""
+    def import_db(self, path: PathLike, overwrite: bool = False) -> int:
+        """
+        Read data from local db file or from URL. Returns number of trees added
+
+        :param PathLike path: local database file or URL
+        :param bool overwrite: Overwrite current data in database (clears database and then adds data)
+        :return: Number of trees added to database
+        :rtype: int
+
+        """
         if overwrite is True:
             self.clear()  # empty db
 
@@ -201,8 +226,7 @@ class PyTreeDB:
         return cnt
 
     def mongodb_create_indexes(self):
-        # print("Create MongoDB indexes.")
-        # Create indices on fields
+        """Create indices on fields"""
         try:
             for idx in INDEX_FIELDS:
                 # TODO: Local variable "resp" not used, call function without "resp = "?
@@ -215,10 +239,16 @@ class PyTreeDB:
             print(f"Could not create index: {idx} defined in db_conf.py")
 
     def mongodb_drop_indexes(self):
-        # print("Dropping all MongoDB indexes.")
-        self.mongodb_col.drop_indexes()  # drop all existing indices
+        """Drop all existing indices"""
+        self.mongodb_col.drop_indexes()
 
-    def mongodb_synchronize(self, clear=True):
+    def mongodb_synchronize(self, clear: bool = True):  # todo: add type for return
+        """
+        Bulk import into MongoDB
+        :param bool clear: Clear MongoDB collection first
+        :return: #todo
+
+        """
         # Bulk import into Mongodb
         if clear is True:  # empty collection first
             self.mongodb_clear_col()
@@ -227,51 +257,78 @@ class PyTreeDB:
         return result
 
     def mongodb_clear_col(self):
-        # print("Clear MongoDB collection.")
+        """Clear MongoDB collection"""
         self.mongodb_col.delete_many({})  # clear collection
 
-    def add_tree(self, tree):
-        """Add single tree object from dict"""
+    def add_tree(self, tree: dict):
+        """
+        Add single tree object from dict
+
+        :param dict tree: tree dictionary
+
+        """
         tree_dict = tree.copy()
         # Add meta data 
         tree_dict['_id_x'] = len(self.db)  # store id (increment) for faster operations on result sets
         tree_dict['_date'] = datetime.datetime.now().isoformat()  # Get insertion date
         self.db.append(tree_dict)  # add to list
 
-    def add_tree_file(self, filenamepath):
-        """Add single tree object from JSON file to db and add meta info"""
+    def add_tree_file(self, filenamepath: PathLike):
+        """
+        Add single tree object from JSON file to db and add meta info
+
+        :param filenamepath: path to JSON file
+
+        """
         # Validate input file first
         if self.validate_json(filenamepath) is False:
-            print(f"File '{filenamepath}' is not a valid format for pydtreedb. See template in treedb_format.py")
-            return
+            raise ValueError(f"File '{filenamepath}' is not a valid format for pytreedb."
+                             f"See template in db_conf.py")
         # Add data
-        f_json = open(filenamepath)  # open input file
-        json_string = json.loads(f_json.read())
-        tree_dict = json_string.copy()
-        tree_dict['_file'] = Path(filenamepath).name
+        with open(filenamepath, "r") as f_json:
+            json_string = json.loads(f_json.read())
+            tree_dict = json_string.copy()
+            tree_dict['_file'] = Path(filenamepath).name
         self.add_tree(tree_dict)
-        f_json.close()  # close input file
 
     def get_db_file(self):
-        """Returns name/path to local file of DB"""
+        """Return name/path to local file of DB"""
         return self.dbfile
 
     def del_db_file(self):
         """Delete associated local db file"""
         return os.remove(self.dbfile)
 
-    def get_stats(self):
+    def get_stats(self) -> dict:
+        """return basic database statistics: number of trees and number of species
+
+        :return: dictionary holding the database statistics
+        :rtype: dict
+
+        """
         self.stats["n_trees"] = len(self.db)
         self.stats["n_species"] = len(self.get_list_species())
         return self.stats
 
-    def get_list_species(self):
-        """Returns list of unique names of species stored in DB"""
+    def get_list_species(self) -> list[str]:
+        """
+        Get list of unique names of species stored in DB
+
+        :return: List of tree species
+        :rtype: list[str]
+
+        """
         res = self.mongodb_col.distinct("properties.species")
         return list(res)
 
-    def get_shared_properties(self):  # this is currently not done in DB, but sequentially on list(dict).
-        """Returns all object.properties that are shared among all objects"""
+    def get_shared_properties(self) -> list[str]:  # this is currently not done in DB, but sequentially on list(dict).
+        """
+        Returns all object.properties that are shared among all objects
+
+        :return: list of shared properties
+        :rtype: list[str]
+
+        """
         try:
             setlist = [set(self.db[i]['properties'].keys()) for i in range(0, len(self.db))]
             return sorted(list(set.intersection(*setlist)))
@@ -279,13 +336,17 @@ class PyTreeDB:
         except Exception as ex:
             return []
 
-    def query(self, *args, **kwargs):
+    def query(self, *args, **kwargs) -> list[dict]:
         """
         General MongDB query forwarding: Returns trees (list of dict) fulfilling the arguments.
-            Returns list of dict (=trees)
-          - Example: filter = {"properties.species": "Abies alba"}   
-          - Query ops: https://docs.mongodb.com/manual/reference/operator/query/ 
+        Returns list of dict (=trees)
+          - Example: filter = {"properties.species": "Abies alba"}
+          - Query ops: https://docs.mongodb.com/manual/reference/operator/query/
           - e.g. AND: https://docs.mongodb.com/manual/reference/operator/query/and/#mongodb-query-op.-and
+
+        :return: list of trees (tree dictionaries) fulfilling the query
+        :rtype: list[dict]
+
         """
         try:
             res = self.mongodb_col.find(*args, **kwargs)
@@ -294,11 +355,17 @@ class PyTreeDB:
             print(ex)
             return []
 
-    def query_by_key_value(self, key, value, regex=True):
+    def query_by_key_value(self, key: str, value: str, regex: bool = True):
         """
         Returns trees (list) fulfilling the regex or exact matching of value for a given key
         (including nested path of key).
         Keys must written exactly the same, e.g. key = properties.species, value="Quercus *", regex=True
+
+        :param str key: Key in the dictionary to use in the query
+        :param str value: Value that the key must have
+        :param bool regex: whether the value is a regex or not
+        :return: list of trees (tree dictionaries) fulfilling the query
+        :rtype: list[dict]
         """
         if regex is True:
             res = self.mongodb_col.find({key: {"$regex": value}}, {'_id': False})
@@ -306,27 +373,46 @@ class PyTreeDB:
             res = self.mongodb_col.find({key: value}, {'_id': False})
         return [e for e in res]
 
-    def query_by_key_exists(self, key):
-        """Returns trees(list) having a given key(string) defined as dict (no matter which value)"""
+    def query_by_key_exists(self, key: str) -> list[dict]:
+        """
+        Returns trees having a given key defined inside dict (no matter which value)
+
+        :param str key: Key which has to exist in dictionary
+        :return: list of trees (tree dictionaries) fulfilling the query
+        :rtype: list[dict]
+        """
         res = self.mongodb_col.find({key: {'$exists': 1}}, {'_id': False})
         return [e for e in res]
 
-    def query_by_numeric_comparison(self, key, value, comp_op):
+    def query_by_numeric_comparison(self, key: str, value: str, comp_op: str):
         """Returns trees (list) fulfilling the numeric comparison of values for given key"""
-        raise Exception("Can be done with self.query()")
+        raise Exception("Can be done with self.query()")  # todo: remove method?
 
-    def query_by_species(self, regex):
-        """Returns trees(list) fulfilling the regex matching on the species name"""
+    def query_by_species(self, regex: str) -> list[dict]:
+        """
+        Returns trees(list) fulfilling the regex matching on the species name
+
+        :param str regex: regular expression for finding tree species
+        :return: list of trees (tree dictionaries) fulfilling the query
+        :rtype: list[dict]
+        """
         res = self.mongodb_col.find({QUERY_SPECIES_FIELDNAME: {"$regex": regex}}, {'_id': False})
         return [e for e in res]
 
-    def query_by_date(self, key, start, end=False):
+    def query_by_date(self, key: str, start, end: bool = False) -> list[dict]:
         """
         Returns trees(list) fulfilling the date of key lies between start and end date in format 'YYYY-MM-DD'
         If no end date is given, the current day is taken.
-        Examples:   
+        Examples:
             - query_by_date(key="properties.measurements.date", start="2019-08-28", end='2022-01-01')
             - query_by_date(key="properties.data.date", start="2019-08-28")
+
+        :param str key:
+        :param DateString start: String representation ('YYYY-MM-DD') of the start date
+        :param DateString end: String representation ('YYYY-MM-DD') of the end date
+        :return: List of trees (tree dictionaries) fulfilling the query
+        :rtype: list[dict]
+
         """
         try:
             startdate = datetime.datetime.strptime(start, '%Y-%m-%d').isoformat()
@@ -340,12 +426,13 @@ class PyTreeDB:
         res = self.mongodb_col.find({key: {"$gte": startdate, "$lte": enddate}}, {'_id': False})
         return [e for e in res]
 
-    def query_by_geometry(self, geom, distance=0.0):
-        """Returns list of trees(dict) that are within a defined distance (in meters) from search geometry which is
+    def query_by_geometry(self, geom: Union[JSONString, dict], distance: float = 0.0) -> list[dict]:
+        """
+        Returns list of trees(dict) that are within a defined distance (in meters) from search geometry which is
         provided as GEOJSON dictionary or string; Geometry types Point and Polygon are supported, for example:
 
         {"type": "Point", "coordinates": (0.0, 0.0)}
-     
+
         { "type": "Polygon",
         "coordinates": [[[8.700980940620983, 49.012725603975355],
                          [8.700972890122355, 49.011695140150906],
@@ -353,11 +440,18 @@ class PyTreeDB:
                          [8.702310614644462, 49.012713528227415],
                          [8.702310614644462, 49.012713528227415],
                          [8.700980940620983, 49.012725603975355]]]}
-      
-    - Online help for geometries in MongoDB: 
-        - https://docs.mongodb.com/manual/geospatial-queries/
-        - https://pymongo.readthedocs.io/en/stable/examples/geo.html  
-    """
+
+        - Online help for geometries in MongoDB:
+            - https://docs.mongodb.com/manual/geospatial-queries/
+            - https://pymongo.readthedocs.io/en/stable/examples/geo.html
+
+        :param geom: json string representing a geometry
+        :type geom: str or dict
+        :param float distance: distance from search geometry in meters
+        :return: list of trees (tree dictionaries) fulfilling the query
+        :rtype: list[dict]
+
+        """
         try:
             if isinstance(geom, str):
                 geom = json.loads(geom)
@@ -374,8 +468,15 @@ class PyTreeDB:
 
         return [e for e in res]
 
-    def get_ids(self, trees) -> list:
-        """Returns ids(list) of trees(list)"""
+    def get_ids(self, trees: list[dict]) -> list[int]:
+        """
+        Returns ids of trees
+
+        :param list[dict] trees: list of tree dictionaries
+        :return: list with IDs of trees
+        :rtype: list[int]
+
+        """
         try:
             return [k['_id_x'] for k in trees]
         except:
@@ -392,8 +493,17 @@ class PyTreeDB:
         return self.db
 
     @staticmethod
-    def get_tree_as_json(tree, indent=4, metadata=False):
-        """Returns original JSON(str) file content for a single tree(dict)"""
+    def get_tree_as_json(tree: dict, indent: bool = 4, metadata: bool = False) -> JSONString:
+        """
+        Returns original JSON(str) file content for a single tree
+
+        :param dict tree: Dictionary describing a single tree in the database
+        :param int indent: pretty-print with that given indent level
+        :param bool metadata: include metadata in output JSON
+        :return: JSON string of the tree object
+        :rtype: str
+
+        """
         tree_export = copy.copy(tree)
         if metadata is False:  # remove metadata
             # Remove all keys with leading "_": could also be done in loop but might be slower. hardcode for the minute.
@@ -403,10 +513,15 @@ class PyTreeDB:
         return json.dumps(tree_export, indent=indent)
 
     @staticmethod
-    def validate_json(json_file):
+    def validate_json(json_file: PathLike):
         """
         Checks if JSON is valid and compatible for import into pytreedb.
         Only mandatory fields and main structure are checked
+
+        :param json_file: path to json file
+        :return: Content of JSON file is valid or not
+        :rtype: bool
+
         """
         keys_template = list(flatten_json(json.loads(TEMPLATE_GEOJSON)).keys())
         keys_json = list(flatten_json(json.loads(open(json_file, 'r').read())).keys())
@@ -420,12 +535,17 @@ class PyTreeDB:
             return True  # valid
         return False  # not valid
 
-    def export_data(self, outdir, trees=None):
+    def export_data(self, outdir, trees: list[int] = None) -> list[PathLike]:
         """
         Reverse of import_data():
         Creates single geojson files for each tree in DB and puts it in local directory
-        Optionally list of ids of trees to be exported can be provided. [] means that all will be exported
-        returns list of file paths written
+        Optionally list of ids of trees to be exported can be provided. None (default) means that all will be exported
+
+        :param PathLike outdir: Path to output directory
+        :param list[int] trees: List of tree IDs
+        :return: List of file paths that have been written
+        :rtype: PathLike
+
         """
         if not os.path.exists(outdir):
             os.mkdir(outdir)
@@ -439,13 +559,22 @@ class PyTreeDB:
                 files_written.append(Path(json_filename))
         return files_written
 
-    def convert_to_csv(self, outdir, trees=None,
-                       filename_general='result_general.csv',
-                       filename_metrics='result_metrics.csv'):
-        """Exports trees to local csv files. Each export creates two separate csv files, 
+    def convert_to_csv(self, outdir: PathLike, trees: list[int] = None,
+                       filename_general: str = 'result_general.csv',
+                       filename_metrics: str = 'result_metrics.csv') -> list[PathLike]:
+        """
+        Exports trees to local csv files. Each export creates two separate csv files,
         one for general information, one for metrics.
         Optionally list of ids of trees to be exported can be provided. [] means that all will be exported
         returns list of file paths written
+
+        :param PathLike outdir: Path to output directory
+        :param list[int] trees: List of tree IDs
+        :param PathLike filename_general: Name of the file in which general tree info are written
+        :param PathLike filename_metrics: Name of the file in which specific tree metrics per measurement are written
+        :return: List of file paths that have been written
+        :rtype: list[PathLike]
+
         """
         outdir = Path(outdir)
         csv_metrics = []
@@ -491,7 +620,7 @@ class PyTreeDB:
         csv_metrics.insert(0, metrics_header)
 
         output_files = []
-        if filename_general is not None: 
+        if filename_general is not None:
             output_files.append(write_list_to_csv(outdir / filename_general, csv_general))
         if filename_metrics is not None:
             output_files.append(write_list_to_csv(outdir / filename_metrics, csv_metrics))

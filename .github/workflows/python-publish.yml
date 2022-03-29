@@ -11,7 +11,7 @@ jobs:
       steps:
         - uses: actions/checkout@v3
         - name: Set up miniconda
-        - uses: conda-incubator/setup-miniconda@v2
+          uses: conda-incubator/setup-miniconda@v2
           with:
             activate-environment: pytreedb
             environment-file: environment.yml

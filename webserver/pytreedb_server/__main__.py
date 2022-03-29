@@ -103,10 +103,11 @@ def getItem(index):
 @app.route('/exportcsv', methods=['POST'])
 def exportcsv():
     query = json.loads(request.form['data'])
-    trees = mydb.query(query, {'_id': False})
+    # get ids of resulting trees
+    trees_idx = [tree['_id_x'] for tree in mydb.query(query, {'_id': False, '_id_x': 1})]
     # convert trees to csv files, save to disk
     outdir = tempfile.mkdtemp()
-    mydb.convert_to_csv(outdir, trees)
+    mydb.convert_to_csv(outdir, trees_idx)
     # zip csv files
     o = io.BytesIO()
     with ZipFile(o, 'w') as zf:

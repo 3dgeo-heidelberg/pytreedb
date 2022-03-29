@@ -115,13 +115,15 @@ searchDB = () => {
     let qfilters = currReq.qfilters, operands = currReq.operands, brackets = currReq.brackets;
     currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets);
 
-    $.post('/search', {"data": JSON.stringify(currReq.backendQ)}, data => {
-        var trees = data['query'];
+    $.post('/search', {"data": JSON.stringify(currReq.backendQ), "limit": 3})
+        .done( data => {
+        var trees = data['res_preview'];
+        var coords = data['res_coords'];
         currReq.url = '/search';
         // Clear previous results
         $('#jsonViewerContainer').empty(); 
         // Show number of results
-        $('#numRes').html(trees.length);
+        $('#numRes').html(coords.length);
         $('#numResContainer').show();
         // Show json code snippets if trees found
         if (trees.length != 0) {
@@ -164,7 +166,7 @@ searchDB = () => {
             $('#treeTab0').children().addClass('active');
 
             // Draw map
-            drawMap(trees);
+            drawMap(coords);
         } 
         // If no trees satisfy the query, clear prev results
         else {
@@ -177,6 +179,11 @@ searchDB = () => {
             cleanMap();
             $('#mapContainer').hide();
         }
+    })
+    .fail((xhr, status, error) => {
+        console.log(xhr);
+        console.log(status);
+        console.log(error);
     });
     $('#jsonSnippetSection').show();
     $('#jsonViewerContainer').css('padding-bottom', '85px');

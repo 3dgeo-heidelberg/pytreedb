@@ -91,10 +91,11 @@ def getSharedProperties():
 @app.route('/search', methods=['POST'])
 def query():
     query = json.loads(request.form['data'])
-    res = mydb.query(query, {'_id': False})
-    print(query)
-    print(len(res))
-    return {'query': res}
+    prev_trees = mydb.query(query, {'_id': False}, limit=int(request.form['limit']))
+    res_coords = mydb.query(query, {'_id': False, 'geometry': 1, 'type': 1})
+    print('User query: ', query)
+    print('Number of results: ', len(res_coords))
+    return {'res_preview': prev_trees, 'res_coords': res_coords}
 
 @app.route('/getitem/<index>')
 def getItem(index):

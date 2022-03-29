@@ -115,11 +115,11 @@ searchDB = () => {
     let qfilters = currReq.qfilters, operands = currReq.operands, brackets = currReq.brackets;
     currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets);
 
-    $.post('/search', {"data": JSON.stringify(currReq.backendQ), "limit": 3})
+    $.post('/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": 3})
         .done( data => {
         var trees = data['res_preview'];
         var coords = data['res_coords'];
-        currReq.url = '/search';
+        currReq.url = '/wssearch';
         // Clear previous results
         $('#jsonViewerContainer').empty(); 
         // Show number of results
@@ -133,7 +133,7 @@ searchDB = () => {
             $('#saveCSVButton').show();
             $('#mapContainer').show();
             // Collect pointcloud urls from results
-            collectPCUrls(trees);
+            // collectPCUrls(trees);
             // Update for output
             jsonOutput = JSON.stringify(trees[0]);
             // Show tabs if results > 1
@@ -441,18 +441,10 @@ saveJsonOutput = () => {
 }
 // Save all result jsons into one json file
 saveAllJsons = () => {
-    var outString = '{"type": "FeatureCollection", "features":';
-    if (currReq.url == '/search') {
-        $.post('/search', {"data": JSON.stringify(currReq.backendQ)}, data => {
-            outString += JSON.stringify(data['query']) + '}';
-            saveJsonContent(outString, 'res_feature_collection');
-        })
-    } else {
-        $.get(currReq.url, data => {
-            outString += JSON.stringify(data['query']) + '}';
-            saveJsonContent(outString, 'res_feature_collection');
-        })
-    }
+    $.post('/exportcollection', {"query": JSON.stringify(currReq.backendQ)}, data => {
+        outString = JSON.stringify(data);
+        saveJsonContent(outString, 'res_feature_collection');
+    });
 }
 // Save all results into zipped csv-files
 saveCSV = () => {

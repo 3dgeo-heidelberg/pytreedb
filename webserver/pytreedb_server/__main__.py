@@ -90,12 +90,30 @@ def getSharedProperties():
 
 @app.route('/search', methods=['POST'])
 def query():
-    query = json.loads(request.form['data'])
+    query = json.loads(request.form['query'])
+    res = mydb.query(query, {'_id': False})
+    print(query)
+    print(len(res))
+    return {'query_res': res}
+
+@app.route('/wssearch', methods=['POST'])
+def webserverQuery():
+    query = json.loads(request.form['query'])
+    # return only full geojson file within the preview limit
     prev_trees = mydb.query(query, {'_id': False}, limit=int(request.form['limit']))
+    # return all resulting tree coordinates to show on the map
     res_coords = mydb.query(query, {'_id': False, 'geometry': 1, 'type': 1})
     print('User query: ', query)
     print('Number of results: ', len(res_coords))
     return {'res_preview': prev_trees, 'res_coords': res_coords}
+
+@app.route('/exportcollection', methods=['POST'])
+def exportFC():
+    query = json.loads(request.form['query'])
+    res = mydb.query(query, {'_id': False})
+    collection = {"type": "FeatureCollection", "features": res}
+    return collection
+
 
 @app.route('/getitem/<index>')
 def getItem(index):

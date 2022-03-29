@@ -22,6 +22,7 @@ jobs:
             auto-activate-base: false
         - name: Lint with flake8
           run: |
+            conda activate pytreedb
             conda install -y flake8
             # stop the build if there are Python syntax errors or undefined names
             python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
@@ -36,15 +37,20 @@ jobs:
             CONN_DB: ${{ secrets.CONN_DB }}
             CONN_COL: ${{ secrets.CONN_COL }}
           run: |
+            conda activate pytreedb
             conda install -y pytest
+            python -m pip install pytest-cov
             python -m pytest --cov pytreedb
       
         - name: Install dependencies (PyPi build)
           run: |
+            conda activate pytreedb
             python -m pip install --upgrade pip
             pip install build
         - name: Build package (pytreedb)
-          run: python -m build
+          run: |
+            conda activate pytreedb
+            python -m build
         - name: Publish package
           uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
           with:
@@ -55,7 +61,9 @@ jobs:
           
         - name: Build package (pytreedb-server)
           working-directory: ./webserver
-          run: python -m build
+          run: |
+            conda activate pytreedb
+            python -m build
         - name: Publish package
           uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
           with:

@@ -37,6 +37,7 @@ jobs:
             CONN_COL: ${{ secrets.CONN_COL }}
           run: |
             conda install -y pytest
+            python -m pip install pytest-cov
             python -m pytest --cov pytreedb
       
         - name: Install dependencies (PyPi build)

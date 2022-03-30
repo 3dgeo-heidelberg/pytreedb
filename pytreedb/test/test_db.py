@@ -51,8 +51,18 @@ def mydb(tmp_path):
 def test_import_data(mydb, data_path, n_trees_expected):
     """Tests reading data (json files) from local file or from URL of ZIP archive with files named like *.*json"""
 
-    # TODO: Shall the import_data() function really return the number of trees?
     assert (mydb.import_data(data_path) == n_trees_expected)
+
+
+@pytest.mark.imports
+@pytest.mark.parametrize('data_path, n_trees_expected',
+                         [("https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/data.db", 1491),
+                          (f"{root_path}/data/test/data.db", 1491)
+                          ])
+def test_import_db(mydb, data_path, n_trees_expected):
+    """Tests reading local database file or URL to database file"""
+
+    assert (mydb.import_db(data_path) == n_trees_expected)
 
 
 @pytest.mark.imports
@@ -89,13 +99,6 @@ def test_import_data_not_a_zip(mydb):
     with pytest.raises(zipfile.BadZipFile) as e:
         mydb.import_data(my_problematic_url)
     assert e.type is zipfile.BadZipFile
-
-
-@pytest.mark.imports
-def test_import_db(mydb):
-    # todo: implement import from db file, e.g., from URL:
-    #  https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/data.db
-    pass
 
 
 @pytest.mark.export

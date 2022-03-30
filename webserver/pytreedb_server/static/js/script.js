@@ -736,7 +736,7 @@ L.tileLayer(
 // Init geoJSONLayer(group)
 var geoJSONLayer = L.geoJSON(null, {
         pointToLayer: function (feature, latlng) { // Each tree will be stored in one layer
-            var marker = L.marker(latlng);
+            var marker = L.marker(latlng).bindPopup('<a target="_blank" href="/getitem/' + feature._id_x + '">' + feature.properties.id + '</a>');
             marker._pmTempLayer = true; // Disable marker dragging
             return marker;
         }

@@ -107,7 +107,7 @@ def webserverQuery():
     res_coords = None
     if request.form['getCoords'] == 'true':
         # return all resulting tree coordinates to show on the map
-        res_coords = mydb.query(query, {'_id': False, 'geometry': 1, 'type': 1})
+        res_coords = mydb.query(query, {'_id': False, '_id_x': 1, 'geometry': 1, 'type': 1, 'properties.id': 1})
     print('User query: ', query)
     print('Number of results: ', num_res)
     return {'res_preview': prev_trees[:limit], 'res_coords': res_coords, 'num_res': num_res}

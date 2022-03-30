@@ -72,6 +72,10 @@ As a starting point, please have a look to the [examples](examples) and [Jupyter
 In order to provide a REST API to share your tree data you can use `pytreedb` in server mode. After installation of the `pytreedb-server` package you can follow the instructions here [webserver/README.md](webserver/README.md).
 
 
+### Use it as via the REST API also from other programming languages (e.g. R stats)
+Straightforward access from any programming language is made possible via the REST API. We provide examples scripts for http API access, e.g. for R statistics in [examples_api](examples_api). The [R function example](examples_api/example.R) allows simple query and also download of the LAZ files for all trees of the query result.
+
+
 ### GeoJSON Format and Template
 An example tree is given in [data/geojson/AbiAlb_BR03_01.geojson](data/geojson/AbiAlb_BR03_01.geojson) and the GeoJSON template for tree objects is defined here [pytreedb/db_conf.py](pytreedb/db_conf.py).
 
@@ -91,7 +95,7 @@ Please cite the following publication when using pytreedb in your research and r
 article{pytreedb,
 author = {Bernhard Höfle and Jiani Qu and Lukas Winiwarter and Hannah Weiser and Jannika Schäfer and Fabian E. Fassnacht}
 title = {pytreedb: library for point clouds of tree vegetation objects},
-journal = {The Journal of Open Source Software},
+journal = {},
 year = {2022},
 number = {},
 volume = {-},

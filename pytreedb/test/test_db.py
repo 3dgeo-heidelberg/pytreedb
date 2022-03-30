@@ -45,7 +45,7 @@ def mydb(tmp_path):
 
 @pytest.mark.imports
 @pytest.mark.parametrize('data_path, n_trees_expected',
-                         [(r"https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1", 1491),
+                         [("https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip", 1491),
                           (f"{root_path}/data/test/test_geojsons", 6)
                           ])
 def test_import_data(mydb, data_path, n_trees_expected):
@@ -71,7 +71,7 @@ def test_import_data_wrong_path(mydb):
 def test_import_data_wrong_url(mydb):
     """Tests importing data from a corrupt URL"""
     # given
-    my_corrupt_url = "https://heiboxx.uni-heideberg.de/f/05969694cbed4c41bcb8/?dl=1"
+    my_corrupt_url = "https://githubbb.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip"
 
     # Check if raises error
     with pytest.raises(ConnectionError) as e:
@@ -83,12 +83,19 @@ def test_import_data_wrong_url(mydb):
 def test_import_data_not_a_zip(mydb):
     """Tests importing data from a URL which does not download a zip folder"""
     # given
-    my_problematic_url = "https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/"
+    my_problematic_url = "https://github.com/3dgeo-heidelberg/pytreedb/tree/main/data/test/test_geojsons"
 
     # Check if raises error
     with pytest.raises(zipfile.BadZipFile) as e:
         mydb.import_data(my_problematic_url)
     assert e.type is zipfile.BadZipFile
+
+
+@pytest.mark.imports
+def test_import_db(mydb):
+    # todo: implement import from db file, e.g., from URL:
+    #  https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/data.db
+    pass
 
 
 @pytest.mark.export

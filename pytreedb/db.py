@@ -492,6 +492,25 @@ class PyTreeDB:
         """Returns list of all tree objects(dict)"""
         return self.db
 
+    def get_pointcloud_urls(self, trees: list[dict]) -> list[str]:
+        """
+        Returns a list of pointclouds for the given trees
+
+        :param list[dict] trees: list of tree dictionaries
+        :return: list with .laz pointcloud files of trees
+        :rtype: list[str]
+        """
+        try:
+            return [obj['file'] for tree in trees for obj in tree['properties']['data']]
+        except:
+            if not isinstance(trees, list):
+                print(
+                    f"Input for function {sys._getframe().f_code.co_name}() must be a list. "
+                    f"Given wrong type: {type(trees)}.) ")
+            else:
+                print(f"Could not get id for: {trees}")
+            return []
+
     @staticmethod
     def get_tree_as_json(tree: dict, indent: bool = 4, metadata: bool = False) -> JSONString:
         """

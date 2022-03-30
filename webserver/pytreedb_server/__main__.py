@@ -56,6 +56,7 @@ if not db_name:
 
 db_download = os.environ.get("PYTREEDB_DOWNLOAD")
 
+file_dl_threshold = 10000
 app = Flask("pytreedb-server",
             static_folder=os.path.join(os.path.dirname(__file__), 'static'),
             template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
@@ -96,7 +97,7 @@ def query():
     print(len(res))
     return {'query_res': res}
 
-@app.route('/wssearch', methods=['POST'])
+@app.route('/search/wssearch', methods=['POST'])
 def webserverQuery():
     query = json.loads(request.form['query'])
     # return only full geojson file within the preview limit
@@ -107,13 +108,27 @@ def webserverQuery():
     print('Number of results: ', len(res_coords))
     return {'res_preview': prev_trees, 'res_coords': res_coords}
 
-@app.route('/exportcollection', methods=['POST'])
+@app.route('/search/exportcollection', methods=['POST'])
 def exportFC():
     query = json.loads(request.form['query'])
     res = mydb.query(query, {'_id': False})
-    collection = {"type": "FeatureCollection", "features": res}
+    collection = {'type': 'FeatureCollection', 'features': res}
     return collection
 
+@app.route('/search/lazlinks', methods=['POST'])
+def exportLazLinks():
+    query = json.loads(request.form['query'])
+    links = mydb.mongodb_col.aggregate(
+        {
+            '$match': query
+        }, 
+        {
+            '$group': {
+                '_id': False, 
+                'laz_url': {'$addToSet': 'properties.data.file'}
+        }})
+    print(links)
+    return links
 
 @app.route('/getitem/<index>')
 def getItem(index):

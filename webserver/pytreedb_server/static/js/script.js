@@ -115,11 +115,11 @@ searchDB = () => {
     let qfilters = currReq.qfilters, operands = currReq.operands, brackets = currReq.brackets;
     currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets);
 
-    $.post('/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": 3})
+    $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": 3})
         .done( data => {
         var trees = data['res_preview'];
         var coords = data['res_coords'];
-        currReq.url = '/wssearch';
+        currReq.url = '/search/wssearch';
         // Clear previous results
         $('#jsonViewerContainer').empty(); 
         // Show number of results
@@ -133,7 +133,7 @@ searchDB = () => {
             $('#saveCSVButton').show();
             $('#mapContainer').show();
             // Collect pointcloud urls from results
-            // collectPCUrls(trees);
+            // collectPCUrls();
             // Update for output
             jsonOutput = JSON.stringify(trees[0]);
             // Show tabs if results > 1
@@ -165,8 +165,12 @@ searchDB = () => {
             }
             $('#treeTab0').children().addClass('active');
 
-            // Draw map
-            drawMap(coords);
+            // Draw map 
+            if ($('#markerRenderCheckbox')[0].checked) {
+                drawMap(coords);
+            } else {
+                cleanMap();
+            }
         } 
         // If no trees satisfy the query, clear prev results
         else {
@@ -314,15 +318,18 @@ updateQueryPreview = () => {
     return currReq.stringFormat;
 }
 // Collect pointclouds urls
-collectPCUrls = trees => {
-    trees.forEach(tree => {
-        arr = tree['properties']['data'];
-        arr.forEach(obj => {
-            if (obj['file']) {
-                pcUrls.push(obj['file']);
-            }
-        });
-    });
+collectPCUrls = () => {
+    $.post('/search/lazlinks', {"query": JSON.stringify(currReq.backendQ)}, data => {
+        
+    })
+    // trees.forEach(tree => {
+    //     arr = tree['properties']['data'];
+    //     arr.forEach(obj => {
+    //         if (obj['file']) {
+    //             pcUrls.push(obj['file']);
+    //         }
+    //     });
+    // });
 }
 
 // Copy the query in preview to clipboard
@@ -441,7 +448,7 @@ saveJsonOutput = () => {
 }
 // Save all result jsons into one json file
 saveAllJsons = () => {
-    $.post('/exportcollection', {"query": JSON.stringify(currReq.backendQ)}, data => {
+    $.post('/search/exportcollection', {"query": JSON.stringify(currReq.backendQ)}, data => {
         outString = JSON.stringify(data);
         saveJsonContent(outString, 'res_feature_collection');
     });

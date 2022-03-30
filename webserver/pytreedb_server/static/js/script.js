@@ -128,7 +128,7 @@ searchDB = () => {
             // Clear previous results
             $('#jsonViewerContainer').empty(); 
             // Show number of results
-            $('#numRes').html(coords.length);
+            $('#numRes').html(data['num_res']);
             $('#numResContainer').show();
             // Show json code snippets if trees found
             if (trees.length != 0) {
@@ -137,8 +137,6 @@ searchDB = () => {
                 $('#savePointCButton').show();
                 $('#saveCSVButton').show();
                 $('#mapContainer').show();
-                // Collect pointcloud urls from results
-                // collectPCUrls();
                 // Update for output
                 jsonOutput = JSON.stringify(trees[0]);
                 // Show tabs if results > 1
@@ -320,20 +318,6 @@ updateQueryPreview = () => {
     $('#queryPreviewArea').text(currReq.stringFormat);
     return currReq.stringFormat;
 }
-// Collect pointclouds urls
-collectPCUrls = () => {
-    $.post('/search/lazlinks', {"query": JSON.stringify(currReq.backendQ)}, data => {
-        
-    })
-    // trees.forEach(tree => {
-    //     arr = tree['properties']['data'];
-    //     arr.forEach(obj => {
-    //         if (obj['file']) {
-    //             pcUrls.push(obj['file']);
-    //         }
-    //     });
-    // });
-}
 
 // Copy the query in preview to clipboard
 // Referenced source: https://www.codegrepper.com/code-examples/javascript/copy+text+to+clipboard+javascript
@@ -478,50 +462,52 @@ saveCSV = () => {
 // Save point clouds of all results into a zip
 // The JSZip library: https://github.com/Stuk/jszip
 savePointClouds = () => {
-    var zip = new JSZip();
-    var cntFilesDownloaded = 0;
-    // Show progress bar if request successful
-    $('#downLoadProgressSection').show();
-    // Iterate through the list of urls
-    pcUrls.forEach((url, idx, array) => {
-        var filename = url.split('/')[4];
-        // Get request
-        $.ajax({
-            url: url,
-            beforeSend: jqXHR => {
-                jqXHR.setRequestHeader('Accept-Encoding', 'gzip');
-            },
-            xhrFields:{
-                responseType: 'blob'
-            }
-        }).done(file => {
-            // Add each file to the zip
-            zip.file(filename, file, {binary: true, compression : "DEFLATE"});
-            cntFilesDownloaded += 1;
-            // Update progress
-            $('#dlState').text(cntFilesDownloaded + ' of ' + array.length + ' files zipped');
-            var percentage = Math.round(cntFilesDownloaded / array.length * 100);
-            console.log(percentage);
-            $('#progressBar').attr('aria-valuenow', percentage).css('width', percentage + '%');
-            // After all files zipped
-            if (cntFilesDownloaded === array.length) {
-                // Show zipping status
-                $('#pcState').text('Zipping...');
-                // Create the zip file for download
-                zip.generateAsync({type : "blob", compression : "DEFLATE"})
-                    .then(content => {
-                        var link = document.createElement('a');
-                        link.download = 'pointclouds';
-                        link.href = URL.createObjectURL(content);
-                        link.click();
-                        // Hide progress bar and reset 
-                        $('#downLoadProgressSection').hide();
-                        $('#pcState').html('Preparing Point Clouds on server... <span id="dlState"></span>');
-                        $('#progressBar').attr('aria-valuenow', 0).css('width', '0%');
-                        cntFilesDownloaded = 0
-                });
-            }
-        })
+    $.post('/search/lazlinks', {"query": JSON.stringify(currReq.backendQ)}, data => {
+        pcUrls = data['links'];
+        var zip = new JSZip();
+        var cntFilesDownloaded = 0;
+        // Show progress bar if request successful
+        $('#downLoadProgressSection').show();
+        // Iterate through the list of urls
+        pcUrls.forEach((url, idx, array) => {
+            var filename = url.split('/')[4];
+            // Get request
+            $.ajax({
+                url: url,
+                beforeSend: jqXHR => {
+                    jqXHR.setRequestHeader('Accept-Encoding', 'gzip');
+                },
+                xhrFields:{
+                    responseType: 'blob'
+                }
+            }).done(file => {
+                // Add each file to the zip
+                zip.file(filename, file, {binary: true, compression : "DEFLATE"});
+                cntFilesDownloaded += 1;
+                // Update progress
+                $('#dlState').text(cntFilesDownloaded + ' of ' + array.length + ' files zipped');
+                var percentage = Math.round(cntFilesDownloaded / array.length * 100);
+                $('#progressBar').attr('aria-valuenow', percentage).css('width', percentage + '%');
+                // After all files zipped
+                if (cntFilesDownloaded === array.length) {
+                    // Show zipping status
+                    $('#pcState').text('Zipping...');
+                    // Create the zip file for download
+                    zip.generateAsync({type : "blob", compression : "DEFLATE"})
+                        .then(content => {
+                            var link = document.createElement('a');
+                            link.download = 'pointclouds';
+                            link.href = URL.createObjectURL(content);
+                            link.click();
+                            // Hide progress bar and reset 
+                            $('#downLoadProgressSection').hide();
+                            $('#pcState').html('Preparing Point Clouds on server... <span id="dlState"></span>');
+                            $('#progressBar').attr('aria-valuenow', 0).css('width', '0%');
+                            cntFilesDownloaded = 0
+                    });
+                }
+            })
+        });
     });
 }
 

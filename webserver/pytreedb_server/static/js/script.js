@@ -112,11 +112,15 @@ getItem = () => {
 // Query trees via properties and value
 searchDB = () => {
     updateQueryPreview();
+    let renderMarkers = $('#markerRenderCheckbox')[0].checked;
     let qfilters = currReq.qfilters, operands = currReq.operands, brackets = currReq.brackets;
     currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets);
     if (!currReq.backendQ) {currReq.backendQ = null;}
 
-    $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": 3})
+    // Send POST request to API endpoint specifically for webserver search request
+    // where only a (user-defined) limited number of the first full-json documents are returned
+    // along with coordinates of all resulting trees for rendering in the map if demanded
+    $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": 3, "getCoords": renderMarkers})
         .done(data => {
             var trees = data['res_preview'];
             var coords = data['res_coords'];
@@ -167,7 +171,7 @@ searchDB = () => {
                 $('#treeTab0').children().addClass('active');
 
                 // Draw map 
-                if ($('#markerRenderCheckbox')[0].checked) {
+                if (renderMarkers) {
                     drawMap(coords);
                 } else {
                     cleanMap();

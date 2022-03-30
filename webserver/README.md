@@ -20,7 +20,7 @@ PYTREEDB_LOCATION="../pytreedb"
 # local filename for database file
 PYTREEDB_FILENAME="syssifoss.db"
 # if set, download (and overwrite local file) data from this URL
-PYTREEDB_DOWNLOAD="https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1"
+PYTREEDB_DOWNLOAD="https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip"
 # connection string to mongodb (e.g. 127.0.0.1, or "mongodb+srv://..." if using MongoDB Cloud)
 CONN_URI = ""
 # database name to connect to

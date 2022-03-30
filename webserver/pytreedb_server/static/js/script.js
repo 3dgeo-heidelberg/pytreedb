@@ -114,75 +114,76 @@ searchDB = () => {
     updateQueryPreview();
     let qfilters = currReq.qfilters, operands = currReq.operands, brackets = currReq.brackets;
     currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets);
+    if (!currReq.backendQ) {currReq.backendQ = null;}
 
     $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": 3})
-        .done( data => {
-        var trees = data['res_preview'];
-        var coords = data['res_coords'];
-        currReq.url = '/search/wssearch';
-        // Clear previous results
-        $('#jsonViewerContainer').empty(); 
-        // Show number of results
-        $('#numRes').html(coords.length);
-        $('#numResContainer').show();
-        // Show json code snippets if trees found
-        if (trees.length != 0) {
-            $('#saveJsonButton').show();
-            $('#saveAllButton').show();
-            $('#savePointCButton').show();
-            $('#saveCSVButton').show();
-            $('#mapContainer').show();
-            // Collect pointcloud urls from results
-            // collectPCUrls();
-            // Update for output
-            jsonOutput = JSON.stringify(trees[0]);
-            // Show tabs if results > 1
-            if (trees.length >= 3) {
-                num = 3;
-                $('#previewLabel').attr('style', 'display: inline;');
-                $('.treeTab').removeClass('active');
-            } else {
-                num = trees.length;
-                $('#previewLabel').hide();
-                if (num == 1) {
-                    $('#treeTab1').hide();
+        .done(data => {
+            var trees = data['res_preview'];
+            var coords = data['res_coords'];
+            currReq.url = '/search/wssearch';
+            // Clear previous results
+            $('#jsonViewerContainer').empty(); 
+            // Show number of results
+            $('#numRes').html(coords.length);
+            $('#numResContainer').show();
+            // Show json code snippets if trees found
+            if (trees.length != 0) {
+                $('#saveJsonButton').show();
+                $('#saveAllButton').show();
+                $('#savePointCButton').show();
+                $('#saveCSVButton').show();
+                $('#mapContainer').show();
+                // Collect pointcloud urls from results
+                // collectPCUrls();
+                // Update for output
+                jsonOutput = JSON.stringify(trees[0]);
+                // Show tabs if results > 1
+                if (trees.length >= 3) {
+                    num = 3;
+                    $('#previewLabel').attr('style', 'display: inline;');
+                    $('.treeTab').removeClass('active');
+                } else {
+                    num = trees.length;
+                    $('#previewLabel').hide();
+                    if (num == 1) {
+                        $('#treeTab1').hide();
+                    }
+                    $('#treeTab2').hide();
                 }
-                $('#treeTab2').hide();
-            }
-            // Show json data of maximal 3 trees
-            for (let i = 0; i < num; i++) {
-                // Show tabs
-                $('#treeTabs').css('display', 'flex');
-                $('#treeTab' + i).show();
-                // Load data into html
-                $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + i + '"></pre>');
-                $('#tree-' + i).jsonViewer(trees[i]);
-                previewTrees.push(JSON.stringify(trees[i]))
-                // Show only one code block
-                if (i > 0) {
-                    $('#tree-' + i).hide();
+                // Show json data of maximal 3 trees
+                for (let i = 0; i < num; i++) {
+                    // Show tabs
+                    $('#treeTabs').css('display', 'flex');
+                    $('#treeTab' + i).show();
+                    // Load data into html
+                    $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + i + '"></pre>');
+                    $('#tree-' + i).jsonViewer(trees[i]);
+                    previewTrees.push(JSON.stringify(trees[i]))
+                    // Show only one code block
+                    if (i > 0) {
+                        $('#tree-' + i).hide();
+                    }
                 }
-            }
-            $('#treeTab0').children().addClass('active');
+                $('#treeTab0').children().addClass('active');
 
-            // Draw map 
-            if ($('#markerRenderCheckbox')[0].checked) {
-                drawMap(coords);
-            } else {
+                // Draw map 
+                if ($('#markerRenderCheckbox')[0].checked) {
+                    drawMap(coords);
+                } else {
+                    cleanMap();
+                }
+            } 
+            // If no trees satisfy the query, clear prev results
+            else {
+                $('#previewLabel').hide();
+                $('#treeTabs').hide();
+                $('#saveJsonButton').hide();
+                $('#saveAllButton').hide();
+                $('#savePointCButton').hide();
+                $('#saveCSVButton').hide();
                 cleanMap();
+                $('#mapContainer').hide();
             }
-        } 
-        // If no trees satisfy the query, clear prev results
-        else {
-            $('#previewLabel').hide();
-            $('#treeTabs').hide();
-            $('#saveJsonButton').hide();
-            $('#saveAllButton').hide();
-            $('#savePointCButton').hide();
-            $('#saveCSVButton').hide();
-            cleanMap();
-            $('#mapContainer').hide();
-        }
     })
     .fail((xhr, status, error) => {
         console.log(xhr);
@@ -191,9 +192,7 @@ searchDB = () => {
     });
     $('#jsonSnippetSection').show();
     $('#jsonViewerContainer').css('padding-bottom', '85px');
-    $('html,body').animate({
-        scrollTop: $('#jsonSnippetSection').offset().top - 62},
-        'slow');
+    $('html,body').animate({scrollTop: $('#jsonSnippetSection').offset().top - 62}, 'slow');
 }
 processAND = (start, end, ft, op, bk) => {
     let filters = ft.slice(start, end + 1); 

@@ -100,15 +100,17 @@ def query():
 @app.route('/search/wssearch', methods=['POST'])
 def webserverQuery():
     query = json.loads(request.form['query'])
+    prev_trees = mydb.query(query, {'_id': False})
     # return only full geojson file within the preview limit
-    prev_trees = mydb.query(query, {'_id': False}, limit=int(request.form['limit']))
-    print('User query: ', query)
-    if bool(request.form['getCoords']):
+    limit = int(request.form['limit'])
+    num_res = len(prev_trees)
+    res_coords = None
+    if request.form['getCoords'] == 'true':
         # return all resulting tree coordinates to show on the map
         res_coords = mydb.query(query, {'_id': False, 'geometry': 1, 'type': 1})
-        print('Number of results: ', len(res_coords))
-    # return {'res_preview': prev_trees}
-    return {'res_preview': prev_trees, 'res_coords': res_coords}
+    print('User query: ', query)
+    print('Number of results: ', num_res)
+    return {'res_preview': prev_trees[:limit], 'res_coords': res_coords, 'num_res': num_res}
 
 @app.route('/search/exportcollection', methods=['POST'])
 def exportFC():
@@ -120,17 +122,9 @@ def exportFC():
 @app.route('/search/lazlinks', methods=['POST'])
 def exportLazLinks():
     query = json.loads(request.form['query'])
-    links = mydb.mongodb_col.aggregate(
-        {
-            '$match': query
-        }, 
-        {
-            '$group': {
-                '_id': False, 
-                'laz_url': {'$addToSet': 'properties.data.file'}
-        }})
-    print(links)
-    return links
+    res = mydb.query(query, {'_id': False, 'properties.data': 1})
+    links = [obj['file'] for tree in res for obj in tree['properties']['data']]
+    return {'links': links}
 
 @app.route('/getitem/<index>')
 def getItem(index):

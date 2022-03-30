@@ -102,10 +102,12 @@ def webserverQuery():
     query = json.loads(request.form['query'])
     # return only full geojson file within the preview limit
     prev_trees = mydb.query(query, {'_id': False}, limit=int(request.form['limit']))
-    # return all resulting tree coordinates to show on the map
-    res_coords = mydb.query(query, {'_id': False, 'geometry': 1, 'type': 1})
     print('User query: ', query)
-    print('Number of results: ', len(res_coords))
+    if bool(request.form['getCoords']):
+        # return all resulting tree coordinates to show on the map
+        res_coords = mydb.query(query, {'_id': False, 'geometry': 1, 'type': 1})
+        print('Number of results: ', len(res_coords))
+    # return {'res_preview': prev_trees}
     return {'res_preview': prev_trees, 'res_coords': res_coords}
 
 @app.route('/search/exportcollection', methods=['POST'])

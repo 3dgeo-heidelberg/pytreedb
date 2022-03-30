@@ -91,6 +91,13 @@ def test_import_data_not_a_zip(mydb):
     assert e.type is zipfile.BadZipFile
 
 
+@pytest.mark.imports
+def test_import_db(mydb):
+    # todo: implement import from db file, e.g., from URL:
+    #  https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/data.db
+    pass
+
+
 @pytest.mark.export
 def test_save(mydb, tmp_path):
     """Test function to save .db file"""

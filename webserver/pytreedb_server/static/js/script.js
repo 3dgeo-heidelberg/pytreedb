@@ -113,25 +113,28 @@ getItem = () => {
 searchDB = () => {
     updateQueryPreview();
     let renderMarkers = $('#markerRenderCheckbox')[0].checked;
+    let previewLimit = $('#numPreviewTrees').val();
     let qfilters = currReq.qfilters, operands = currReq.operands, brackets = currReq.brackets;
     currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets);
     if (!currReq.backendQ) {currReq.backendQ = null;}
+    console.log(previewLimit);
 
     // Send POST request to API endpoint specifically for webserver search request
     // where only a (user-defined) limited number of the first full-json documents are returned
     // along with coordinates of all resulting trees for rendering in the map if demanded
-    $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": 3, "getCoords": renderMarkers})
+    $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": previewLimit, "getCoords": renderMarkers})
         .done(data => {
             var trees = data['res_preview'];
             var coords = data['res_coords'];
+            var numRes = data['num_res'];
             currReq.url = '/search/wssearch';
             // Clear previous results
             $('#jsonViewerContainer').empty(); 
             // Show number of results
-            $('#numRes').html(data['num_res']);
+            $('#numRes').html(numRes);
             $('#numResContainer').show();
             // Show json code snippets if trees found
-            if (trees.length != 0) {
+            if (numRes != 0) {
                 $('#saveJsonButton').show();
                 $('#saveAllButton').show();
                 $('#savePointCButton').show();
@@ -139,28 +142,23 @@ searchDB = () => {
                 $('#mapContainer').show();
                 // Update for output
                 jsonOutput = JSON.stringify(trees[0]);
-                // Show tabs if results > 1
-                if (trees.length >= 3) {
-                    num = 3;
+                // Show text for preview info
+                if (numRes < previewLimit) {
+                    $('#previewLabel').hide();
+                } else {
                     $('#previewLabel').attr('style', 'display: inline;');
                     $('.treeTab').removeClass('active');
-                } else {
-                    num = trees.length;
-                    $('#previewLabel').hide();
-                    if (num == 1) {
-                        $('#treeTab1').hide();
-                    }
-                    $('#treeTab2').hide();
                 }
-                // Show json data of maximal 3 trees
-                for (let i = 0; i < num; i++) {
+                // Show json data of the given preview number of trees
+                for (let i = 0; i < Math.min(previewLimit, numRes); i++) {
                     // Show tabs
                     $('#treeTabs').css('display', 'flex');
+                    $('#treeTabs').append('<li id="treeTab'+i+'" class="nav-item"><a class="nav-link treeTab" onclick="toggleTab(this)">'+(i+1)+'</a></li>');
                     $('#treeTab' + i).show();
                     // Load data into html
                     $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + i + '"></pre>');
                     $('#tree-' + i).jsonViewer(trees[i]);
-                    previewTrees.push(JSON.stringify(trees[i]))
+                    previewTrees.push(JSON.stringify(trees[i]));
                     // Show only one code block
                     if (i > 0) {
                         $('#tree-' + i).hide();

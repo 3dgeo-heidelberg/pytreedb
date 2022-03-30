@@ -145,9 +145,14 @@
                             <button type="button" class="btn btn-success float-end" id="searchButton" onclick="searchDB()">
                                 Go
                             </button>
-                            <div class="form-check form-check-inline" style="margin-top: 1rem;">
+                            <div class="settings"  style="margin-top: 1rem; display: inline-block;">
+                                <label class="settingsLabel"> Preview data of the first
+                                    <input type="text" id="numPreviewTrees" style="width: 30px;" placeholder="3" value="3"> trees (1-10) </input>
+                                </label>
+                            </div><br>
+                            <div class="form-check form-check-inline settings">
                                 <input checked="1" type="checkbox" id="markerRenderCheckbox" class="form-check-input">
-                                <label class="form-check-label" for="markerRenderCheckbox">Show all resulting trees</label>
+                                <label class="form-check-label settingsLabel" for="markerRenderCheckbox">Show all resulting trees on map</label>
                             </div>
                         </div>
                     </div>
@@ -161,11 +166,7 @@
                     <span id="numRes"></span> trees found 
                     <span id="previewLabel">. Preview of the first three trees:</span>
                 </p>
-                <ul id="treeTabs" class="nav nav-tabs" style="width: calc(100% - 150px);">
-                    <li id="treeTab0" class="nav-item"><a class="nav-link treeTab active" onclick="toggleTab(this)">1</a></li>
-                    <li id="treeTab1" class="nav-item"><a class="nav-link treeTab" onclick="toggleTab(this)">2</a></li>
-                    <li id="treeTab2" class="nav-item"><a class="nav-link treeTab" onclick="toggleTab(this)">3</a></li>
-                </ul>
+                <ul id="treeTabs" class="nav nav-tabs" style="width: calc(100% - 150px);"></ul>
                 <div style="float: right; padding-left: 3rem; margin-left: -3rem; width: 210px; white-space: nowrap;">
                     <button id="saveJsonButton" type="button" class="btn btn-success ms-2" onclick="saveJsonOutput()" style="float: none; display: block;">
                         Save JSON

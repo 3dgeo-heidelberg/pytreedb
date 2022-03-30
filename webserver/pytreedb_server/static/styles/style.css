@@ -455,7 +455,7 @@ input.form-check-input {
     margin-bottom: 0;
 }
 
-#markerRenderCheckbox + label {
+.settingsLabel {
     color: #198754;
 }
 

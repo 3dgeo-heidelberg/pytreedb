@@ -93,14 +93,14 @@ Please cite the following publication when using pytreedb in your research and r
 
 ```
 article{pytreedb,
-author = {Bernhard Höfle and Jiani Qu and Lukas Winiwarter and Hannah Weiser and Jannika Schäfer and Fabian E. Fassnacht}
+author = {Bernhard Höfle and Jiani Qu and Lukas Winiwarter and Hannah Weiser and Vivien Zahs and Jannika Schäfer and Fabian E. Fassnacht}
 title = {pytreedb: library for point clouds of tree vegetation objects},
 journal = {},
 year = {2022},
 number = {},
 volume = {-},
 doi = {-},
-url = {-},
+url = {https://github.com/3dgeo-heidelberg/pytreedb},
 } 
  ```
 ## Funding / Acknowledgements

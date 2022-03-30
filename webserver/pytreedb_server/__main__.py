@@ -122,8 +122,7 @@ def exportFC():
 @app.route('/search/lazlinks', methods=['POST'])
 def exportLazLinks():
     query = json.loads(request.form['query'])
-    res = mydb.query(query, {'_id': False, 'properties.data': 1})
-    links = [obj['file'] for tree in res for obj in tree['properties']['data']]
+    links = mydb.get_pointcloud_urls(mydb.query(query, {'_id': False, 'properties.data': 1}))
     return {'links': links}
 
 @app.route('/getitem/<index>')

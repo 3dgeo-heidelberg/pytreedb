@@ -4,7 +4,7 @@
 """Type definitions for type checking purposes."""
 
 import os
-from typing import Union, TypeVar, NewType
+from typing import TypeVar, NewType
 
 PathLike = TypeVar("PathLike", str, os.PathLike, None)
 
@@ -18,4 +18,3 @@ def URL(s: str) -> _Url:
     if not s.startswith('https://') or s.startswith('http://'):
         raise TypeError(f"{s} is not a valid URL")
     return _Url(s)
-

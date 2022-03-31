@@ -8,3 +8,12 @@ markers = [
     "export: mark tests for exporting data",
     "query: mark tests for querying data",
 ]
+
+[tool.black]
+line-length = 120
+exclude = '''
+/(
+    \.git
+  | __pycache__
+)/
+'''

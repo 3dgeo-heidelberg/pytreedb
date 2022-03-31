@@ -27,14 +27,14 @@ def flatten_json(y: dict) -> dict:
     """
     out = {}
 
-    def flatten(x, name=''):
+    def flatten(x, name=""):
         if type(x) is dict:
             for a in x:
-                flatten(x[a], name + a + '_')
+                flatten(x[a], name + a + "_")
         elif type(x) is list:
             i = 0
             for a in x:
-                flatten(a, name + str(i) + '_')
+                flatten(a, name + str(i) + "_")
                 i += 1
         else:
             out[name[:-1]] = x
@@ -51,7 +51,7 @@ def gen_dict_extract(key_: str, dict_: dict) -> Iterator:
     :param dict dict_:
     :return:
     """
-    if hasattr(dict_, 'items'):
+    if hasattr(dict_, "items"):
         for k, v in dict_.items():
             if k == key_:
                 yield v
@@ -72,7 +72,7 @@ def gen_dict_extract_regex(key_: str, dict_: dict, regex_: str) -> Iterator:
     :param str regex_:
     :return:
     """
-    if hasattr(dict_, 'items'):
+    if hasattr(dict_, "items"):
         for k, v in dict_.items():
             if v is None:
                 continue
@@ -95,7 +95,7 @@ def gen_dict_extract_exact(key_: str, dict_: dict, exact_: str) -> Iterator:
     :param str exact_:
     :return:
     """
-    if hasattr(dict_, 'items'):
+    if hasattr(dict_, "items"):
         for k, v in dict_.items():
             if k == key_ and v == exact_:
                 yield v
@@ -126,7 +126,7 @@ def gen_dict_extract_numeric_comp(key_: str, dict_: dict, exact_: str, operator_
     :return:
     """
 
-    if hasattr(dict_, 'items'):
+    if hasattr(dict_, "items"):
         for k, v in dict_.items():
             if k == key_ and operator_(float(v), exact_) is True:
                 yield v
@@ -150,7 +150,7 @@ def gen_dict_extract_date_comp(key_: str, dict_: dict, date_: DateString, operat
     :return:
     """
 
-    if hasattr(dict_, 'items'):
+    if hasattr(dict_, "items"):
         for k, v in dict_.items():
             try:
                 v_date_parts = v.split("-")
@@ -181,10 +181,10 @@ def hash_file(filename: PathLike) -> str:
     h = hashlib.sha1()
 
     # open file for reading in binary mode
-    with open(filename, 'rb') as file:
+    with open(filename, "rb") as file:
         # loop till the end of the file
         chunk = 0
-        while chunk != b'':
+        while chunk != b"":
             # read only 1024 bytes at a time
             chunk = file.read(1024)
             h.update(chunk)
@@ -208,13 +208,10 @@ def download_extract_zip_tempdir(url: URL) -> PathLike:
     try:
         urllib.request.urlretrieve(url, zip_temp_file)
     except (socket.gaierror, urllib.error.URLError) as err:
-        raise ConnectionError(
-            f"could not download {url} due to {err}\n"
-            f"The URL you provided might be corrupt."
-        )
+        raise ConnectionError(f"Could not download {url} due to {err}\n" f"The URL you provided might be corrupt.")
     # unzip dataset
     try:
-        zip_ref = zipfile.ZipFile(zip_temp_file, 'r')
+        zip_ref = zipfile.ZipFile(zip_temp_file, "r")
     except zipfile.BadZipFile as e:
         raise zipfile.BadZipFile(f"Problem reading zip file from URL: {e}")
     zip_ref.extractall(zip_temp_dir)
@@ -233,7 +230,10 @@ def download_file_to_tempdir(url: URL) -> PathLike:
     """
     temp_file = tempfile.NamedTemporaryFile().name
     ssl._create_default_https_context = ssl._create_unverified_context
-    urllib.request.urlretrieve(url, temp_file)
+    try:
+        urllib.request.urlretrieve(url, temp_file)
+    except (socket.gaierror, urllib.error.URLError) as err:
+        raise ConnectionError(f"Could not download {url} due to {err}\n" f"The URL you provided might be corrupt.")
     return temp_file
 
 
@@ -261,7 +261,7 @@ def query_yes_no(question: str, default: str = "yes") -> bool:
             sys.stdout.write("Please respond with 'yes' or 'no' " "(or 'y' or 'n').\n")
 
 
-def write_list_to_csv(outfile_name: str, content_list: list, none_str: str = '') -> str:
+def write_list_to_csv(outfile_name: str, content_list: list, none_str: str = "") -> str:
     """
     Write 2D list to CSV file.
 
@@ -275,7 +275,7 @@ def write_list_to_csv(outfile_name: str, content_list: list, none_str: str = '')
     try:
         with open(outfile_name, "w") as f:
             for row in content_list:
-                f.write("%s\n" % ','.join(none_str if col is None else str(col) for col in row))
+                f.write("%s\n" % ",".join(none_str if col is None else str(col) for col in row))
         return outfile_name
     except:
         print(f"Could not write CSV file {outfile_name}. Check path and file write permissions.")

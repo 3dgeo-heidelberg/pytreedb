@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 import pytreedb.db_utils
 import zipfile
+
 # import tempfile
 
 
@@ -38,32 +39,66 @@ root_path = str(Path(__file__).parent.parent.parent)
 @pytest.fixture()
 def mydb(tmp_path):
     my_dbfile = tmp_path / "temp.db"
-    mydb = db.PyTreeDB(
-        dbfile=my_dbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
-    )
+    mydb = db.PyTreeDB(dbfile=my_dbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col})
     return mydb
 
 
 @pytest.mark.imports
-@pytest.mark.parametrize('data_path, n_trees_expected',
-                         [("https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip", 1491),
-                          (f"{root_path}/data/test/test_geojsons", 6)
-                          ])
+@pytest.mark.parametrize(
+    "data_path, n_trees_expected",
+    [
+        (
+            "https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip",
+            1491,
+        ),
+        (f"{root_path}/data/test/test_geojsons", 6),
+    ],
+)
 def test_import_data(mydb, data_path, n_trees_expected):
     """Tests reading data (json files) from local file or from URL of ZIP archive with files named like *.*json"""
 
-    assert (mydb.import_data(data_path) == n_trees_expected)
+    assert mydb.import_data(data_path) == n_trees_expected
 
 
 @pytest.mark.imports
-@pytest.mark.parametrize('data_path, n_trees_expected',
-                         [("https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/data.db", 1491),
-                          (f"{root_path}/data/test/data.db", 1491)
-                          ])
+@pytest.mark.parametrize(
+    "data_path, n_trees_expected",
+    [
+        (
+            "https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/data.db",
+            1491,
+        ),
+        (f"{root_path}/data/test/data.db", 1491),
+    ],
+)
 def test_import_db(mydb, data_path, n_trees_expected):
     """Tests reading local database file or URL to database file"""
 
-    assert (mydb.import_db(data_path) == n_trees_expected)
+    assert mydb.import_db(data_path) == n_trees_expected
+
+
+@pytest.mark.imports
+def test_import_db_wrong_path(mydb):
+    """Tests importing database from a corrupt local path"""
+    # given
+    my_corrupt_path = "corrupt/path/to/file.db"
+
+    # Check if raises error
+    with pytest.raises(FileNotFoundError) as e:
+        mydb.import_db(my_corrupt_path)
+    assert e.type is FileNotFoundError
+
+
+@pytest.mark.imports
+def test_import_db_wrong_url(mydb):
+    """Tests importing data from a corrupt URL"""
+    # given
+    my_corrupt_url = "https://githubbb.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/data.db"
+
+    # Check if raises error
+    with pytest.raises(ConnectionError) as e:
+        mydb.import_db(my_corrupt_url)
+    assert e.type is ConnectionError
 
 
 @pytest.mark.imports
@@ -156,11 +191,14 @@ def test_export_data_content(mydb, tmp_path):
 
 
 @pytest.mark.export
-@pytest.mark.parametrize('dir_name, i, trees, ncols_expected',
-                         [("test_geojsons", 2, None, 9),
-                          ("test_geojsons", 0, [0, 2], 9),
-                          ("test_geojson_no_position", 0, None, 5)
-                          ])
+@pytest.mark.parametrize(
+    "dir_name, i, trees, ncols_expected",
+    [
+        ("test_geojsons", 2, None, 9),
+        ("test_geojsons", 0, [0, 2], 9),
+        ("test_geojson_no_position", 0, None, 5),
+    ],
+)
 def test_convert_to_csv_general(mydb, tmp_path, dir_name, i, trees, ncols_expected):
     """Test function to export data to csv - checking the general tree info"""
     input_data = f"{root_path}/data/test/{dir_name}"
@@ -187,7 +225,13 @@ def test_convert_to_csv_general(mydb, tmp_path, dir_name, i, trees, ncols_expect
     # table should contain as many rows as there are trees
     assert df_general.shape[0] == n
     # table should contain: tree_id, species, lat_epsg4326, long_epsg4326, elev_epsg4326
-    assert {"tree_id", "species", "lat_epsg4326", "long_epsg4326", "elev_epsg4326"}.issubset(df_general.columns)
+    assert {
+        "tree_id",
+        "species",
+        "lat_epsg4326",
+        "long_epsg4326",
+        "elev_epsg4326",
+    }.issubset(df_general.columns)
     # table should contain expected number of cols
     # (9 if position is given in custom reference system as "measurement", otherwise 5)
     assert len(df_general.columns) == ncols_expected
@@ -195,16 +239,13 @@ def test_convert_to_csv_general(mydb, tmp_path, dir_name, i, trees, ncols_expect
     assert df_general.loc[i]["tree_id"] == data_dict["properties"]["id"]
     assert df_general.loc[i]["species"] == data_dict["properties"]["species"]
     np.testing.assert_equal(
-                            df_general.loc[i][["long_epsg4326", "lat_epsg4326", "elev_epsg4326"]].to_numpy(),
-                            data_dict["geometry"]["coordinates"]
+        df_general.loc[i][["long_epsg4326", "lat_epsg4326", "elev_epsg4326"]].to_numpy(),
+        data_dict["geometry"]["coordinates"],
     )
 
 
 @pytest.mark.export
-@pytest.mark.parametrize('i, trees',
-                         [(4, None),
-                          (1, [1, 3])
-                          ])
+@pytest.mark.parametrize("i, trees", [(4, None), (1, [1, 3])])
 def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
     """Test function to export data to csv - checking the source-specific tree metrics"""
     input_data = f"{root_path}/data/test/test_geojsons"
@@ -239,11 +280,14 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
 
 
 @pytest.mark.query
-@pytest.mark.parametrize('filter_dict, n_expected',
-                         [({"properties.species": "Abies alba"}, 25),
-                          ({"properties.data.mode": "TLS"}, 264),
-                          ({"properties.measurements.source": "FI"}, 1060)
-                          ])
+@pytest.mark.parametrize(
+    "filter_dict, n_expected",
+    [
+        ({"properties.species": "Abies alba"}, 25),
+        ({"properties.data.mode": "TLS"}, 264),
+        ({"properties.measurements.source": "FI"}, 1060),
+    ],
+)
 def test_query_single(mydb, filter_dict, n_expected):
     test_dbfile = f"{root_path}/data/test/data.db"
     mydb.load(test_dbfile)
@@ -252,12 +296,15 @@ def test_query_single(mydb, filter_dict, n_expected):
 
 
 @pytest.mark.query
-@pytest.mark.parametrize('filter_dict, n_expected',
-                         [({'properties.data.point_count': {"$gt": 100000}}, 3),
-                          ({'properties.measurements.DBH_cm': {"$gt": 25}}, 3),
-                          ({'properties.measurements.height_m': {"$lt": 30}}, 5),
-                          ({'properties.data.quality': {"$lte": 2}}, 4)
-                          ])
+@pytest.mark.parametrize(
+    "filter_dict, n_expected",
+    [
+        ({"properties.data.point_count": {"$gt": 100000}}, 3),
+        ({"properties.measurements.DBH_cm": {"$gt": 25}}, 3),
+        ({"properties.measurements.height_m": {"$lt": 30}}, 5),
+        ({"properties.data.quality": {"$lte": 2}}, 4),
+    ],
+)
 def test_query_numeric_comparison(mydb, filter_dict, n_expected):
     input_data = f"{root_path}/data/test/test_geojsons"
     mydb.import_data(input_data)
@@ -266,11 +313,24 @@ def test_query_numeric_comparison(mydb, filter_dict, n_expected):
 
 
 @pytest.mark.query
-@pytest.mark.parametrize('filter_dict, n_expected',
-                         [({"$and": [{"properties.data.quality": 1}, {"properties.data.mode": "TLS"}]}, 34),
-                          ({"$and": [{"properties.data.quality": {"$lte": 2}},
-                                     {"properties.data.canopy_condition": "leaf-off"}]}, 1036)
-                          ])
+@pytest.mark.parametrize(
+    "filter_dict, n_expected",
+    [
+        (
+            {"$and": [{"properties.data.quality": 1}, {"properties.data.mode": "TLS"}]},
+            34,
+        ),
+        (
+            {
+                "$and": [
+                    {"properties.data.quality": {"$lte": 2}},
+                    {"properties.data.canopy_condition": "leaf-off"},
+                ]
+            },
+            1036,
+        ),
+    ],
+)
 def test_query_logical(mydb, filter_dict, n_expected):
     test_dbfile = f"{root_path}/data/test/data.db"
     mydb.load(test_dbfile)

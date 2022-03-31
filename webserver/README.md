@@ -11,6 +11,15 @@ This package provides a webserver as a frontend to a `pytreedb` instance.
   - `dotenv`
   
 ## Deployment for local dev
+### Installation
+The `pytreedb_server` package can be a) installed via PyPI, b) installed via pip from the git repo or c) used as a local directory.
+
+a) \[Recommended\]: Run `python -m pip install pytreedb_server` in a prepared (e.g., conda) environment, which will also install `pytreedb`. You can then import `pytreedb_server` and `pytreedb` from anywhere.
+
+b) Clone the git repository, and change directory into the `webserver` dir. Then run `python -m pip install .`, which will take the local files to create a package, and copy it to the environment's `site-packages` directory. You  can then import `pytreedb_server` and `pytreedb` from anywhere.
+
+c) Clone the git repository, and change directory into the `webserver` dir. Run the commands to run the local webserver (see below) *from this directory*. You will need to provide the `PYTREEDB_LOCATION` parameter (see next subsection).
+
 ### Setup using `.env`
 We use the `dotenv` package to configure the server. Both `pytreedb` and `flask` parameters should be written to
 the `.env`-File in the current directory: 

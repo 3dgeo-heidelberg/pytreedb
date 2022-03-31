@@ -1,9 +1,7 @@
-#load modules
-import sys
+# load modules
 from pytreedb import db
 import os
 import json
-import numpy as np
 
 print("##########################################")
 print("  Run some example queries and exports...")
@@ -26,7 +24,7 @@ for tree in mydb:
     print(tree['properties']['data'])
     print("----------------------------- stop after 1 iteration -----------------------------------")
     break
-    
+
 print("# Access objects via index subscription (__getitem__)")
 print(f" - Get subset dict with int index:  mydb[[2]] --> {mydb[[2]]}")
 print(f" - Get single tree object with int index: mydb[0] --> {mydb[0]}")
@@ -42,8 +40,8 @@ print("\n# Queries on single fields")
 print(" - Trees fulfilling filter (as dict) - Abies alba:", len(mydb.query({"properties.species": "Abies alba"},
                                                                            limit=10)))
 print(" - Query result trees with quality=3 (on any dataset): ", len(mydb.query({"properties.data.quality": 3})))
-print(" - Query result 'leaf-on' :", len(mydb.query({'properties.data.canopy_condition': 'leaf-on'})))  
-print(" - Query result 'leaf-off':", len(mydb.query({'properties.data.canopy_condition': 'leaf-off'}))) 
+print(" - Query result 'leaf-on' :", len(mydb.query({'properties.data.canopy_condition': 'leaf-on'})))
+print(" - Query result 'leaf-off':", len(mydb.query({'properties.data.canopy_condition': 'leaf-off'})))
 print(" - Query result mode is 'ALS' :", len(mydb.query({"properties.data.mode": "ALS"})))
 
 print("\n#Queries with logical operator between conditions")

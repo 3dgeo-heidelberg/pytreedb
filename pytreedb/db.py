@@ -14,17 +14,28 @@ import pymongo
 from dotenv import dotenv_values  # .env  for DB credentials
 
 # import config values
-from pytreedb.db_conf import TEMPLATE_GEOJSON, INDEX_FIELDS, INDEX_UNIQUE_FIELDS, INDEX_GEOM_SPHERE_FIELDS, \
-    QUERY_SPECIES_FIELDNAME, QUERY_GEOMETRY
+from pytreedb.db_conf import (
+    TEMPLATE_GEOJSON,
+    INDEX_FIELDS,
+    INDEX_UNIQUE_FIELDS,
+    INDEX_GEOM_SPHERE_FIELDS,
+    QUERY_SPECIES_FIELDNAME,
+    QUERY_GEOMETRY,
+)
+
 # import own sub-modules
-from pytreedb.db_utils import flatten_json, download_extract_zip_tempdir, download_file_to_tempdir, write_list_to_csv, \
-    hash_file
+from pytreedb.db_utils import (
+    flatten_json,
+    download_extract_zip_tempdir,
+    download_file_to_tempdir,
+    write_list_to_csv,
+)
 from .__init__ import __version__
 from ._types import PathLike, JSONString, DateString, URL
 
 
 class PyTreeDB:
-    """ This class is the starting point and the core component of pytreedb
+    """This class is the starting point and the core component of pytreedb
 
     :ivar PathLike dbfile: local file holding self.db
     :ivar dict mongodb: dict holding mongodb connection infos
@@ -36,7 +47,7 @@ class PyTreeDB:
     """
 
     def __init__(self, dbfile: PathLike, mongodb: dict = None):
-        """ This function initializes a class object
+        """This function initializes a class object
 
         :param PathLike dbfile: local file holding self.db
         :param dict mongodb: dictionary holding mongodb connection infos
@@ -45,18 +56,27 @@ class PyTreeDB:
 
         if mongodb is None:
             try:
-                config = dotenv_values(os.path.join(os.getcwd(), '.env'))
-                mongodb = {"uri": config["CONN_URI"], "db": config["CONN_DB"], "col": config["CONN_COL"]}
+                config = dotenv_values(os.path.join(os.getcwd(), ".env"))
+                mongodb = {
+                    "uri": config["CONN_URI"],
+                    "db": config["CONN_DB"],
+                    "col": config["CONN_COL"],
+                }
             except:
-                print("Could not find or load expected .env file in current working directory. "
-                      "Consider changing working directory before initiating class.")
+                print(
+                    "Could not find or load expected .env file in current working directory. "
+                    "Consider changing working directory before initiating class."
+                )
                 # raise
                 sys.exit()
         self.dbfile = dbfile  # local file holding self.db
         self.mongodb = mongodb  # dict holding mongodb connection infos
         self.db = list()  # data container  -> list of dictionaries (single dicts equal json files)
         self.data = None  # path to input data imported with import (path of last import)
-        self.stats = {"n_trees": None, "n_species": None}  # dictionary holding summary statistics about database
+        self.stats = {
+            "n_trees": None,
+            "n_species": None,
+        }  # dictionary holding summary statistics about database
         self.i = 0  # needed for iterator
 
         try:
@@ -93,7 +113,7 @@ class PyTreeDB:
             return list(self.db[key] for key in item)
 
         elif isinstance(item, slice):
-            """Returns list of slicing selected trees(dict) """
+            """Returns list of slicing selected trees(dict)"""
             idx_array = np.arange(0, len(self.db))
             return self[idx_array[item]]
 
@@ -114,7 +134,8 @@ class PyTreeDB:
 
     def __copy__(self):
         raise Exception(
-            "Copying of PyTreeDb object is not yet safe. Lifehack: Make a new database and import the other db.")
+            "Copying of PyTreeDb object is not yet safe. Lifehack: Make a new database and import the other db."
+        )
 
     def save(self, dbfile: PathLike = None, sync: bool = False):
         """
@@ -127,8 +148,8 @@ class PyTreeDB:
         if dbfile is None:
             dbfile = self.dbfile  # if no filename is given as arg - just overwrite existing file in self.dbfile
         try:
-            with gzip.open(dbfile, 'w') as output_file:
-                output_file.write(json.dumps(self.db).encode('utf-8'))
+            with gzip.open(dbfile, "w") as output_file:
+                output_file.write(json.dumps(self.db).encode("utf-8"))
             if sync is True:
                 upload_result = self.mongodb_synchronize(clear=True)
                 print(f"{len(upload_result.inserted_ids)} trees synchronized with MongoDB server.")
@@ -143,8 +164,8 @@ class PyTreeDB:
 
         """
         try:
-            with gzip.open(dbfile, 'r') as input_file:
-                self.db = json.loads(input_file.read().decode('utf-8'))
+            with gzip.open(dbfile, "r") as input_file:
+                self.db = json.loads(input_file.read().decode("utf-8"))
             if sync is True:
                 upload_result = self.mongodb_synchronize(clear=True)
                 print(f"{len(upload_result.inserted_ids)} trees synchronized with MongoDB server.")
@@ -172,7 +193,10 @@ class PyTreeDB:
             self.clear()  # empty db
 
         self.data = Path(path)  # URL or local directory used as data storage
-        if urllib.parse.urlparse(str(path)).scheme in ('http', 'https',):  # Check if data is local path or URL
+        if urllib.parse.urlparse(str(path)).scheme in (
+            "http",
+            "https",
+        ):  # Check if data is local path or URL
             print(f"Download from: {path}")
             data_dir = download_extract_zip_tempdir(path)
         else:
@@ -180,7 +204,7 @@ class PyTreeDB:
             if not Path(data_dir).exists():
                 raise FileNotFoundError(f"Directory <{data_dir}> does not exist.")
         cnt = 0
-        for f in Path(data_dir).rglob('*.*json'):
+        for f in Path(data_dir).rglob("*.*json"):
             try:
                 self.add_tree_file(f)
                 cnt += 1
@@ -205,14 +229,19 @@ class PyTreeDB:
             self.clear()  # empty db
 
         self.data = Path(path)  # URL or local directory used as data storage
-        if urllib.parse.urlparse(str(path)).scheme in ('http', 'https',):  # Check if data is local path or URL
+        if urllib.parse.urlparse(str(path)).scheme in (
+            "http",
+            "https",
+        ):  # Check if data is local path or URL
             print(f"Download from: {path}")
             data_file = download_file_to_tempdir(path)
         else:
             data_file = path  # local data
+            if not Path(data_file).exists():
+                raise FileNotFoundError(f"File <{data_file}> does not exist.")
         try:
-            with gzip.open(data_file, 'r') as input_file:
-                data = json.loads(input_file.read().decode('utf-8'))
+            with gzip.open(data_file, "r") as input_file:
+                data = json.loads(input_file.read().decode("utf-8"))
         except:
             raise Exception(f"Could not read db file {data_file}. File might be not existing or corrupt.")
 
@@ -230,11 +259,11 @@ class PyTreeDB:
         try:
             for idx in INDEX_FIELDS:
                 # TODO: Local variable "resp" not used, call function without "resp = "?
-                resp = self.mongodb_col.create_index(idx)
+                self.mongodb_col.create_index(idx)
             for idx in INDEX_UNIQUE_FIELDS:
-                resp = self.mongodb_col.create_index(idx, unique=True)
+                self.mongodb_col.create_index(idx, unique=True)
             for idx in INDEX_GEOM_SPHERE_FIELDS:
-                resp = self.mongodb_col.create_index([idx])
+                self.mongodb_col.create_index([idx])
         except:
             print(f"Could not create index: {idx} defined in db_conf.py")
 
@@ -268,9 +297,9 @@ class PyTreeDB:
 
         """
         tree_dict = tree.copy()
-        # Add meta data 
-        tree_dict['_id_x'] = len(self.db)  # store id (increment) for faster operations on result sets
-        tree_dict['_date'] = datetime.datetime.now().isoformat()  # Get insertion date
+        # Add meta data
+        tree_dict["_id_x"] = len(self.db)  # store id (increment) for faster operations on result sets
+        tree_dict["_date"] = datetime.datetime.now().isoformat()  # Get insertion date
         self.db.append(tree_dict)  # add to list
 
     def add_tree_file(self, filenamepath: PathLike):
@@ -282,13 +311,12 @@ class PyTreeDB:
         """
         # Validate input file first
         if self.validate_json(filenamepath) is False:
-            raise ValueError(f"File '{filenamepath}' is not a valid format for pytreedb."
-                             f"See template in db_conf.py")
+            raise ValueError(f"File '{filenamepath}' is not a valid format for pytreedb." f"See template in db_conf.py")
         # Add data
         with open(filenamepath, "r") as f_json:
             json_string = json.loads(f_json.read())
             tree_dict = json_string.copy()
-            tree_dict['_file'] = Path(filenamepath).name
+            tree_dict["_file"] = Path(filenamepath).name
         self.add_tree(tree_dict)
 
     def get_db_file(self):
@@ -321,7 +349,9 @@ class PyTreeDB:
         res = self.mongodb_col.distinct("properties.species")
         return list(res)
 
-    def get_shared_properties(self) -> list[str]:  # this is currently not done in DB, but sequentially on list(dict).
+    def get_shared_properties(
+        self,
+    ) -> list[str]:  # this is currently not done in DB, but sequentially on list(dict).
         """
         Returns all object.properties that are shared among all objects
 
@@ -330,10 +360,9 @@ class PyTreeDB:
 
         """
         try:
-            setlist = [set(self.db[i]['properties'].keys()) for i in range(0, len(self.db))]
+            setlist = [set(self.db[i]["properties"].keys()) for i in range(0, len(self.db))]
             return sorted(list(set.intersection(*setlist)))
-        # TODO: "ex" not used: add expected Exception and/or remove "as ex"?
-        except Exception as ex:
+        except Exception:
             return []
 
     def query(self, *args, **kwargs) -> list[dict]:
@@ -368,9 +397,9 @@ class PyTreeDB:
         :rtype: list[dict]
         """
         if regex is True:
-            res = self.mongodb_col.find({key: {"$regex": value}}, {'_id': False})
+            res = self.mongodb_col.find({key: {"$regex": value}}, {"_id": False})
         else:
-            res = self.mongodb_col.find({key: value}, {'_id': False})
+            res = self.mongodb_col.find({key: value}, {"_id": False})
         return [e for e in res]
 
     def query_by_key_exists(self, key: str) -> list[dict]:
@@ -381,7 +410,7 @@ class PyTreeDB:
         :return: list of trees (tree dictionaries) fulfilling the query
         :rtype: list[dict]
         """
-        res = self.mongodb_col.find({key: {'$exists': 1}}, {'_id': False})
+        res = self.mongodb_col.find({key: {"$exists": 1}}, {"_id": False})
         return [e for e in res]
 
     def query_by_numeric_comparison(self, key: str, value: str, comp_op: str):
@@ -396,10 +425,10 @@ class PyTreeDB:
         :return: list of trees (tree dictionaries) fulfilling the query
         :rtype: list[dict]
         """
-        res = self.mongodb_col.find({QUERY_SPECIES_FIELDNAME: {"$regex": regex}}, {'_id': False})
+        res = self.mongodb_col.find({QUERY_SPECIES_FIELDNAME: {"$regex": regex}}, {"_id": False})
         return [e for e in res]
 
-    def query_by_date(self, key: str, start, end: bool = False) -> list[dict]:
+    def query_by_date(self, key: str, start: DateString, end: DateString) -> list[dict]:
         """
         Returns trees(list) fulfilling the date of key lies between start and end date in format 'YYYY-MM-DD'
         If no end date is given, the current day is taken.
@@ -415,15 +444,15 @@ class PyTreeDB:
 
         """
         try:
-            startdate = datetime.datetime.strptime(start, '%Y-%m-%d').isoformat()
+            startdate = datetime.datetime.strptime(start, "%Y-%m-%d").isoformat()
             if end is False:
                 enddate = datetime.datetime.now().isoformat()  # take today
             else:
-                enddate = datetime.datetime.strptime(end, '%Y-%m-%d').isoformat()
+                enddate = datetime.datetime.strptime(end, "%Y-%m-%d").isoformat()
         except:
             raise Exception("Date format is required as string 'YYYY-MM-DD' ")
 
-        res = self.mongodb_col.find({key: {"$gte": startdate, "$lte": enddate}}, {'_id': False})
+        res = self.mongodb_col.find({key: {"$gte": startdate, "$lte": enddate}}, {"_id": False})
         return [e for e in res]
 
     def query_by_geometry(self, geom: Union[JSONString, dict], distance: float = 0.0) -> list[dict]:
@@ -464,7 +493,7 @@ class PyTreeDB:
             spatial_query = {QUERY_GEOMETRY: {"$geoWithin": {"$geometry": geom}}}
 
         # Run query on spatial index
-        res = self.mongodb_col.find(spatial_query, {'_id': False})
+        res = self.mongodb_col.find(spatial_query, {"_id": False})
 
         return [e for e in res]
 
@@ -478,12 +507,13 @@ class PyTreeDB:
 
         """
         try:
-            return [k['_id_x'] for k in trees]
+            return [k["_id_x"] for k in trees]
         except:
             if not isinstance(trees, list):
                 print(
                     f"Input for function {sys._getframe().f_code.co_name}() must be a list. "
-                    f"Given wrong type: {type(trees)}.) ")
+                    f"Given wrong type: {type(trees)}.) "
+                )
             else:
                 print(f"Could not get id for: {trees}")
             return []
@@ -501,12 +531,13 @@ class PyTreeDB:
         :rtype: list[str]
         """
         try:
-            return [obj['file'] for tree in trees for obj in tree['properties']['data']]
+            return [obj["file"] for tree in trees for obj in tree["properties"]["data"]]
         except:
             if not isinstance(trees, list):
                 print(
                     f"Input for function {sys._getframe().f_code.co_name}() must be a list. "
-                    f"Given wrong type: {type(trees)}.) ")
+                    f"Given wrong type: {type(trees)}.) "
+                )
             else:
                 print(f"Could not get id for: {trees}")
             return []
@@ -543,7 +574,7 @@ class PyTreeDB:
 
         """
         keys_template = list(flatten_json(json.loads(TEMPLATE_GEOJSON)).keys())
-        keys_json = list(flatten_json(json.loads(open(json_file, 'r').read())).keys())
+        keys_json = list(flatten_json(json.loads(open(json_file, "r").read())).keys())
         fnd = 0
         for k in keys_template:
             if k in keys_json:
@@ -570,17 +601,21 @@ class PyTreeDB:
             os.mkdir(outdir)
         files_written = []
         for tree in self:
-            if trees is None or tree['_id_x'] in trees:
+            if trees is None or tree["_id_x"] in trees:
                 json_content = self.get_tree_as_json(tree)
-                json_filename = os.path.join(outdir, tree['_file'])
-                with open(json_filename, 'w') as json_filept:
+                json_filename = os.path.join(outdir, tree["_file"])
+                with open(json_filename, "w") as json_filept:
                     json_filept.write(json_content)
                 files_written.append(Path(json_filename))
         return files_written
 
-    def convert_to_csv(self, outdir: PathLike, trees: list[int] = None,
-                       filename_general: str = 'result_general.csv',
-                       filename_metrics: str = 'result_metrics.csv') -> list[PathLike]:
+    def convert_to_csv(
+        self,
+        outdir: PathLike,
+        trees: list[int] = None,
+        filename_general: str = "result_general.csv",
+        filename_metrics: str = "result_metrics.csv",
+    ) -> list[PathLike]:
         """
         Exports trees to local csv files. Each export creates two separate csv files,
         one for general information, one for metrics.
@@ -599,19 +634,26 @@ class PyTreeDB:
         csv_metrics = []
         metrics_header = ["tree_id"]
         csv_general = []
-        general_header = ["tree_id", "species",
-                          "lat_epsg4326", "long_epsg4326", "elev_epsg4326"]
+        general_header = [
+            "tree_id",
+            "species",
+            "lat_epsg4326",
+            "long_epsg4326",
+            "elev_epsg4326",
+        ]
         if not trees:
             data = self.db
         else:
             data = self[trees]
         for tree in data:
             # writing "general" table: species, lat, long, elev
-            general_line = [tree["properties"]["id"],
-                            tree["properties"]["species"],
-                            tree["geometry"]["coordinates"][1],
-                            tree["geometry"]["coordinates"][0],
-                            tree["geometry"]["coordinates"][2]]
+            general_line = [
+                tree["properties"]["id"],
+                tree["properties"]["species"],
+                tree["geometry"]["coordinates"][1],
+                tree["geometry"]["coordinates"][0],
+                tree["geometry"]["coordinates"][2],
+            ]
             # writing "metrics" table: metrics in columns, one row per data source
             for entry in tree["properties"]["measurements"]:
                 keys = entry.keys()

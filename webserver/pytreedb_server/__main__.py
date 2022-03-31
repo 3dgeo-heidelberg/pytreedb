@@ -155,21 +155,24 @@ def exportcsv():
         attachment_filename='csv.zip'
     )
 
+
+mydb = db.PyTreeDB(dbfile=db_name, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col})
+if db_download:
+    mydb.import_data(db_download, overwrite=True)
+else:
+    try:
+        mydb.import_db(db_name, overwrite=False)
+    except:
+        print(f"Error: could not import database file '{db_name}'.")
+        print("       You probably need to download/import data beforehand, e.g.")
+        print("       by providing a link in the 'PYTREEDB_DOWNLOAD' variable in the '.env'-File.")
+        print("       Refer to README.md for more information")
+        print("-- Original error follows below --")
+        raise
+
+app.config['CORS_HEADERS'] = 'Content-Type'
+dl_progress = {'currItem': 0, 'numAllItems': 0}
+
 # when module is loaded, start flask server
 if __name__ == '__main__':
-    mydb = db.PyTreeDB(dbfile=db_name, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col})
-    if db_download:
-        mydb.import_data(db_download, overwrite=True)
-    else:
-        try:
-            mydb.import_db(db_name, overwrite=False)
-        except:
-            print(f"Error: could not import database file '{db_name}'.")
-            print("       You probably need to download/import data beforehand, e.g.")
-            print("       by providing a link in the 'PYTREEDB_DOWNLOAD' variable in the '.env'-File.")
-            print("       Refer to README.md for more information")
-            print("-- Original error follows below --")
-            raise
-    app.config['CORS_HEADERS'] = 'Content-Type'
-    dl_progress = {'currItem': 0, 'numAllItems': 0}
     app.run(port=os.environ.get("FLASK_RUN_PORT"), host=os.environ.get("FLASK_RUN_HOST"))

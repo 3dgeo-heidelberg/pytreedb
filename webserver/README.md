@@ -46,8 +46,88 @@ python -m pytreedb_server
 ```
 
 ## Deployment for production
-Note that Flask is not suitable for production. 
-See https://flask.palletsprojects.com/en/2.0.x/deploying/ for deployment options
+Note that Flask is not suitable for production. However, it is possible to use the package *as-is* in Apache WGSI, following these steps:
+
+1) Install `mod_wsgi` **in the conda environment used for the server**. In the following, it is assumed that the environment is called `pytreedb`.
+```
+conda activate pytreedb
+conda install mod_wsgi -c conda-forge -y
+```
+
+2) Install `pytreedb_server` from pip:
+```
+python -m pip install pytreedb_server
+```
+
+3) Get the path to the WSGI library:
+```
+mod_wsgi-express module-config
+```
+
+This e.g. gives
+```
+LoadModule wsgi_module "/opt/miniconda3/envs/pytreedb/lib/python3.9/site-packages/mod_wsgi/server/mod_wsgi-py39.cpython-39-x86_64-linux-gnu.so"
+WSGIPythonHome "/opt/miniconda3/envs/pytreedb"
+```
+
+4) Create/edit the apache server configuration. Here, we will overwrite the default configuration. Edit the file `/etc/apache2/sites-enabled/000-default.conf` with a text editor of your choice (`vim`, `nano`) as `root`, and insert these lines.
+Be sure to adapt all the paths related to your `conda` installation and the location where you want to have your database placed (in this example: `/var/www/pytreedb`)
+```
+WSGIPythonHome "/opt/miniconda3/envs/pytreedb"
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    LoadModule wsgi_module "/opt/miniconda3/envs/pytreedb/lib/python3.9/site-packages/mod_wsgi/server/mod_wsgi-py39.cpython-39-x86_64-linux-gnu.so"
+
+    WSGIDaemonProcess pytreedb python-path=/opt/miniconda3/envs/pytreedb/lib/python3.9/site-packages home=/var/www/pytreedb/
+    WSGIScriptAlias / /var/www/pytreedb/pytreedb_server.wsgi
+
+    <Directory /var/www/pytreedb/>
+        WSGIProcessGroup pytreedb
+        WSGIApplicationGroup %{GLOBAL}
+        Order deny,allow
+        Allow from all
+    </Directory>
+</VirtualHost>
+```
+
+5) Create a new file `/var/www/pytreedb/pytreedb_server.wsgi` (adapt paths as required) and add the following line:
+```
+from pytreedb_server.__main__ import app as application
+```
+If you have not installed `pytreedb` and `pytreedb_server` via pip, you need to add the paths to the installations prior:
+```
+import sys
+sys.path.insert(0, '/var/www/pytreedb/webserver/')
+sys.path.insert(0, '/var/www/pytreedb/')
+from pytreedb_server.__main__ import app as application
+```
+
+6) Create a new environment file `/var/www/pytreedb/.env` and fill out the following parameters:
+```
+CONN_URI = ""
+CONN_DB = ""
+CONN_COL = ""
+
+PYTREEDB_FILENAME="/var/www/pytreedb/syssifoss.db"
+PYTREEDB_DOWNLOAD=""
+```
+See the above section for details on the parameters. The `PYTREEDB_FILENAME` needs to be writable by the web user (typically `www-data`). When running for the first time, it might be neccessary to download data using `PYTREEDB_DOWNLOAD`. 
+
+7) Restart apache and check the status:
+```
+sudo systemctl restart apache2
+systemctl status apache2.service
+```
+
+8) Navigate to http://127.0.0.1/ and check if everything works as expected.
+
+In case of any changes (e.g. in the `.env`-File), reload apache2 as in step 7. If you used the `PYTREEDB_DOWNLOAD`, make sure to remove it again **and** reload the server, otherwise the database will be downloaded with every http request.
+
+See https://flask.palletsprojects.com/en/2.0.x/deploying/ for other deployment options.
 
 
 ## Usage

@@ -6,15 +6,15 @@
 import os
 from typing import TypeVar, NewType
 
-PathLike = TypeVar("PathLike", str, os.PathLike, None)
+PathLike = TypeVar("PathLike", str, os.PathLike)
 
 JSONString = NewType("JSONString", str)
 DateString = NewType("DateString", str)
 
-_Url = NewType('_Url', str)
+_Url = NewType("_Url", str)
 
 
 def URL(s: str) -> _Url:
-    if not s.startswith('https://') or s.startswith('http://'):
+    if not s.startswith("https://") or s.startswith("http://"):
         raise TypeError(f"{s} is not a valid URL")
     return _Url(s)

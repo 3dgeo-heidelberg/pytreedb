@@ -19,4 +19,7 @@ dependencies:
   - pre-commit
   - pip:
     - pymongo[srv]
-
+    - flake8
+    - flake8-nb
+    - black[jupyter]
+    - black_nbconvert

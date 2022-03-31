@@ -1,13 +1,11 @@
-import sys
-import os
-import json
+
 from pytreedb import db
 
 print("##########################################")
 print("  Run some example imports...")
 print("##########################################")
 
-print("# Create pytreedb - incl. local file and mongoDB connection") 
+print("# Create pytreedb - incl. local file and mongoDB connection")
 mydbfile = 'my_first_pytree.db'  # file where database is stored locally additionally to MongoDB
 
 print("# Create PyTreeDB object and read MongoDB connection from local .env file")
@@ -19,7 +17,7 @@ mydb.import_data(r'https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/te
 print(mydb.get_stats())  # print short stats after import
 
 print("# Import from URL with GeoJSON files but appending not clearing the pytreedb first")
-mydb.import_data(r'https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip', overwrite=False)
+mydb.import_data('https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip', overwrite=False)
 print(mydb.get_stats())
 
 print("# Import and append data from local already existing pytreedb file")
@@ -53,8 +51,8 @@ print(mydb.get_stats())
 print("# Save database to compressed serialized version.")
 mydb.save()
 
-print("# Save database to compressed serialized version as a new file: "+"new_"+mydbfile)
-mydb.save("new_"+mydbfile)
+print(f"# Save database to compressed serialized version as a new file: new_{mydbfile}")
+mydb.save("new_" + mydbfile)
 
 print("# Validate input GEOJSON if all mandatory keys are present")
 print(mydb.validate_json(r'..\data\geojson\AbiAlb_BR03_01.geojson'))

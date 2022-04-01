@@ -10,7 +10,7 @@
 
 1. **Python library**: In case you need to access the tree database in your Python scripts during runtime of data processing and analysis. 
 2. **REST API**: In case you want to provide your datasets to any software over a REST API. The `pytreedb` server application is using the [Flask](https://pypi.org/project/Flask/) framework for local(host) usage and we provide instructions to setup for production deployment with [Apache WGSI](webserver#deployment-for-production).
-3. **Web frontend**: In case you want to share your valuable tree data to the community. Based on the REST API we showcase in this repository how a Web frontend can be easily implemented, which provides several query options, data export and also map views of query results.
+3. **Web frontend**: In case you want to share your valuable tree data to the community. Based on the REST API we showcase in this repository how a Web frontend can be easily implemented, which provides several query options, data export and also map views of query results. A showcase presenting the tree data of [Weiser et al. 2022](https://doi.org/10.5194/essd-2022-39) is given on http://pytreedb.geog.uni-heidelberg.de/.
 
 
 <img src="doc/_static/pytreedb_components_details.png"  width="45%">
@@ -69,8 +69,10 @@ As a starting point, please have a look to the [examples](examples) and [Jupyter
 
 
 ### Run it as a API server :computer:
-In order to provide a REST API to share your tree data you can use `pytreedb` in server mode. After installation of the `pytreedb-server` package you can follow the instructions here [webserver/README.md](webserver/README.md).
+In order to provide a REST API to share your tree data you can use `pytreedb` in server mode. After installation of the `pytreedb-server` Python package you can follow the instructions here [webserver/README.md](webserver/README.md).
 
+### Run it as a web server and frontend
+An example web frontend instance is running here: http://pytreedb.geog.uni-heidelberg.de/. The respective instructions and codes to install a webpage via the `pytreedb-server` Python package can be found in the webserver code section of `pytreedb`: [pytreedb/webserver](webserver/README.md). Web frontend codes can be easily adapted to your needs - see web programming codes in [static](webserver/pytreedb_server/static) and [templates](webserver/pytreedb_server/templates).
 
 ### Use it as via the REST API also from other programming languages (e.g. R stats)
 Straightforward access from any programming language is made possible via the REST API. We provide examples scripts for http API access, e.g. for R statistics in [examples_api](examples_api). The [R function example](examples_api/example.R) allows simple query and also download of the LAZ files for all trees of the query result.

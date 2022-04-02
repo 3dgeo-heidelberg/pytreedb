@@ -460,7 +460,7 @@ class PyTreeDB:
         Returns list of trees(dict) that are within a defined distance (in meters) from search geometry which is
         provided as GEOJSON dictionary or string; Geometry types Point and Polygon are supported, for example:
 
-        {"type": "Point", "coordinates": (0.0, 0.0)}
+        {"type": "Point", "coordinates": [0.0, 0.0]}
 
         { "type": "Polygon",
         "coordinates": [[[8.700980940620983, 49.012725603975355],
@@ -484,8 +484,12 @@ class PyTreeDB:
         try:
             if isinstance(geom, str):
                 geom = json.loads(geom)
-        except:
-            raise Exception(f"Could not convert search geometry to dictionary. Correct geojson?\n{geom}")
+        except json.decoder.JSONDecodeError as e:
+            raise ValueError(
+                f"Could not convert search geometry to dictionary.\n"
+                f"Check syntax of:\n{geom}\n"
+                f"JSON Error message: {e}"
+            )
 
         if geom["type"] == "Point":
             spatial_query = {QUERY_GEOMETRY: {"$nearSphere": {"$geometry": geom, "$maxDistance": distance}}}

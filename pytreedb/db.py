@@ -428,7 +428,7 @@ class PyTreeDB:
         res = self.mongodb_col.find({QUERY_SPECIES_FIELDNAME: {"$regex": regex}}, {"_id": False})
         return [e for e in res]
 
-    def query_by_date(self, key: str, start: DateString, end: DateString) -> list[dict]:
+    def query_by_date(self, key: str, start: DateString, end: DateString = None) -> list[dict]:
         """
         Returns trees(list) fulfilling the date of key lies between start and end date in format 'YYYY-MM-DD'
         If no end date is given, the current day is taken.
@@ -445,7 +445,7 @@ class PyTreeDB:
         """
         try:
             startdate = datetime.datetime.strptime(start, "%Y-%m-%d").isoformat()
-            if end is False:
+            if end is None:
                 enddate = datetime.datetime.now().isoformat()  # take today
             else:
                 enddate = datetime.datetime.strptime(end, "%Y-%m-%d").isoformat()

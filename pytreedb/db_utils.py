@@ -208,7 +208,7 @@ def download_extract_zip_tempdir(url: URL) -> PathLike:
     try:
         urllib.request.urlretrieve(url, zip_temp_file)
     except (socket.gaierror, urllib.error.URLError) as err:
-        raise ConnectionError(f"Could not download {url} due to {err}\n" f"The URL you provided might be corrupt.")
+        raise ConnectionError(f"Could not download {url} due to {err}\nThe URL you provided might be corrupt.")
     # unzip dataset
     try:
         zip_ref = zipfile.ZipFile(zip_temp_file, "r")
@@ -233,7 +233,7 @@ def download_file_to_tempdir(url: URL) -> PathLike:
     try:
         urllib.request.urlretrieve(url, temp_file)
     except (socket.gaierror, urllib.error.URLError) as err:
-        raise ConnectionError(f"Could not download {url} due to {err}\n" f"The URL you provided might be corrupt.")
+        raise ConnectionError(f"Could not download {url} due to {err}\nThe URL you provided might be corrupt.")
     return temp_file
 
 

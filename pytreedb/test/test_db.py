@@ -7,8 +7,8 @@ import json
 from pytreedb import db
 from dotenv import load_dotenv
 from pathlib import Path
-import pandas as pd
 import numpy as np
+from numpy.lib.recfunctions import structured_to_unstructured
 import pytreedb.db_utils
 import zipfile
 
@@ -211,7 +211,7 @@ def test_convert_to_csv_general(mydb, tmp_path, dir_name, i, trees, ncols_expect
     csv_general = tmp_path / "result_general.csv"
 
     with open(one_json) as f:
-        data_dict = json.load(f)
+        one_data_dict = json.load(f)
 
     if trees:
         mydb.convert_to_csv(outdir_csv, trees=trees)
@@ -220,10 +220,13 @@ def test_convert_to_csv_general(mydb, tmp_path, dir_name, i, trees, ncols_expect
         mydb.convert_to_csv(outdir_csv)
         n = len(all_jsons)
 
-    df_general = pd.read_csv(csv_general)
+    # df_general = pd.read_csv(csv_general)
+    with open(csv_general, "r") as f:
+        general_header = f.readline().strip().split(",")
+    data = np.genfromtxt(csv_general, delimiter=",", skip_header=1, dtype=None, names=general_header, encoding=None)
 
     # table should contain as many rows as there are trees
-    assert df_general.shape[0] == n
+    assert data.shape[0] == n
     # table should contain: tree_id, species, lat_epsg4326, long_epsg4326, elev_epsg4326
     assert {
         "tree_id",
@@ -231,16 +234,17 @@ def test_convert_to_csv_general(mydb, tmp_path, dir_name, i, trees, ncols_expect
         "lat_epsg4326",
         "long_epsg4326",
         "elev_epsg4326",
-    }.issubset(df_general.columns)
+    }.issubset(general_header)
     # table should contain expected number of cols
     # (9 if position is given in custom reference system as "measurement", otherwise 5)
-    assert len(df_general.columns) == ncols_expected
+    assert len(general_header) == ncols_expected
+
     # content of table should match contents of geojson
-    assert df_general.loc[i]["tree_id"] == data_dict["properties"]["id"]
-    assert df_general.loc[i]["species"] == data_dict["properties"]["species"]
+    assert data["tree_id"][i] == one_data_dict["properties"]["id"]
+    assert data[i]["tree_id"] == one_data_dict["properties"]["id"]
     np.testing.assert_equal(
-        df_general.loc[i][["long_epsg4326", "lat_epsg4326", "elev_epsg4326"]].to_numpy(),
-        data_dict["geometry"]["coordinates"],
+        structured_to_unstructured(data[["long_epsg4326", "lat_epsg4326", "elev_epsg4326"]][i]),
+        one_data_dict["geometry"]["coordinates"],
     )
 
 
@@ -262,21 +266,25 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
     else:
         mydb.convert_to_csv(outdir_csv)
 
-    n_cols = 0
+    n_rows = 0
     for tree_json in all_jsons:
         with open(tree_json) as f:
             data_dict = json.load(f)
             n_source = len(data_dict["properties"]["measurements"])
-            n_cols += n_source
+            n_rows += n_source
 
-    df_metrics = pd.read_csv(csv_metrics)
+    with open(csv_metrics, "r") as f:
+        metrics_header = f.readline()
+    # this will (and should) throw an error if not all rows have the same amount of columns
+    data = np.genfromtxt(csv_metrics, delimiter=",", skip_header=1, dtype=None, encoding=None)
 
     # table should contain n_trees x n_source (= number of sources for tree metrics) entries
-    assert df_metrics.shape[0] == n_cols
-    # check for the measurements of the last trees if all dict keys are in the table
-    assert set(data_dict["properties"]["measurements"][0].keys()).issubset(df_metrics.columns)
-    # get one measurement of last tree and check if in df
-    assert data_dict["properties"]["measurements"][0]["height_m"] in df_metrics.values
+    assert data.shape[0] == n_rows
+    # column to check
+    col = "crown_diamter_m"
+    col_idx = metrics_header.index(col)
+
+    assert data_dict["properties"]["measurements"][0][col] in data[:, col_idx]
 
 
 @pytest.mark.query

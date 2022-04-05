@@ -204,7 +204,7 @@ def test_convert_to_csv_general(mydb, tmp_path, dir_name, i, trees, ncols_expect
     input_data = f"{root_path}/data/test/{dir_name}"
     outdir_csv = tmp_path
 
-    mydb.import_data(input_data)
+    mydb.import_data(input_data, overwrite=True)
 
     all_jsons = list(Path(input_data).glob("*.*json"))
     one_json = all_jsons[i]
@@ -255,7 +255,7 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
     input_data = f"{root_path}/data/test/test_geojsons"
     outdir_csv = tmp_path
 
-    mydb.import_data(input_data)
+    mydb.import_data(input_data, overwrite=True)
 
     all_jsons = list(Path(input_data).glob("*.*json"))
     csv_metrics = tmp_path / "result_metrics.csv"
@@ -270,21 +270,19 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
     for tree_json in all_jsons:
         with open(tree_json) as f:
             data_dict = json.load(f)
-            n_source = len(data_dict["properties"]["measurements"])
+            n_source = len([1 for entry in data_dict["properties"]["measurements"] if "source" in entry.keys()])
             n_rows += n_source
 
     with open(csv_metrics, "r") as f:
-        metrics_header = f.readline()
+        metrics_header = f.readline().strip().split(",")
     # this will (and should) throw an error if not all rows have the same amount of columns
-    data = np.genfromtxt(csv_metrics, delimiter=",", skip_header=1, dtype=None, encoding=None)
+    data = np.genfromtxt(csv_metrics, delimiter=",", skip_header=1, dtype=None, encoding=None, names=metrics_header)
 
     # table should contain n_trees x n_source (= number of sources for tree metrics) entries
     assert data.shape[0] == n_rows
     # column to check
-    col = "crown_diamter_m"
-    col_idx = metrics_header.index(col)
-
-    assert data_dict["properties"]["measurements"][0][col] in data[:, col_idx]
+    col = "mean_crown_diameter_m"
+    assert data_dict["properties"]["measurements"][0][col] in data[col]
 
 
 @pytest.mark.query

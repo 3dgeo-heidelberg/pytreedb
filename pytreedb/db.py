@@ -667,19 +667,26 @@ class PyTreeDB:
                     general_line.append(entry["position_xyz"][1])
                     general_line.append(entry["position_xyz"][2])
                     general_line.append(crs)
-                    general_header += ["x", "y", "z", "xyz_crs"]
+                    if len(general_header) == 5:
+                        general_header += ["x", "y", "z", "xyz_crs"]
                 elif "source" in keys:
-                    metrics_line = [tree["properties"]["id"]]
                     for key in keys:
                         if key not in metrics_header:
                             metrics_header.append(key)
+            csv_general.append(general_line)
+
+        for tree in data:
+            for entry in tree["properties"]["measurements"]:
+                keys = entry.keys()
+                if "source" in keys:
+                    metrics_line = [None] * len(metrics_header)
+                    metrics_line[0] = tree["properties"]["id"]
                     for i in range(1, len(metrics_header)):
                         if metrics_header[i] in keys:
-                            metrics_line.append(entry[metrics_header[i]])
-                csv_metrics.append(metrics_line)
-            csv_general.append(general_line)
-        # remove duplicate values from list
-        general_header = list(dict.fromkeys(general_header))
+                            metrics_line[i] = entry[metrics_header[i]]
+                        else:
+                            metrics_line[i] = None
+                    csv_metrics.append(metrics_line)
 
         csv_general.insert(0, general_header)
         csv_metrics.insert(0, metrics_header)

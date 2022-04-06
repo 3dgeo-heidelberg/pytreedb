@@ -526,7 +526,8 @@ class PyTreeDB:
         """Returns list of all tree objects(dict)"""
         return self.db
 
-    def get_pointcloud_urls(self, trees: list[dict]) -> list[str]:
+    @staticmethod
+    def get_pointcloud_urls(trees: list[dict]) -> list[str]:
         """
         Returns a list of pointclouds for the given trees
 

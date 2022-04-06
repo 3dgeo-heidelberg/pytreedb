@@ -528,22 +528,22 @@ class PyTreeDB:
 
     def get_pointcloud_urls(self, trees: list[dict]) -> list[str]:
         """
-        Returns a list of pointclouds for the given trees
+        Returns a list of point clouds for the given trees
 
         :param list[dict] trees: list of tree dictionaries
-        :return: list with .laz pointcloud files of trees
+        :return: list with .laz point cloud files of trees
         :rtype: list[str]
         """
         try:
             return [obj["file"] for tree in trees for obj in tree["properties"]["data"]]
         except:
             if not isinstance(trees, list):
-                print(
+                raise TypeError(
                     f"Input for function {sys._getframe().f_code.co_name}() must be a list. "
                     f"Given wrong type: {type(trees)}.) "
                 )
             else:
-                print(f"Could not get id for: {trees}")
+                print(f"Could not get url for: {trees}")
             return []
 
     @staticmethod
@@ -622,8 +622,8 @@ class PyTreeDB:
     ) -> list[PathLike]:
         """
         Exports trees to local csv files. Each export creates two separate csv files,
-        one for general information, one for metrics.
-        Optionally list of ids of trees to be exported can be provided. [] means that all will be exported
+        one for general information (one row per tree), one for metrics (one row per source of measurements).
+        Optionally list of ids of trees to be exported can be provided. None means that all will be exported
         returns list of file paths written
 
         :param PathLike outdir: Path to output directory
@@ -649,8 +649,8 @@ class PyTreeDB:
             data = self.db
         else:
             data = self[trees]
+        # get lines for the general csv file and get the header of the metrics csv file
         for tree in data:
-            # writing "general" table: species, lat, long, elev
             general_line = [
                 tree["properties"]["id"],
                 tree["properties"]["species"],
@@ -658,7 +658,6 @@ class PyTreeDB:
                 tree["geometry"]["coordinates"][0],
                 tree["geometry"]["coordinates"][2],
             ]
-            # writing "metrics" table: metrics in columns, one row per data source
             for entry in tree["properties"]["measurements"]:
                 keys = entry.keys()
                 if "position_xyz" in keys:
@@ -675,6 +674,7 @@ class PyTreeDB:
                             metrics_header.append(key)
             csv_general.append(general_line)
 
+        # get the values for the metrics csv file
         for tree in data:
             for entry in tree["properties"]["measurements"]:
                 keys = entry.keys()
@@ -688,6 +688,7 @@ class PyTreeDB:
                             metrics_line[i] = None
                     csv_metrics.append(metrics_line)
 
+        # insert headers at beginning of the lists
         csv_general.insert(0, general_header)
         csv_metrics.insert(0, metrics_header)
 

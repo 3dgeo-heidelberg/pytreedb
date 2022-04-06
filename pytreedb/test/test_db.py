@@ -220,7 +220,6 @@ def test_convert_to_csv_general(mydb, tmp_path, dir_name, i, trees, ncols_expect
         mydb.convert_to_csv(outdir_csv)
         n = len(all_jsons)
 
-    # df_general = pd.read_csv(csv_general)
     with open(csv_general, "r") as f:
         general_header = f.readline().strip().split(",")
     data = np.genfromtxt(csv_general, delimiter=",", skip_header=1, dtype=None, names=general_header, encoding=None)
@@ -280,7 +279,8 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
 
     # table should contain n_trees x n_source (= number of sources for tree metrics) entries
     assert data.shape[0] == n_rows
-    # column to check
+    # check value of specific column
+    # todo: more extensive testing here
     col = "mean_crown_diameter_m"
     assert data_dict["properties"]["measurements"][0][col] in data[col]
 

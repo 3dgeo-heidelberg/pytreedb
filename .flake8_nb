@@ -1,4 +1,4 @@
 [flake8_nb]
-ignore = E402
+ignore = E402,E999
 exclude = *.py,.git, __pycache__,doc,.ipynb_checkpoints
 max-line-length = 120

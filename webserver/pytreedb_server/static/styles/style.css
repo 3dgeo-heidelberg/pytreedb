@@ -61,7 +61,7 @@ a.inPLink {
     background-color: #ffffff;
 }
 
-.nav-link, .nav-link:focus {
+.page-link, .page-link:focus {
     font-weight: 700;
     color: #198754;
 }
@@ -351,7 +351,6 @@ ul.availableValues {
 }
 
 ul#treeTabs>li {
-    display: none;
     cursor: pointer;
 }
 

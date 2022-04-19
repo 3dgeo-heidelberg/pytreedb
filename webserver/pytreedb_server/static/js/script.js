@@ -1,6 +1,7 @@
 // Global variables
 var speciesList, n_trees, jsonOutput, previewTrees = [], getEverySec, pcUrls = []; 
 var numFilters = 0;
+var nthEntrySet = 0, maxPreviewLimit = 10, previewLimit = 3;
 var currReq = {
     "url": '',
     "filters": [],
@@ -112,17 +113,16 @@ getItem = () => {
 // Query trees via properties and value
 searchDB = () => {
     updateQueryPreview();
+    previewLimit = Math.min($('#numPreviewTrees').val(), maxPreviewLimit);
     let renderMarkers = $('#markerRenderCheckbox')[0].checked;
-    let previewLimit = $('#numPreviewTrees').val();
     let qfilters = currReq.qfilters, operands = currReq.operands, brackets = currReq.brackets;
     currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets);
     if (!currReq.backendQ) {currReq.backendQ = null;}
-    console.log(previewLimit);
 
     // Send POST request to API endpoint specifically for webserver search request
     // where only a (user-defined) limited number of the first full-json documents are returned
     // along with coordinates of all resulting trees for rendering in the map if demanded
-    $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": previewLimit, "getCoords": renderMarkers})
+    $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": previewLimit, "nthEntrySet": nthEntrySet, "getCoords": renderMarkers})
         .done(data => {
             var trees = data['res_preview'];
             var coords = data['res_coords'];
@@ -130,6 +130,7 @@ searchDB = () => {
             currReq.url = '/search/wssearch';
             // Clear previous results
             $('#jsonViewerContainer').empty(); 
+            $('#treeTabs').empty();
             // Show number of results
             $('#numRes').html(numRes);
             $('#numResContainer').show();
@@ -142,29 +143,28 @@ searchDB = () => {
                 $('#mapContainer').show();
                 // Update for output
                 jsonOutput = JSON.stringify(trees[0]);
-                // Show text for preview info
-                if (numRes < previewLimit) {
-                    $('#previewLabel').hide();
-                } else {
-                    $('#previewLabel').attr('style', 'display: inline;');
-                    $('.treeTab').removeClass('active');
-                }
+                $('.treeTab').removeClass('active');
                 // Show json data of the given preview number of trees
-                for (let i = 0; i < Math.min(previewLimit, numRes); i++) {
+                for (let i = 0; i < Math.min(previewLimit, numRes - previewLimit*nthEntrySet); i++) {
+                    var idx = i+nthEntrySet*previewLimit;
                     // Show tabs
                     $('#treeTabs').css('display', 'flex');
-                    $('#treeTabs').append('<li id="treeTab'+i+'" class="nav-item"><a class="nav-link treeTab" onclick="toggleTab(this)">'+(i+1)+'</a></li>');
-                    $('#treeTab' + i).show();
+                    $('#treeTabs').append('<li id="treeTab'+idx+'" class="page-item nav-item"><a class="page-link nav-link treeTab" onclick="toggleTab(this)">'+(idx+1)+'</a></li>');
+                    $('#treeTab' + idx).show();
                     // Load data into html
-                    $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + i + '"></pre>');
-                    $('#tree-' + i).jsonViewer(trees[i]);
+                    $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + idx + '"></pre>');
+                    $('#tree-' + idx).jsonViewer(trees[i]);
                     previewTrees.push(JSON.stringify(trees[i]));
                     // Show only one code block
                     if (i > 0) {
-                        $('#tree-' + i).hide();
+                        $('#tree-' + idx).hide();
                     }
                 }
-                $('#treeTab0').children().addClass('active');
+                // Add "Next" for pagination
+                if (numRes - previewLimit*(nthEntrySet+1) > 0) {
+                    $('#treeTabs').append('<li class="page-item nav-item"><a class="page-link nav-link" onclick="nextPageSet()" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>');
+                }
+                $('#treeTab' + nthEntrySet*previewLimit).children().addClass('active');
 
                 // Draw map 
                 if (renderMarkers) {
@@ -175,7 +175,6 @@ searchDB = () => {
             } 
             // If no trees satisfy the query, clear prev results
             else {
-                $('#previewLabel').hide();
                 $('#treeTabs').hide();
                 $('#saveJsonButton').hide();
                 $('#saveAllButton').hide();
@@ -241,6 +240,61 @@ processAND = (start, end, ft, op, bk) => {
         }
         else {return filters[0];}  // and obj
     }
+}
+// Post request mainly for pagination
+queryBackend = (previewLimit, nthEntrySet) => {
+    $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": previewLimit, 
+        "nthEntrySet": nthEntrySet, "getCoords": false})
+        .done(data => {
+            var trees = data['res_preview'];
+            var numRes = data['num_res'];
+            currReq.url = '/search/wssearch';
+            $('#jsonViewerContainer').empty(); 
+            $('#treeTabs').empty();
+            $('#numRes').html(numRes);
+            $('#numResContainer').show();
+            $('#saveJsonButton').show();
+            $('#saveAllButton').show();
+            $('#savePointCButton').show();
+            $('#saveCSVButton').show();
+            $('#mapContainer').show();
+            jsonOutput = JSON.stringify(trees[0]);
+            $('.treeTab').removeClass('active');
+            if (nthEntrySet > 0) {
+                $('#treeTabs').append('<li class="page-item nav-item"><a class="page-link nav-link" onclick="prevPageSet()" aria-label="Next"><span aria-hidden="true">&laquo;</span></a></li>');
+            }
+            for (let i = 0; i < Math.min(previewLimit, numRes - previewLimit*nthEntrySet); i++) {
+                var idx = i+nthEntrySet*previewLimit;
+                $('#treeTabs').css('display', 'flex');
+                $('#treeTabs').append('<li id="treeTab'+ idx +'" class="page-item nav-item"><a class="page-link nav-link treeTab" onclick="toggleTab(this)">'+(idx+1)+'</a></li>');
+                $('#treeTab' + idx).show();
+                $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + idx + '"></pre>');
+                $('#tree-' + idx).jsonViewer(trees[i]);
+                previewTrees.push(JSON.stringify(trees[i]));
+                if (i > 0) {
+                    $('#tree-' + idx).hide();
+                }
+            }
+            if (numRes - previewLimit*(nthEntrySet+1) > 0) {
+                $('#treeTabs').append('<li class="page-item nav-item"><a class="page-link nav-link" onclick="nextPageSet()" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>');
+            }
+            $('#treeTab' + nthEntrySet*previewLimit).children().addClass('active');
+    })
+    .fail((xhr, status, error) => {
+        console.log(xhr);
+        console.log(status);
+        console.log(error);
+    });
+}
+// Next set of trees for pagination
+nextPageSet = () => {
+    nthEntrySet += 1;
+    queryBackend(previewLimit, nthEntrySet);
+}
+// Previous set of trees for pagination
+prevPageSet = () => {
+    nthEntrySet -= 1;
+    queryBackend(previewLimit, nthEntrySet);
 }
 // Collect fields and values
 collectFilterParams = () => {

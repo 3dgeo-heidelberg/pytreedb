@@ -649,9 +649,28 @@ class PyTreeDB:
             data = self.db
         else:
             data = self[trees]
-        # get lines for the general csv file and get the header of the metrics csv file
+
+        # get the unique keys of all "measurements" of each tree
+        keys = set(
+            [
+                key
+                for i in range(0, len(data))
+                for j in range(len(data[i]["properties"]["measurements"]))
+                for key in data[i]["properties"]["measurements"][j].keys()
+            ]
+        )
+
+        # write the headers of the csv files
+        if "position_xyz" in keys:
+            general_header += ["x", "y", "z", "xyz_crs"]
+            keys.remove("crs")
+            keys.remove("position_xyz")
+        metrics_header += list(keys)
+
+        # get the values for the csv file
         for tree in data:
-            general_line = [
+            general_line = [None] * len(general_header)
+            general_line[:5] = [
                 tree["properties"]["id"],
                 tree["properties"]["species"],
                 tree["geometry"]["coordinates"][1],
@@ -662,24 +681,10 @@ class PyTreeDB:
                 keys = entry.keys()
                 if "position_xyz" in keys:
                     crs = entry["crs"]
-                    general_line.append(entry["position_xyz"][0])
-                    general_line.append(entry["position_xyz"][1])
-                    general_line.append(entry["position_xyz"][2])
-                    general_line.append(crs)
-                    has_xyz_crs = True
-                elif "source" in keys:
-                    for key in keys:
-                        if key not in metrics_header:
-                            metrics_header.append(key)
-            csv_general.append(general_line)
-
-        if has_xyz_crs:
-            general_header += ["x", "y", "z", "xyz_crs"]
-
-        # get the values for the metrics csv file
-        for tree in data:
-            for entry in tree["properties"]["measurements"]:
-                keys = entry.keys()
+                    general_line[5] = entry["position_xyz"][0]
+                    general_line[6] = entry["position_xyz"][1]
+                    general_line[7] = entry["position_xyz"][2]
+                    general_line[8] = crs
                 if "source" in keys:
                     metrics_line = [None] * len(metrics_header)
                     metrics_line[0] = tree["properties"]["id"]
@@ -689,6 +694,7 @@ class PyTreeDB:
                         else:
                             metrics_line[i] = None
                     csv_metrics.append(metrics_line)
+            csv_general.append(general_line)
 
         # insert headers at beginning of the lists
         csv_general.insert(0, general_header)

@@ -666,13 +666,15 @@ class PyTreeDB:
                     general_line.append(entry["position_xyz"][1])
                     general_line.append(entry["position_xyz"][2])
                     general_line.append(crs)
-                    if len(general_header) == 5:
-                        general_header += ["x", "y", "z", "xyz_crs"]
+                    has_xyz_crs = True
                 elif "source" in keys:
                     for key in keys:
                         if key not in metrics_header:
                             metrics_header.append(key)
             csv_general.append(general_line)
+
+        if has_xyz_crs:
+            general_header += ["x", "y", "z", "xyz_crs"]
 
         # get the values for the metrics csv file
         for tree in data:

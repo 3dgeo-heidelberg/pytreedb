@@ -100,17 +100,18 @@ def query():
 @app.route('/search/wssearch', methods=['POST'])
 def webserverQuery():
     query = json.loads(request.form['query'])
-    prev_trees = mydb.query(query, {'_id': False})
+    trees = mydb.query(query, {'_id': False})
     # return only full geojson file within the preview limit
     limit = int(request.form['limit'])
-    num_res = len(prev_trees)
+    entry_set = int(request.form['nthEntrySet'])
+    num_res = len(trees)
     res_coords = None
     if request.form['getCoords'] == 'true':
         # return all resulting tree coordinates to show on the map
         res_coords = mydb.query(query, {'_id': False, '_id_x': 1, 'geometry': 1, 'type': 1, 'properties.id': 1})
     print('User query: ', query)
     print('Number of results: ', num_res)
-    return {'res_preview': prev_trees[:limit], 'res_coords': res_coords, 'num_res': num_res}
+    return {'res_preview': trees[limit*entry_set:limit*(entry_set+1)], 'res_coords': res_coords, 'num_res': num_res}
 
 @app.route('/search/exportcollection', methods=['POST'])
 def exportFC():

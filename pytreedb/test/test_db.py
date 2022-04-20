@@ -36,6 +36,14 @@ root_path = str(Path(__file__).parent.parent.parent)
 # function-scope fixture - maybe module-scope (see above) would be better, but then necessary to carefully handle
 # importing data/overwriting..
 # could think about several of these fixture, each loading a different test dataset..
+
+# current input data
+# https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/data.db
+# f"{root_path}/data/test/data.db
+# f"{root_path}/data/test/test_geojsons
+# f"{root_path}/data/test/test_geojsons_no_position
+
+
 @pytest.fixture()
 def mydb(tmp_path):
     my_dbfile = tmp_path / "temp.db"
@@ -287,6 +295,21 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
 
 @pytest.mark.query
 @pytest.mark.parametrize(
+    "index, treeids_expected",
+    [
+        ([100], ["CarBet_BR01_P22T27"]),
+        ([100, 101, 102], ["CarBet_BR01_P22T27", "CarBet_BR01_P22T34", "CarBet_BR01_P22T35"]),
+    ],
+)
+def test_query_by_index(mydb, index, treeids_expected):
+    test_dbfile = f"{root_path}/data/test/data.db"
+    mydb.load(test_dbfile)
+
+    assert [fname["properties"]["id"] for fname in mydb[index]] == treeids_expected
+
+
+@pytest.mark.query
+@pytest.mark.parametrize(
     "filter_dict, n_expected",
     [
         ({"properties.species": "Abies alba"}, 25),
@@ -344,20 +367,53 @@ def test_query_logical(mydb, filter_dict, n_expected):
     assert len(mydb.query(filter_dict)) == n_expected
 
 
-def test_query_by_key_exists():
-    pass
+@pytest.mark.query
+def test_query_by_key_exists(mydb):
+    input_data = f"{root_path}/data/test/test_geojsons"
+
+    mydb.import_data(input_data, overwrite=True)
+
+    assert len(mydb.query_by_key_exists("properties.measurements.DBH_cm")) == 5
 
 
-def test_query_by_species_regex():
-    pass
+@pytest.mark.query
+@pytest.mark.parametrize(
+    "regex, n_expected",
+    [("Quercus*", 274), ("Quercus pet*", 156), ("[Aa]bies+", 230), ("Picea abies", 205)],
+)
+def test_query_by_species_regex(mydb, regex, n_expected):
+    test_dbfile = f"{root_path}/data/test/data.db"
+    mydb.load(test_dbfile)
+
+    assert len(mydb.query_by_species(regex)) == n_expected
 
 
-def test_query_by_key_value():
-    pass
+@pytest.mark.query
+@pytest.mark.parametrize(
+    "key, value, regex, n_expected",
+    [("properties.species", "Abies alba", False, 25), ("properties.id", "BR05+", True, 278)],
+)
+def test_query_by_key_value(mydb, key, value, regex, n_expected):
+    test_dbfile = f"{root_path}/data/test/data.db"
+    mydb.load(test_dbfile)
+
+    assert len(mydb.query_by_key_value(key, value, regex)) == n_expected
 
 
-def test_query_by_date():
-    pass
+@pytest.mark.query
+@pytest.mark.parametrize(
+    "key, start, end, n_expected",
+    [
+        ("properties.measurements.date", "2019-01-01", "2019-07-01", 618),
+        ("properties.measurements.date", "2020-03-31", None, 62),
+        ("properties.data.date", "2019-12-01", "2019-12-31", 1173),
+    ],
+)
+def test_query_by_date(mydb, key, start, end, n_expected):
+    test_dbfile = f"{root_path}/data/test/data.db"
+    mydb.load(test_dbfile)
+
+    assert len(mydb.query_by_date(key=key, start=start, end=end)) == n_expected
 
 
 def test_query_by_geometry():
@@ -372,7 +428,6 @@ def test_get_ids_query_res():
 
 # query
 
-# indexing db
 # different queries
 # also cases where we expect errors to be caught
 # get_ids
@@ -381,8 +436,6 @@ def test_get_ids_query_res():
 # validate_json()
 
 # utils
-
-# needed: small db for fast testing purposes?
 
 # also think beyond: e.g., users with their own data with different tree properties
 # make sure these can also be queried!

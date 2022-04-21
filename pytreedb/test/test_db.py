@@ -7,8 +7,8 @@ import json
 from pytreedb import db
 from dotenv import load_dotenv
 from pathlib import Path
-import pandas as pd
 import numpy as np
+from numpy.lib.recfunctions import structured_to_unstructured
 import pytreedb.db_utils
 import zipfile
 
@@ -36,6 +36,14 @@ root_path = str(Path(__file__).parent.parent.parent)
 # function-scope fixture - maybe module-scope (see above) would be better, but then necessary to carefully handle
 # importing data/overwriting..
 # could think about several of these fixture, each loading a different test dataset..
+
+# current input data
+# https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/data.db
+# f"{root_path}/data/test/data.db
+# f"{root_path}/data/test/test_geojsons
+# f"{root_path}/data/test/test_geojsons_no_position
+
+
 @pytest.fixture()
 def mydb(tmp_path):
     my_dbfile = tmp_path / "temp.db"
@@ -204,14 +212,14 @@ def test_convert_to_csv_general(mydb, tmp_path, dir_name, i, trees, ncols_expect
     input_data = f"{root_path}/data/test/{dir_name}"
     outdir_csv = tmp_path
 
-    mydb.import_data(input_data)
+    mydb.import_data(input_data, overwrite=True)
 
     all_jsons = list(Path(input_data).glob("*.*json"))
     one_json = all_jsons[i]
     csv_general = tmp_path / "result_general.csv"
 
     with open(one_json) as f:
-        data_dict = json.load(f)
+        one_data_dict = json.load(f)
 
     if trees:
         mydb.convert_to_csv(outdir_csv, trees=trees)
@@ -220,10 +228,12 @@ def test_convert_to_csv_general(mydb, tmp_path, dir_name, i, trees, ncols_expect
         mydb.convert_to_csv(outdir_csv)
         n = len(all_jsons)
 
-    df_general = pd.read_csv(csv_general)
+    with open(csv_general, "r") as f:
+        general_header = f.readline().strip().split(",")
+    data = np.genfromtxt(csv_general, delimiter=",", skip_header=1, dtype=None, names=general_header, encoding=None)
 
     # table should contain as many rows as there are trees
-    assert df_general.shape[0] == n
+    assert data.shape[0] == n
     # table should contain: tree_id, species, lat_epsg4326, long_epsg4326, elev_epsg4326
     assert {
         "tree_id",
@@ -231,16 +241,17 @@ def test_convert_to_csv_general(mydb, tmp_path, dir_name, i, trees, ncols_expect
         "lat_epsg4326",
         "long_epsg4326",
         "elev_epsg4326",
-    }.issubset(df_general.columns)
+    }.issubset(general_header)
     # table should contain expected number of cols
     # (9 if position is given in custom reference system as "measurement", otherwise 5)
-    assert len(df_general.columns) == ncols_expected
+    assert len(general_header) == ncols_expected
+
     # content of table should match contents of geojson
-    assert df_general.loc[i]["tree_id"] == data_dict["properties"]["id"]
-    assert df_general.loc[i]["species"] == data_dict["properties"]["species"]
+    assert data["tree_id"][i] == one_data_dict["properties"]["id"]
+    assert data[i]["tree_id"] == one_data_dict["properties"]["id"]
     np.testing.assert_equal(
-        df_general.loc[i][["long_epsg4326", "lat_epsg4326", "elev_epsg4326"]].to_numpy(),
-        data_dict["geometry"]["coordinates"],
+        structured_to_unstructured(data[["long_epsg4326", "lat_epsg4326", "elev_epsg4326"]][i]),
+        one_data_dict["geometry"]["coordinates"],
     )
 
 
@@ -251,7 +262,7 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
     input_data = f"{root_path}/data/test/test_geojsons"
     outdir_csv = tmp_path
 
-    mydb.import_data(input_data)
+    mydb.import_data(input_data, overwrite=True)
 
     all_jsons = list(Path(input_data).glob("*.*json"))
     csv_metrics = tmp_path / "result_metrics.csv"
@@ -262,21 +273,39 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
     else:
         mydb.convert_to_csv(outdir_csv)
 
-    n_cols = 0
+    n_rows = 0
     for tree_json in all_jsons:
         with open(tree_json) as f:
             data_dict = json.load(f)
-            n_source = len(data_dict["properties"]["measurements"])
-            n_cols += n_source
+            n_source = len([1 for entry in data_dict["properties"]["measurements"] if "source" in entry.keys()])
+            n_rows += n_source
 
-    df_metrics = pd.read_csv(csv_metrics)
+    with open(csv_metrics, "r") as f:
+        metrics_header = f.readline().strip().split(",")
+    # this will (and should) throw an error if not all rows have the same amount of columns
+    data = np.genfromtxt(csv_metrics, delimiter=",", skip_header=1, dtype=None, encoding=None, names=metrics_header)
 
     # table should contain n_trees x n_source (= number of sources for tree metrics) entries
-    assert df_metrics.shape[0] == n_cols
-    # check for the measurements of the last trees if all dict keys are in the table
-    assert set(data_dict["properties"]["measurements"][0].keys()).issubset(df_metrics.columns)
-    # get one measurement of last tree and check if in df
-    assert data_dict["properties"]["measurements"][0]["height_m"] in df_metrics.values
+    assert data.shape[0] == n_rows
+    # check value of specific column
+    # todo: more extensive testing here
+    col = "mean_crown_diameter_m"
+    assert data_dict["properties"]["measurements"][0][col] in data[col]
+
+
+@pytest.mark.query
+@pytest.mark.parametrize(
+    "index, treeids_expected",
+    [
+        ([100], ["CarBet_BR01_P22T27"]),
+        ([100, 101, 102], ["CarBet_BR01_P22T27", "CarBet_BR01_P22T34", "CarBet_BR01_P22T35"]),
+    ],
+)
+def test_query_by_index(mydb, index, treeids_expected):
+    test_dbfile = f"{root_path}/data/test/data.db"
+    mydb.load(test_dbfile)
+
+    assert [fname["properties"]["id"] for fname in mydb[index]] == treeids_expected
 
 
 @pytest.mark.query
@@ -338,20 +367,53 @@ def test_query_logical(mydb, filter_dict, n_expected):
     assert len(mydb.query(filter_dict)) == n_expected
 
 
-def test_query_by_key_exists():
-    pass
+@pytest.mark.query
+def test_query_by_key_exists(mydb):
+    input_data = f"{root_path}/data/test/test_geojsons"
+
+    mydb.import_data(input_data, overwrite=True)
+
+    assert len(mydb.query_by_key_exists("properties.measurements.DBH_cm")) == 5
 
 
-def test_query_by_species_regex():
-    pass
+@pytest.mark.query
+@pytest.mark.parametrize(
+    "regex, n_expected",
+    [("Quercus*", 274), ("Quercus pet*", 156), ("[Aa]bies+", 230), ("Picea abies", 205)],
+)
+def test_query_by_species_regex(mydb, regex, n_expected):
+    test_dbfile = f"{root_path}/data/test/data.db"
+    mydb.load(test_dbfile)
+
+    assert len(mydb.query_by_species(regex)) == n_expected
 
 
-def test_query_by_key_value():
-    pass
+@pytest.mark.query
+@pytest.mark.parametrize(
+    "key, value, regex, n_expected",
+    [("properties.species", "Abies alba", False, 25), ("properties.id", "BR05+", True, 278)],
+)
+def test_query_by_key_value(mydb, key, value, regex, n_expected):
+    test_dbfile = f"{root_path}/data/test/data.db"
+    mydb.load(test_dbfile)
+
+    assert len(mydb.query_by_key_value(key, value, regex)) == n_expected
 
 
-def test_query_by_date():
-    pass
+@pytest.mark.query
+@pytest.mark.parametrize(
+    "key, start, end, n_expected",
+    [
+        ("properties.measurements.date", "2019-01-01", "2019-07-01", 618),
+        ("properties.measurements.date", "2020-03-31", None, 62),
+        ("properties.data.date", "2019-12-01", "2019-12-31", 1173),
+    ],
+)
+def test_query_by_date(mydb, key, start, end, n_expected):
+    test_dbfile = f"{root_path}/data/test/data.db"
+    mydb.load(test_dbfile)
+
+    assert len(mydb.query_by_date(key=key, start=start, end=end)) == n_expected
 
 
 def test_query_by_geometry():
@@ -366,7 +428,6 @@ def test_get_ids_query_res():
 
 # query
 
-# indexing db
 # different queries
 # also cases where we expect errors to be caught
 # get_ids
@@ -375,8 +436,6 @@ def test_get_ids_query_res():
 # validate_json()
 
 # utils
-
-# needed: small db for fast testing purposes?
 
 # also think beyond: e.g., users with their own data with different tree properties
 # make sure these can also be queried!

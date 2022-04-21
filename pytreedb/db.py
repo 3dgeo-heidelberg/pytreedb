@@ -529,22 +529,22 @@ class PyTreeDB:
     @staticmethod
     def get_pointcloud_urls(trees: list[dict]) -> list[str]:
         """
-        Returns a list of pointclouds for the given trees
+        Returns a list of point clouds for the given trees
 
         :param list[dict] trees: list of tree dictionaries
-        :return: list with .laz pointcloud files of trees
+        :return: list with .laz point cloud files of trees
         :rtype: list[str]
         """
         try:
             return [obj["file"] for tree in trees for obj in tree["properties"]["data"]]
         except:
             if not isinstance(trees, list):
-                print(
+                raise TypeError(
                     f"Input for function {sys._getframe().f_code.co_name}() must be a list. "
                     f"Given wrong type: {type(trees)}.) "
                 )
             else:
-                print(f"Could not get id for: {trees}")
+                print(f"Could not get url for: {trees}")
             return []
 
     @staticmethod
@@ -623,8 +623,8 @@ class PyTreeDB:
     ) -> list[PathLike]:
         """
         Exports trees to local csv files. Each export creates two separate csv files,
-        one for general information, one for metrics.
-        Optionally list of ids of trees to be exported can be provided. [] means that all will be exported
+        one for general information (one row per tree), one for metrics (one row per source of measurements).
+        Optionally list of ids of trees to be exported can be provided. None means that all will be exported
         returns list of file paths written
 
         :param PathLike outdir: Path to output directory
@@ -650,38 +650,54 @@ class PyTreeDB:
             data = self.db
         else:
             data = self[trees]
+
+        # get the unique keys of all "measurements" of each tree
+        keys = set(
+            [
+                key
+                for i in range(0, len(data))
+                for j in range(len(data[i]["properties"]["measurements"]))
+                for key in data[i]["properties"]["measurements"][j].keys()
+            ]
+        )
+
+        # write the headers of the csv files
+        if "position_xyz" in keys:
+            general_header += ["x", "y", "z", "xyz_crs"]
+            keys.remove("crs")
+            keys.remove("position_xyz")
+        metrics_header += list(keys)
+
+        # get the values for the csv file
         for tree in data:
-            # writing "general" table: species, lat, long, elev
-            general_line = [
+            general_line = [None] * len(general_header)
+            general_line[:5] = [
                 tree["properties"]["id"],
                 tree["properties"]["species"],
                 tree["geometry"]["coordinates"][1],
                 tree["geometry"]["coordinates"][0],
                 tree["geometry"]["coordinates"][2],
             ]
-            # writing "metrics" table: metrics in columns, one row per data source
             for entry in tree["properties"]["measurements"]:
                 keys = entry.keys()
                 if "position_xyz" in keys:
                     crs = entry["crs"]
-                    general_line.append(entry["position_xyz"][0])
-                    general_line.append(entry["position_xyz"][1])
-                    general_line.append(entry["position_xyz"][2])
-                    general_line.append(crs)
-                    general_header += ["x", "y", "z", "xyz_crs"]
-                elif "source" in keys:
-                    metrics_line = [tree["properties"]["id"]]
-                    for key in keys:
-                        if key not in metrics_header:
-                            metrics_header.append(key)
+                    general_line[5] = entry["position_xyz"][0]
+                    general_line[6] = entry["position_xyz"][1]
+                    general_line[7] = entry["position_xyz"][2]
+                    general_line[8] = crs
+                if "source" in keys:
+                    metrics_line = [None] * len(metrics_header)
+                    metrics_line[0] = tree["properties"]["id"]
                     for i in range(1, len(metrics_header)):
                         if metrics_header[i] in keys:
-                            metrics_line.append(entry[metrics_header[i]])
-                csv_metrics.append(metrics_line)
+                            metrics_line[i] = entry[metrics_header[i]]
+                        else:
+                            metrics_line[i] = None
+                    csv_metrics.append(metrics_line)
             csv_general.append(general_line)
-        # remove duplicate values from list
-        general_header = list(dict.fromkeys(general_header))
 
+        # insert headers at beginning of the lists
         csv_general.insert(0, general_header)
         csv_metrics.insert(0, metrics_header)
 

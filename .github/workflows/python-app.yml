@@ -44,7 +44,7 @@ jobs:
         CONN_DB: ${{ secrets.CONN_DB }}
         CONN_COL: ${{ secrets.CONN_COL }}
       run: |
-        python -m pytest --cov pytreedb
+        python -m pytest pytreedb
     - name: build sphinx doc
       run: |
         cd doc

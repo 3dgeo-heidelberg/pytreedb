@@ -6,7 +6,6 @@ dependencies:
   - python=3.9
   - pip
   - notebook
-  - jupyter
   - numpy
   - pytest
   - flask

@@ -23,13 +23,12 @@ def download(urls: list[str], dest_folder: str):
             shutil.copyfileobj(response, out_file)
             print("saving to", os.path.abspath(file_path))
 
-
+# Prompt user to enter paths if not given
 if source_file is None:
     source_file = input("Enter the path of the point cloud URLs:")
-
 if output_folder is None:
     output_folder = input("Enter the output directory:")
 
-f = open(source_file, "r")
-urls = f.read().split(",")
-download(urls, output_folder)
+f = open(source_file, "r")  # read input file
+urls = f.read().split(",")  # save content into a list of urls
+download(urls, output_folder)  # download data to the output folder

@@ -479,7 +479,7 @@ saveJsonOutput = () => {
 }
 // Save all result jsons into one json file
 saveAllJsons = () => {
-    $.post('/search/exportcollection', {"query": JSON.stringify(currReq.backendQ)}, data => {
+    $.post('/download/exportcollection', {"query": JSON.stringify(currReq.backendQ)}, data => {
         outString = JSON.stringify(data);
         saveJsonContent(outString, 'res_feature_collection');
     });
@@ -487,7 +487,7 @@ saveAllJsons = () => {
 // Save all results into zipped csv-files
 saveCSV = () => {
     $.ajax({
-        url: '/exportcsv',
+        url: '/download/exportcsv',
         type: "POST",
         data: {"data": JSON.stringify(currReq.backendQ)},
         success: file => {
@@ -506,7 +506,7 @@ saveCSV = () => {
 // Save point clouds of all results into a zip
 // The JSZip library: https://github.com/Stuk/jszip
 savePointClouds = () => {
-    $.post('/search/lazlinks', {"query": JSON.stringify(currReq.backendQ)}, data => {
+    $.post('/download/lazlinks', {"query": JSON.stringify(currReq.backendQ)}, data => {
         pcUrls = data['links'];
         // If the response exceed threshold, enable bulk-download instead of zipping point clouds
         if (pcUrls.length >= lazDlLimit) {

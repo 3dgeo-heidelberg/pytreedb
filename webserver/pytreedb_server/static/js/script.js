@@ -2,6 +2,7 @@
 var speciesList, n_trees, jsonOutput, previewTrees = [], getEverySec, pcUrls = []; 
 var numFilters = 0;
 var nthEntrySet = 0, maxPreviewLimit = 10, previewLimit = 3;
+var lazDlLimit = 1000;
 var currReq = {
     "url": '',
     "filters": [],
@@ -507,6 +508,16 @@ saveCSV = () => {
 savePointClouds = () => {
     $.post('/search/lazlinks', {"query": JSON.stringify(currReq.backendQ)}, data => {
         pcUrls = data['links'];
+        // If the response exceed threshold, enable bulk-download instead of zipping point clouds
+        if (pcUrls.length >= lazDlLimit) {
+            var newpage = '<h1 class="pageTitle">Point Clouds Bulk Download</h1><p>You are downloading a lot of point clouds data. We recommend you to use the following <a href="#">python script</a> to manually execute the download on your local machine.</p><p>You should be able to save the text file containing your point clouds URLs now.</p>';
+            var tab = window.open('about:blank', '_blank');
+            tab.document.write(newpage);
+            tab.document.close();
+            saveContent(pcUrls, 'urls');
+            return;
+        }
+        // For fewer data, provide a zip file of the point clouds for users to download
         var zip = new JSZip();
         var cntFilesDownloaded = 0;
         // Show progress bar if request successful

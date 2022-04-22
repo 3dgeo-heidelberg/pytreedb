@@ -56,7 +56,7 @@ if not db_name:
 
 db_download = os.environ.get("PYTREEDB_DOWNLOAD")
 
-file_dl_threshold = 10000
+file_dl_threshold = 1000
 app = Flask("pytreedb-server",
             static_folder=os.path.join(os.path.dirname(__file__), 'static'),
             template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
@@ -88,6 +88,10 @@ def getListSpecies():
 @app.route('/sharedproperties')
 def getSharedProperties():
     return {'properties': mydb.get_shared_properties()}
+
+@app.route('/getitem/<index>')
+def getItem(index):
+    return {'item': mydb[int(index)]}
 
 @app.route('/search', methods=['POST'])
 def query():
@@ -125,10 +129,6 @@ def exportLazLinks():
     query = json.loads(request.form['query'])
     links = mydb.get_pointcloud_urls(mydb.query(query, {'_id': False, 'properties.data': 1}))
     return {'links': links}
-
-@app.route('/getitem/<index>')
-def getItem(index):
-    return {'item': mydb[int(index)]}
 
 @app.route('/exportcsv', methods=['POST'])
 def exportcsv():

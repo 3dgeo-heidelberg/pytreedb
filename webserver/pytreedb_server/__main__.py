@@ -56,7 +56,6 @@ if not db_name:
 
 db_download = os.environ.get("PYTREEDB_DOWNLOAD")
 
-file_dl_threshold = 1000
 app = Flask("pytreedb-server",
             static_folder=os.path.join(os.path.dirname(__file__), 'static'),
             template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
@@ -117,20 +116,20 @@ def webserverQuery():
     print('Number of results: ', num_res)
     return {'res_preview': trees[limit*entry_set:limit*(entry_set+1)], 'res_coords': res_coords, 'num_res': num_res}
 
-@app.route('/search/exportcollection', methods=['POST'])
+@app.route('/download/exportcollection', methods=['POST'])
 def exportFC():
     query = json.loads(request.form['query'])
     res = mydb.query(query, {'_id': False})
     collection = {'type': 'FeatureCollection', 'features': res}
     return collection
 
-@app.route('/search/lazlinks', methods=['POST'])
+@app.route('/download/lazlinks', methods=['POST'])
 def exportLazLinks():
     query = json.loads(request.form['query'])
     links = mydb.get_pointcloud_urls(mydb.query(query, {'_id': False, 'properties.data': 1}))
     return {'links': links}
 
-@app.route('/exportcsv', methods=['POST'])
+@app.route('/download/exportcsv', methods=['POST'])
 def exportcsv():
     query = json.loads(request.form['data'])
     # get ids of resulting trees

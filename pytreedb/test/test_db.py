@@ -306,6 +306,7 @@ def test_query_by_index(mydb, index, treeids_expected):
     mydb.load(test_dbfile)
 
     assert [fname["properties"]["id"] for fname in mydb[index]] == treeids_expected
+    mydb.db = list()
 
 
 @pytest.mark.query
@@ -319,7 +320,7 @@ def test_query_by_index(mydb, index, treeids_expected):
 )
 def test_query_single(mydb, filter_dict, n_expected):
     test_dbfile = f"{root_path}/data/test/data.db"
-    mydb.clear()
+    mydb.db = list()
     mydb.load(test_dbfile)
 
     assert len(mydb.query(filter_dict)) == n_expected
@@ -338,7 +339,6 @@ def test_query_single(mydb, filter_dict, n_expected):
 def test_query_numeric_comparison(mydb, filter_dict, n_expected):
     input_data = f"{root_path}/data/test/test_geojsons"
     mydb.import_data(input_data)
-    mydb.clear()
 
     assert len(mydb.query(filter_dict)) == n_expected
 

@@ -18,7 +18,7 @@ jobs:
       fail-fast: true
       matrix:
         #os: ["ubuntu-latest", "windows-latest", "macos-latest"]
-        os: ["windows_latest"]
+        os: ["windows_latest", "ubuntu-latest"]
         python-version: ["3.9"]
 
     steps:

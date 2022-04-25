@@ -2,6 +2,7 @@
 var speciesList, n_trees, jsonOutput, previewTrees = [], getEverySec, pcUrls = []; 
 var numFilters = 0;
 var nthEntrySet = 0, maxPreviewLimit = 10, previewLimit = 3;
+var lazDlLimit = 1000;
 var currReq = {
     "url": '',
     "filters": [],
@@ -478,7 +479,7 @@ saveJsonOutput = () => {
 }
 // Save all result jsons into one json file
 saveAllJsons = () => {
-    $.post('/search/exportcollection', {"query": JSON.stringify(currReq.backendQ)}, data => {
+    $.post('/download/exportcollection', {"query": JSON.stringify(currReq.backendQ)}, data => {
         outString = JSON.stringify(data);
         saveJsonContent(outString, 'res_feature_collection');
     });
@@ -486,7 +487,7 @@ saveAllJsons = () => {
 // Save all results into zipped csv-files
 saveCSV = () => {
     $.ajax({
-        url: '/exportcsv',
+        url: '/download/exportcsv',
         type: "POST",
         data: {"data": JSON.stringify(currReq.backendQ)},
         success: file => {
@@ -505,8 +506,18 @@ saveCSV = () => {
 // Save point clouds of all results into a zip
 // The JSZip library: https://github.com/Stuk/jszip
 savePointClouds = () => {
-    $.post('/search/lazlinks', {"query": JSON.stringify(currReq.backendQ)}, data => {
+    $.post('/download/lazlinks', {"query": JSON.stringify(currReq.backendQ)}, data => {
         pcUrls = data['links'];
+        // If the response exceed threshold, enable bulk-download instead of zipping point clouds
+        if (pcUrls.length >= lazDlLimit) {
+            var newpage = '<h1 class="pageTitle">Point Clouds Bulk Download</h1><p>You are downloading a lot of point clouds data. We recommend you to use the following <a href="/static/dl_script.py">python script</a> to manually execute the download on your local machine.</p><p>You should be able to save the text file containing your point clouds URLs now.</p>';
+            var tab = window.open('about:blank', '_blank');
+            tab.document.write(newpage);
+            tab.document.close();
+            saveContent(pcUrls, 'urls');
+            return;
+        }
+        // For fewer data, provide a zip file of the point clouds for users to download
         var zip = new JSZip();
         var cntFilesDownloaded = 0;
         // Show progress bar if request successful

@@ -2,6 +2,7 @@
 var speciesList, n_trees, jsonOutput, previewTrees = [], getEverySec, pcUrls = []; 
 var numFilters = 0;
 var nthEntrySet = 0, maxPreviewLimit = 10, previewLimit = 3;
+var lazDlLimit = 1000;
 var currReq = {
     "url": '',
     "filters": [],
@@ -58,7 +59,7 @@ window.onload = () => {
             replicateQuery(query);
             searchDB();
         }
-    }, 300);
+    }, 600);
 }
 
 window.onscroll = () => {
@@ -136,10 +137,7 @@ searchDB = () => {
             $('#numResContainer').show();
             // Show json code snippets if trees found
             if (numRes != 0) {
-                $('#saveJsonButton').show();
-                $('#saveAllButton').show();
-                $('#savePointCButton').show();
-                $('#saveCSVButton').show();
+                $('#dlButtons').find('*').show();
                 $('#mapContainer').show();
                 // Update for output
                 jsonOutput = JSON.stringify(trees[0]);
@@ -176,10 +174,7 @@ searchDB = () => {
             // If no trees satisfy the query, clear prev results
             else {
                 $('#treeTabs').hide();
-                $('#saveJsonButton').hide();
-                $('#saveAllButton').hide();
-                $('#savePointCButton').hide();
-                $('#saveCSVButton').hide();
+                $('#dlButtons').hide();
                 cleanMap();
                 $('#mapContainer').hide();
             }
@@ -240,61 +235,6 @@ processAND = (start, end, ft, op, bk) => {
         }
         else {return filters[0];}  // and obj
     }
-}
-// Post request mainly for pagination
-queryBackend = (previewLimit, nthEntrySet) => {
-    $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": previewLimit, 
-        "nthEntrySet": nthEntrySet, "getCoords": false})
-        .done(data => {
-            var trees = data['res_preview'];
-            var numRes = data['num_res'];
-            currReq.url = '/search/wssearch';
-            $('#jsonViewerContainer').empty(); 
-            $('#treeTabs').empty();
-            $('#numRes').html(numRes);
-            $('#numResContainer').show();
-            $('#saveJsonButton').show();
-            $('#saveAllButton').show();
-            $('#savePointCButton').show();
-            $('#saveCSVButton').show();
-            $('#mapContainer').show();
-            jsonOutput = JSON.stringify(trees[0]);
-            $('.treeTab').removeClass('active');
-            if (nthEntrySet > 0) {
-                $('#treeTabs').append('<li class="page-item nav-item"><a class="page-link nav-link" onclick="prevPageSet()" aria-label="Next"><span aria-hidden="true">&laquo;</span></a></li>');
-            }
-            for (let i = 0; i < Math.min(previewLimit, numRes - previewLimit*nthEntrySet); i++) {
-                var idx = i+nthEntrySet*previewLimit;
-                $('#treeTabs').css('display', 'flex');
-                $('#treeTabs').append('<li id="treeTab'+ idx +'" class="page-item nav-item"><a class="page-link nav-link treeTab" onclick="toggleTab(this)">'+(idx+1)+'</a></li>');
-                $('#treeTab' + idx).show();
-                $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + idx + '"></pre>');
-                $('#tree-' + idx).jsonViewer(trees[i]);
-                previewTrees.push(JSON.stringify(trees[i]));
-                if (i > 0) {
-                    $('#tree-' + idx).hide();
-                }
-            }
-            if (numRes - previewLimit*(nthEntrySet+1) > 0) {
-                $('#treeTabs').append('<li class="page-item nav-item"><a class="page-link nav-link" onclick="nextPageSet()" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>');
-            }
-            $('#treeTab' + nthEntrySet*previewLimit).children().addClass('active');
-    })
-    .fail((xhr, status, error) => {
-        console.log(xhr);
-        console.log(status);
-        console.log(error);
-    });
-}
-// Next set of trees for pagination
-nextPageSet = () => {
-    nthEntrySet += 1;
-    queryBackend(previewLimit, nthEntrySet);
-}
-// Previous set of trees for pagination
-prevPageSet = () => {
-    nthEntrySet -= 1;
-    queryBackend(previewLimit, nthEntrySet);
 }
 // Collect fields and values
 collectFilterParams = () => {
@@ -369,6 +309,58 @@ updateQueryPreview = () => {
     currReq.stringFormat = filters.join(' ').substring(2);
     $('#queryPreviewArea').text(currReq.stringFormat);
     return currReq.stringFormat;
+}
+// Post request mainly for pagination
+queryBackend = (previewLimit, nthEntrySet) => {
+    $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": previewLimit, 
+        "nthEntrySet": nthEntrySet, "getCoords": false})
+        .done(data => {
+            var trees = data['res_preview'];
+            var numRes = data['num_res'];
+            currReq.url = '/search/wssearch';
+            $('#jsonViewerContainer').empty(); 
+            $('#treeTabs').empty();
+            $('#numRes').html(numRes);
+            $('#numResContainer').show();
+            $('#dlButtons').find('*').show();
+            $('#mapContainer').show();
+            jsonOutput = JSON.stringify(trees[0]);
+            $('.treeTab').removeClass('active');
+            if (nthEntrySet > 0) {
+                $('#treeTabs').append('<li class="page-item nav-item"><a class="page-link nav-link" onclick="prevPageSet()" aria-label="Next"><span aria-hidden="true">&laquo;</span></a></li>');
+            }
+            for (let i = 0; i < Math.min(previewLimit, numRes - previewLimit*nthEntrySet); i++) {
+                var idx = i+nthEntrySet*previewLimit;
+                $('#treeTabs').css('display', 'flex');
+                $('#treeTabs').append('<li id="treeTab'+ idx +'" class="page-item nav-item"><a class="page-link nav-link treeTab" onclick="toggleTab(this)">'+(idx+1)+'</a></li>');
+                $('#treeTab' + idx).show();
+                $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + idx + '"></pre>');
+                $('#tree-' + idx).jsonViewer(trees[i]);
+                previewTrees.push(JSON.stringify(trees[i]));
+                if (i > 0) {
+                    $('#tree-' + idx).hide();
+                }
+            }
+            if (numRes - previewLimit*(nthEntrySet+1) > 0) {
+                $('#treeTabs').append('<li class="page-item nav-item"><a class="page-link nav-link" onclick="nextPageSet()" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>');
+            }
+            $('#treeTab' + nthEntrySet*previewLimit).children().addClass('active');
+    })
+    .fail((xhr, status, error) => {
+        console.log(xhr);
+        console.log(status);
+        console.log(error);
+    });
+}
+// Next set of trees for pagination
+nextPageSet = () => {
+    nthEntrySet += 1;
+    queryBackend(previewLimit, nthEntrySet);
+}
+// Previous set of trees for pagination
+prevPageSet = () => {
+    nthEntrySet -= 1;
+    queryBackend(previewLimit, nthEntrySet);
 }
 
 // Copy the query in preview to clipboard
@@ -487,7 +479,7 @@ saveJsonOutput = () => {
 }
 // Save all result jsons into one json file
 saveAllJsons = () => {
-    $.post('/search/exportcollection', {"query": JSON.stringify(currReq.backendQ)}, data => {
+    $.post('/download/exportcollection', {"query": JSON.stringify(currReq.backendQ)}, data => {
         outString = JSON.stringify(data);
         saveJsonContent(outString, 'res_feature_collection');
     });
@@ -495,7 +487,7 @@ saveAllJsons = () => {
 // Save all results into zipped csv-files
 saveCSV = () => {
     $.ajax({
-        url: '/exportcsv',
+        url: '/download/exportcsv',
         type: "POST",
         data: {"data": JSON.stringify(currReq.backendQ)},
         success: file => {
@@ -514,8 +506,18 @@ saveCSV = () => {
 // Save point clouds of all results into a zip
 // The JSZip library: https://github.com/Stuk/jszip
 savePointClouds = () => {
-    $.post('/search/lazlinks', {"query": JSON.stringify(currReq.backendQ)}, data => {
+    $.post('/download/lazlinks', {"query": JSON.stringify(currReq.backendQ)}, data => {
         pcUrls = data['links'];
+        // If the response exceed threshold, enable bulk-download instead of zipping point clouds
+        if (pcUrls.length >= lazDlLimit) {
+            var newpage = '<h1 class="pageTitle">Point Clouds Bulk Download</h1><p>You are downloading a lot of point clouds data. We recommend you to use the following <a href="/static/dl_script.py">python script</a> to manually execute the download on your local machine.</p><p>You should be able to save the text file containing your point clouds URLs now.</p>';
+            var tab = window.open('about:blank', '_blank');
+            tab.document.write(newpage);
+            tab.document.close();
+            saveContent(pcUrls, 'urls');
+            return;
+        }
+        // For fewer data, provide a zip file of the point clouds for users to download
         var zip = new JSZip();
         var cntFilesDownloaded = 0;
         // Show progress bar if request successful

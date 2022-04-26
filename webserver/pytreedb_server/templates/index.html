@@ -130,7 +130,7 @@
                             <button type="button" class="btn btn-outline-success float-none" id="removeAllFilterBtn" onclick="cleanSearchBar()" style="display: inline-block; margin-right: -5rem;">Remove All</button>
                             <div id="queryPreviewArea" style="margin-bottom: 0.5rem;"> Your query: </div>
                             <button type="button" class="btn btn-outline-success float-start" id="updateQPreviewBtn" onclick="updateQueryPreview()">
-                                Update Preview
+                                Preview Query
                             </button>
                             <button type="button" class="btn btn-outline-success float-start" id="exportQBtn" onclick="exportQuery()" style="margin-left: .25rem;">
                                 Export
@@ -166,7 +166,7 @@
                     <span id="numRes"></span> trees found 
                 </p>
                 <ul id="treeTabs" class="pagination pagination-sm nav nav-tabs" style="width: calc(100% - 150px);"></ul>
-                <div style="float: right; padding-left: 3rem; margin-left: -3rem; width: 210px; white-space: nowrap;">
+                <div id="dlButtons" style="float: right; padding-left: 3rem; margin-left: -3rem; width: 210px; white-space: nowrap;">
                     <button id="saveJsonButton" type="button" class="btn btn-success ms-2" onclick="saveJsonOutput()" style="float: none; display: block;">
                         Save JSON
                     </button>

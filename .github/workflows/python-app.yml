@@ -1,0 +1,52 @@
+
+name: Python application
+
+on:
+  #push:
+  #  branches: [ main ]
+  #pull_request:
+  #  branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        #os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+        os: ["windows_latest", "ubuntu-latest"]
+        python-version: ["3.9"]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        flake8_nb
+    - name: Test with pytest
+      env:
+        CONN_URI: ${{ secrets.CONN_URI }}
+        CONN_DB: ${{ secrets.CONN_DB }}
+        CONN_COL: ${{ secrets.CONN_COL }}
+      run: |
+        python -m pytest pytreedb -m query
+    - name: build sphinx doc
+      run: |
+        cd doc
+        make html

@@ -373,6 +373,33 @@ def test_query_logical(mydb, filter_dict, n_expected):
 
 
 @pytest.mark.query
+@pytest.mark.parametrize(
+    "filter_dict, n_expected",
+    [
+        (
+            {"properties.data": {"$elemMatch": {"quality": {"$lte": 2}, "mode": "TLS"}}},
+            181,
+        ),
+        (
+            {
+                "$or": [
+                    {"properties.data": {"$elemMatch": {"canopy_condition": "leaf-off", "mode": "ULS"}}},
+                    {"properties.data.mode": "TLS"},
+                ]
+            },
+            1215,
+        ),
+    ],
+)
+def test_query_elemmatch(mydb, filter_dict, n_expected):
+    """Test for queries using elemMatch operator"""
+    test_dbfile = f"{root_path}/data/test/data.db"
+    mydb.load(test_dbfile)
+
+    assert len(mydb.query(filter_dict)) == n_expected
+
+
+@pytest.mark.query
 def test_query_by_key_exists(mydb):
     """Test for querying by the existence of a given key"""
     input_data = f"{root_path}/data/test/test_geojsons"

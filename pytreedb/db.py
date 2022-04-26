@@ -7,7 +7,7 @@ import sys
 import urllib
 import urllib.request
 from pathlib import Path
-from typing import Union
+from typing import Union, List
 
 import numpy as np
 import pymongo
@@ -95,7 +95,7 @@ class PyTreeDB:
             # raise
             sys.exit()
 
-    def __getitem__(self, item: Union[int, list, slice, np.ndarray]) -> Union[dict, list[dict]]:
+    def __getitem__(self, item: Union[int, list, slice, np.ndarray]) -> Union[dict, List[dict]]:
         """
         Allow index(int) subscription on the database, list(int) and slicing access with int
 
@@ -338,7 +338,7 @@ class PyTreeDB:
         self.stats["n_species"] = len(self.get_list_species())
         return self.stats
 
-    def get_list_species(self) -> list[str]:
+    def get_list_species(self) -> List[str]:
         """
         Get list of unique names of species stored in DB
 
@@ -351,7 +351,7 @@ class PyTreeDB:
 
     def get_shared_properties(
         self,
-    ) -> list[str]:  # this is currently not done in DB, but sequentially on list(dict).
+    ) -> List[str]:  # this is currently not done in DB, but sequentially on list(dict).
         """
         Returns all object.properties that are shared among all objects
 
@@ -365,7 +365,7 @@ class PyTreeDB:
         except Exception:
             return []
 
-    def query(self, *args, **kwargs) -> list[dict]:
+    def query(self, *args, **kwargs) -> List[dict]:
         """
         General MongDB query forwarding: Returns trees (list of dict) fulfilling the arguments.
         Returns list of dict (=trees)
@@ -402,7 +402,7 @@ class PyTreeDB:
             res = self.mongodb_col.find({key: value}, {"_id": False})
         return [e for e in res]
 
-    def query_by_key_exists(self, key: str) -> list[dict]:
+    def query_by_key_exists(self, key: str) -> List[dict]:
         """
         Returns trees having a given key defined inside dict (no matter which value)
 
@@ -417,7 +417,7 @@ class PyTreeDB:
         """Returns trees (list) fulfilling the numeric comparison of values for given key"""
         raise Exception("Can be done with self.query()")  # todo: remove method?
 
-    def query_by_species(self, regex: str) -> list[dict]:
+    def query_by_species(self, regex: str) -> List[dict]:
         """
         Returns trees(list) fulfilling the regex matching on the species name
 
@@ -428,7 +428,7 @@ class PyTreeDB:
         res = self.mongodb_col.find({QUERY_SPECIES_FIELDNAME: {"$regex": regex}}, {"_id": False})
         return [e for e in res]
 
-    def query_by_date(self, key: str, start: DateString, end: DateString = None) -> list[dict]:
+    def query_by_date(self, key: str, start: DateString, end: DateString = None) -> List[dict]:
         """
         Returns trees(list) fulfilling the date of key lies between start and end date in format 'YYYY-MM-DD'
         If no end date is given, the current day is taken.
@@ -455,7 +455,7 @@ class PyTreeDB:
         res = self.mongodb_col.find({key: {"$gte": startdate, "$lte": enddate}}, {"_id": False})
         return [e for e in res]
 
-    def query_by_geometry(self, geom: Union[JSONString, dict], distance: float = 0.0) -> list[dict]:
+    def query_by_geometry(self, geom: Union[JSONString, dict], distance: float = 0.0) -> List[dict]:
         """
         Returns list of trees(dict) that are within a defined distance (in meters) from search geometry which is
         provided as GEOJSON dictionary or string; Geometry types Point and Polygon are supported, for example:
@@ -501,7 +501,7 @@ class PyTreeDB:
 
         return [e for e in res]
 
-    def get_ids(self, trees: list[dict]) -> list[int]:
+    def get_ids(self, trees: List[dict]) -> List[int]:
         """
         Returns ids of trees
 
@@ -527,7 +527,7 @@ class PyTreeDB:
         return self.db
 
     @staticmethod
-    def get_pointcloud_urls(trees: list[dict]) -> list[str]:
+    def get_pointcloud_urls(trees: List[dict]) -> List[str]:
         """
         Returns a list of pointclouds for the given trees
 
@@ -590,7 +590,7 @@ class PyTreeDB:
             return True  # valid
         return False  # not valid
 
-    def export_data(self, outdir, trees: list[int] = None) -> list[PathLike]:
+    def export_data(self, outdir, trees: List[int] = None) -> List[PathLike]:
         """
         Reverse of import_data():
         Creates single geojson files for each tree in DB and puts it in local directory
@@ -617,10 +617,10 @@ class PyTreeDB:
     def convert_to_csv(
         self,
         outdir: PathLike,
-        trees: list[int] = None,
+        trees: List[int] = None,
         filename_general: str = "result_general.csv",
         filename_metrics: str = "result_metrics.csv",
-    ) -> list[PathLike]:
+    ) -> List[PathLike]:
         """
         Exports trees to local csv files. Each export creates two separate csv files,
         one for general information, one for metrics.

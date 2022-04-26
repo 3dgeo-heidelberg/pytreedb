@@ -46,6 +46,7 @@ root_path = str(Path(__file__).parent.parent.parent)
 
 @pytest.fixture()
 def mydb(tmp_path):
+    """Fixture for a database instance"""
     my_dbfile = tmp_path / "temp.db"
     mydb = db.PyTreeDB(dbfile=my_dbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col})
     return mydb
@@ -63,7 +64,7 @@ def mydb(tmp_path):
     ],
 )
 def test_import_data(mydb, data_path, n_trees_expected):
-    """Tests reading data (json files) from local file or from URL of ZIP archive with files named like *.*json"""
+    """Test for reading data (json files) from local file or from URL of ZIP archive with files named like *.*json"""
 
     assert mydb.import_data(data_path) == n_trees_expected
 
@@ -80,14 +81,14 @@ def test_import_data(mydb, data_path, n_trees_expected):
     ],
 )
 def test_import_db(mydb, data_path, n_trees_expected):
-    """Tests reading local database file or URL to database file"""
+    """Test for reading local database file or URL to database file"""
 
     assert mydb.import_db(data_path) == n_trees_expected
 
 
 @pytest.mark.imports
 def test_import_db_wrong_path(mydb):
-    """Tests importing database from a corrupt local path"""
+    """Test if importing database from a corrupt local path raises Error"""
     # given
     my_corrupt_path = "corrupt/path/to/file.db"
 
@@ -99,7 +100,7 @@ def test_import_db_wrong_path(mydb):
 
 @pytest.mark.imports
 def test_import_db_wrong_url(mydb):
-    """Tests importing data from a corrupt URL"""
+    """Test if importing data from a corrupt URL raises Error"""
     # given
     my_corrupt_url = "https://githubbb.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/data.db"
 
@@ -111,7 +112,7 @@ def test_import_db_wrong_url(mydb):
 
 @pytest.mark.imports
 def test_import_data_wrong_path(mydb):
-    """Tests importing data from a corrupt local path"""
+    """Test if importing data from a corrupt local path raises Error"""
     # given
     my_corrupt_path = "corrupt/path/to/folder"
 
@@ -123,7 +124,7 @@ def test_import_data_wrong_path(mydb):
 
 @pytest.mark.imports
 def test_import_data_wrong_url(mydb):
-    """Tests importing data from a corrupt URL"""
+    """Test if importing data from a corrupt URL raises Error"""
     # given
     my_corrupt_url = "https://githubbb.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip"
 
@@ -135,7 +136,7 @@ def test_import_data_wrong_url(mydb):
 
 @pytest.mark.imports
 def test_import_data_not_a_zip(mydb):
-    """Tests importing data from a URL which does not download a zip folder"""
+    """Test if importing data from a URL which does not download a zip folder raises Error"""
     # given
     my_problematic_url = "https://github.com/3dgeo-heidelberg/pytreedb/tree/main/data/test/test_geojsons"
 
@@ -147,23 +148,21 @@ def test_import_data_not_a_zip(mydb):
 
 @pytest.mark.export
 def test_save(mydb, tmp_path):
-    """Test function to save .db file"""
+    """Test for saving .db file"""
     test_db = f"{root_path}/data/test/data.db"
     out_db = tmp_path / "temp.db"
 
-    # TODO: use load() instead?
     mydb.import_db(test_db, overwrite=False)
     mydb.save(dbfile=out_db)
 
     assert out_db.exists()
-    # TODO: use load() instead?
     assert mydb.import_db(test_db, overwrite=True) == mydb.import_db(out_db, overwrite=True)
     assert pytreedb.db_utils.hash_file(mydb.dbfile) == pytreedb.db_utils.hash_file(out_db)
 
 
 @pytest.mark.export
 def test_export_data(mydb, tmp_path):
-    """Test function to export data regarding writing the correct number of files"""
+    """Test for exporting data: check if the correct number of files is written"""
 
     test_dbfile = f"{root_path}/data/test/data.db"
     mydb.load(test_dbfile)
@@ -180,7 +179,7 @@ def test_export_data(mydb, tmp_path):
 
 @pytest.mark.export
 def test_export_data_content(mydb, tmp_path):
-    """Test function to export data regarding the content of geojson files"""
+    """Test for exporting data: check content of geojson files"""
 
     input_data = f"{root_path}/data/test/test_geojsons"
 
@@ -208,7 +207,7 @@ def test_export_data_content(mydb, tmp_path):
     ],
 )
 def test_convert_to_csv_general(mydb, tmp_path, dir_name, i, trees, ncols_expected):
-    """Test function to export data to csv - checking the general tree info"""
+    """Test for exporting data to csv: check the general tree info"""
     input_data = f"{root_path}/data/test/{dir_name}"
     outdir_csv = tmp_path
 
@@ -258,7 +257,7 @@ def test_convert_to_csv_general(mydb, tmp_path, dir_name, i, trees, ncols_expect
 @pytest.mark.export
 @pytest.mark.parametrize("i, trees", [(4, None), (1, [1, 3])])
 def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
-    """Test function to export data to csv - checking the source-specific tree metrics"""
+    """Test for exporting data to csv: check the source-specific tree metrics"""
     input_data = f"{root_path}/data/test/test_geojsons"
     outdir_csv = tmp_path
 
@@ -302,6 +301,7 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
     ],
 )
 def test_query_by_index(mydb, index, treeids_expected):
+    """Test for querying the database by index"""
     test_dbfile = f"{root_path}/data/test/data.db"
     mydb.load(test_dbfile)
 
@@ -319,6 +319,7 @@ def test_query_by_index(mydb, index, treeids_expected):
     ],
 )
 def test_query_single(mydb, filter_dict, n_expected):
+    """Test for using a single query"""
     test_dbfile = f"{root_path}/data/test/data.db"
     mydb.db = list()
     mydb.load(test_dbfile)
@@ -337,6 +338,7 @@ def test_query_single(mydb, filter_dict, n_expected):
     ],
 )
 def test_query_numeric_comparison(mydb, filter_dict, n_expected):
+    """Test for querying with numeric comparisons (greater than, etc.)"""
     input_data = f"{root_path}/data/test/test_geojsons"
     mydb.import_data(input_data)
 
@@ -363,6 +365,7 @@ def test_query_numeric_comparison(mydb, filter_dict, n_expected):
     ],
 )
 def test_query_logical(mydb, filter_dict, n_expected):
+    """Test for combining several queries using logical operators"""
     test_dbfile = f"{root_path}/data/test/data.db"
     mydb.load(test_dbfile)
 
@@ -371,6 +374,7 @@ def test_query_logical(mydb, filter_dict, n_expected):
 
 @pytest.mark.query
 def test_query_by_key_exists(mydb):
+    """Test for querying by the existence of a given key"""
     input_data = f"{root_path}/data/test/test_geojsons"
 
     mydb.import_data(input_data, overwrite=True)
@@ -384,6 +388,7 @@ def test_query_by_key_exists(mydb):
     [("Quercus*", 274), ("Quercus pet*", 156), ("[Aa]bies+", 230), ("Picea abies", 205)],
 )
 def test_query_by_species_regex(mydb, regex, n_expected):
+    """Test for querying by species using regex"""
     test_dbfile = f"{root_path}/data/test/data.db"
     mydb.load(test_dbfile)
 
@@ -396,6 +401,7 @@ def test_query_by_species_regex(mydb, regex, n_expected):
     [("properties.species", "Abies alba", False, 25), ("properties.id", "BR05+", True, 278)],
 )
 def test_query_by_key_value(mydb, key, value, regex, n_expected):
+    """Test for querying with key-value pairs (and regex)"""
     test_dbfile = f"{root_path}/data/test/data.db"
     mydb.load(test_dbfile)
 
@@ -412,6 +418,7 @@ def test_query_by_key_value(mydb, key, value, regex, n_expected):
     ],
 )
 def test_query_by_date(mydb, key, start, end, n_expected):
+    """Test for querying by date (start and end)"""
     test_dbfile = f"{root_path}/data/test/data.db"
     mydb.load(test_dbfile)
 
@@ -420,6 +427,7 @@ def test_query_by_date(mydb, key, start, end, n_expected):
 
 @pytest.mark.query
 def test_query_by_poly_geometry(mydb):
+    """Test for querying by geometry: within polygon"""
     test_dbfile = f"{root_path}/data/test/data.db"
     mydb.load(test_dbfile)
     coords = [
@@ -439,6 +447,8 @@ def test_query_by_poly_geometry(mydb):
 
 @pytest.mark.query
 def test_query_by_point_geometry(mydb):
+    """Test for querying by geometry: within distance to query point"""
+
     test_dbfile = f"{root_path}/data/test/data.db"
     mydb.load(test_dbfile)
 

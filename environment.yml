@@ -4,10 +4,8 @@ channels:
   - defaults
 dependencies:
   - python=3.9
-  - pandas
   - pip
   - notebook
-  - jupyter
   - numpy
   - pytest
   - flask

@@ -59,8 +59,10 @@ Note that Flask is not suitable for production. However, it is possible to use t
 
 1) Install `mod_wsgi` **in the conda environment used for the server**. In the following, it is assumed that the environment is called `pytreedb`.
 ```
+conda create -n pytreedb python=3.8
 conda activate pytreedb
 conda install mod_wsgi -c conda-forge -y
+python -m pip install python-dotenv pandas pymongo[srv]
 ```
 
 2) Install `pytreedb_server` from pip:
@@ -83,15 +85,15 @@ WSGIPythonHome "/opt/miniconda3/envs/pytreedb"
 Be sure to adapt all the paths related to your `conda` installation and the location where you want to have your database placed (in this example: `/var/www/pytreedb`)
 ```
 WSGIPythonHome "/opt/miniconda3/envs/pytreedb"
+LoadModule wsgi_module "/opt/miniconda3/envs/pytreedb/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so"
+
 <VirtualHost *:80>
     ServerAdmin webmaster@localhost
 
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 
-    LoadModule wsgi_module "/opt/miniconda3/envs/pytreedb/lib/python3.9/site-packages/mod_wsgi/server/mod_wsgi-py39.cpython-39-x86_64-linux-gnu.so"
-
-    WSGIDaemonProcess pytreedb python-path=/opt/miniconda3/envs/pytreedb/lib/python3.9/site-packages home=/var/www/pytreedb/
+    WSGIDaemonProcess pytreedb python-path=/opt/miniconda3/envs/pytreedb/lib/python3.8/site-packages home=/var/www/pytreedb/webserver
     WSGIScriptAlias / /var/www/pytreedb/pytreedb_server.wsgi
 
     <Directory /var/www/pytreedb/>
@@ -115,7 +117,7 @@ sys.path.insert(0, '/var/www/pytreedb/')
 from pytreedb_server.__main__ import app as application
 ```
 
-6) Create a new environment file `/var/www/pytreedb/.env` and fill out the following parameters:
+6) Create a new environment file `/var/www/pytreedb/webserver/.env` and fill out the following parameters:
 ```
 CONN_URI = ""
 CONN_DB = ""

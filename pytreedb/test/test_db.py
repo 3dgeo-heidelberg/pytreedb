@@ -306,7 +306,7 @@ def test_query_by_index(mydb, index, treeids_expected):
     mydb.load(test_dbfile)
 
     assert [fname["properties"]["id"] for fname in mydb[index]] == treeids_expected
-    mydb.db = list()
+    assert mydb.get_ids(mydb[index]) == index
 
 
 @pytest.mark.query
@@ -418,26 +418,33 @@ def test_query_by_date(mydb, key, start, end, n_expected):
     assert len(mydb.query_by_date(key=key, start=start, end=end)) == n_expected
 
 
-def test_query_by_geometry():
-    pass
+@pytest.mark.query
+def test_query_by_poly_geometry(mydb):
+    test_dbfile = f"{root_path}/data/test/data.db"
+    mydb.load(test_dbfile)
+    coords = [
+        [
+            [8.657777973760469, 49.019526417240272],
+            [8.6564204259407, 49.018633562408255],
+            [8.655062878168346, 49.019526417240272],
+            [8.656420425940698, 49.020419287904346],
+            [8.657777973760469, 49.019526417240272],
+        ]
+    ]
+    poly_dict = json.dumps({"type": "Polygon", "coordinates": coords})
+    res = mydb.query_by_geometry(poly_dict)
+
+    assert len(res) == 22
 
 
-def test_get_ids_query_res():
-    pass
+@pytest.mark.query
+def test_query_by_point_geometry(mydb):
+    test_dbfile = f"{root_path}/data/test/data.db"
+    mydb.load(test_dbfile)
 
+    query_point = [8.6995085, 49.0131634]
+    point_dict = json.dumps({"type": "Point", "coordinates": query_point})
+    search_radius = 150.0
+    res = mydb.query_by_geometry(point_dict, distance=search_radius)
 
-# clear()
-
-# query
-
-# different queries
-# also cases where we expect errors to be caught
-# get_ids
-
-# get_tree_as_json (is this function even needed?)
-# validate_json()
-
-# utils
-
-# also think beyond: e.g., users with their own data with different tree properties
-# make sure these can also be queried!
+    assert len(res) == 40

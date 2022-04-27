@@ -98,6 +98,7 @@ getItem = () => {
         });
         $('#numResContainer').hide();
         $('#treeTabs').hide();
+        $('#dlButtons').show();
         $('#saveJsonButton').show();
         $('#saveAllButton').hide();
         $('#savePointCButton').hide();
@@ -137,6 +138,7 @@ searchDB = () => {
             $('#numResContainer').show();
             // Show json code snippets if trees found
             if (numRes != 0) {
+                $('#dlButtons').show();
                 $('#dlButtons').find('*').show();
                 $('#mapContainer').show();
                 // Update for output
@@ -322,6 +324,7 @@ queryBackend = (previewLimit, nthEntrySet) => {
             $('#treeTabs').empty();
             $('#numRes').html(numRes);
             $('#numResContainer').show();
+            $('#dlButtons').show();
             $('#dlButtons').find('*').show();
             $('#mapContainer').show();
             jsonOutput = JSON.stringify(trees[0]);

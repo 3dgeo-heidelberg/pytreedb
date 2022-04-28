@@ -12,11 +12,6 @@ from numpy.lib.recfunctions import structured_to_unstructured
 import pytreedb.db_utils
 import zipfile
 
-# from pytest_mock_resources import create_mongo_fixture
-
-# import tempfile
-
-
 load_dotenv()
 conn_uri = os.environ.get("CONN_URI")
 conn_db = os.environ.get("CONN_DB")
@@ -25,30 +20,9 @@ conn_col = os.environ.get("CONN_COL")
 root_path = str(Path(__file__).parent.parent.parent)
 
 
-# @pytest.fixture(scope="module")
-# def mydb():
-#     my_dbfile = tempfile.TemporaryFile()
-#     mydb = db.PyTreeDB(
-#         dbfile=my_dbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col}
-#     )
-#     yield mydb
-#     my_dbfile.close()
-
-
-# function-scope fixture - maybe module-scope (see above) would be better, but then necessary to carefully handle
-# importing data/overwriting..
-# could think about several of these fixture, each loading a different test dataset..
-
-# current input data
-# https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/data.db
-# f"{root_path}/data/test/data.db
-# f"{root_path}/data/test/test_geojsons
-# f"{root_path}/data/test/test_geojsons_no_position
-
-
 @pytest.fixture()
 def mydb(tmp_path):
-    """Fixture for a database instance"""
+    """Fixture for a database instance (function-scope, used for imports and exports)"""
     my_dbfile = tmp_path / "temp.db"
     mydb = db.PyTreeDB(dbfile=my_dbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col})
     return mydb
@@ -56,6 +30,7 @@ def mydb(tmp_path):
 
 @pytest.fixture(scope="session")
 def mydb_dbfile_local(tmp_path_factory):
+    """Fixture for a database connection importing local db file with >1000 trees"""
     test_dir = tmp_path_factory.mktemp("test_db_local")
     my_dbfile = test_dir / "temp.db"
     test_dbfile = f"{root_path}/data/test/data.db"
@@ -66,6 +41,7 @@ def mydb_dbfile_local(tmp_path_factory):
 
 @pytest.fixture(scope="session")
 def mydb_test_geojsons_local(tmp_path_factory):
+    """Fixture for a database connection importing small local test set of geojson files"""
     test_dir = tmp_path_factory.mktemp("test_geojsons_local")
     my_dbfile = test_dir / "temp.db"
     test_geojsons = f"{root_path}/data/test/test_geojsons"
@@ -324,8 +300,6 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
 )
 def test_query_by_index(mydb_dbfile_local, index, treeids_expected):
     """Test for querying the database by index"""
-    # test_dbfile = f"{root_path}/data/test/data.db"
-    # mydb.load(test_dbfile)
 
     assert [fname["properties"]["id"] for fname in mydb_dbfile_local[index]] == treeids_expected
     assert mydb_dbfile_local.get_ids(mydb_dbfile_local[index]) == index
@@ -342,9 +316,6 @@ def test_query_by_index(mydb_dbfile_local, index, treeids_expected):
 )
 def test_query_single(mydb_dbfile_local, filter_dict, n_expected):
     """Test for using a single query"""
-    # test_dbfile = f"{root_path}/data/test/data.db"
-    # mydb.db = list()
-    # mydb.load(test_dbfile)
 
     assert len(mydb_dbfile_local.query(filter_dict)) == n_expected
 
@@ -361,8 +332,6 @@ def test_query_single(mydb_dbfile_local, filter_dict, n_expected):
 )
 def test_query_numeric_comparison(mydb_test_geojsons_local, filter_dict, n_expected):
     """Test for querying with numeric comparisons (greater than, etc.)"""
-    # input_data = f"{root_path}/data/test/test_geojsons"
-    # mydb.import_data(input_data)
 
     assert len(mydb_test_geojsons_local.query(filter_dict)) == n_expected
 
@@ -388,8 +357,6 @@ def test_query_numeric_comparison(mydb_test_geojsons_local, filter_dict, n_expec
 )
 def test_query_logical(mydb_dbfile_local, filter_dict, n_expected):
     """Test for combining several queries using logical operators"""
-    # test_dbfile = f"{root_path}/data/test/data.db"
-    # mydb.load(test_dbfile)
 
     assert len(mydb_dbfile_local.query(filter_dict)) == n_expected
 
@@ -415,8 +382,6 @@ def test_query_logical(mydb_dbfile_local, filter_dict, n_expected):
 )
 def test_query_elemmatch(mydb_dbfile_local, filter_dict, n_expected):
     """Test for queries using elemMatch operator"""
-    # test_dbfile = f"{root_path}/data/test/data.db"
-    # mydb.load(test_dbfile)
 
     assert len(mydb_dbfile_local.query(filter_dict)) == n_expected
 
@@ -424,9 +389,6 @@ def test_query_elemmatch(mydb_dbfile_local, filter_dict, n_expected):
 @pytest.mark.query
 def test_query_by_key_exists(mydb_test_geojsons_local):
     """Test for querying by the existence of a given key"""
-    # input_data = f"{root_path}/data/test/test_geojsons"
-
-    # mydb.import_data(input_data, overwrite=True)
 
     assert len(mydb_test_geojsons_local.query_by_key_exists("properties.measurements.DBH_cm")) == 5
 
@@ -438,8 +400,6 @@ def test_query_by_key_exists(mydb_test_geojsons_local):
 )
 def test_query_by_species_regex(mydb_dbfile_local, regex, n_expected):
     """Test for querying by species using regex"""
-    # test_dbfile = f"{root_path}/data/test/data.db"
-    # mydb.load(test_dbfile)
 
     assert len(mydb_dbfile_local.query_by_species(regex)) == n_expected
 
@@ -451,8 +411,6 @@ def test_query_by_species_regex(mydb_dbfile_local, regex, n_expected):
 )
 def test_query_by_key_value(mydb_dbfile_local, key, value, regex, n_expected):
     """Test for querying with key-value pairs (and regex)"""
-    # test_dbfile = f"{root_path}/data/test/data.db"
-    # mydb.load(test_dbfile)
 
     assert len(mydb_dbfile_local.query_by_key_value(key, value, regex)) == n_expected
 
@@ -468,8 +426,6 @@ def test_query_by_key_value(mydb_dbfile_local, key, value, regex, n_expected):
 )
 def test_query_by_date(mydb_dbfile_local, key, start, end, n_expected):
     """Test for querying by date (start and end)"""
-    # test_dbfile = f"{root_path}/data/test/data.db"
-    # mydb.load(test_dbfile)
 
     assert len(mydb_dbfile_local.query_by_date(key=key, start=start, end=end)) == n_expected
 
@@ -477,8 +433,7 @@ def test_query_by_date(mydb_dbfile_local, key, start, end, n_expected):
 @pytest.mark.query
 def test_query_by_poly_geometry(mydb_dbfile_local):
     """Test for querying by geometry: within polygon"""
-    # test_dbfile = f"{root_path}/data/test/data.db"
-    # mydb.load(test_dbfile)
+
     coords = [
         [
             [8.657777973760469, 49.019526417240272],
@@ -497,9 +452,6 @@ def test_query_by_poly_geometry(mydb_dbfile_local):
 @pytest.mark.query
 def test_query_by_point_geometry(mydb_dbfile_local):
     """Test for querying by geometry: within distance to query point"""
-
-    # test_dbfile = f"{root_path}/data/test/data.db"
-    # mydb.load(test_dbfile)
 
     query_point = [8.6995085, 49.0131634]
     point_dict = json.dumps({"type": "Point", "coordinates": query_point})

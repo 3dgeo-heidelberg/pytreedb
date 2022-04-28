@@ -79,7 +79,7 @@ When you're ready to contribute code to address an open issue, please follow the
 
     </details>
 
-3. **Ensure your fork is up-to-date**
+2. **Ensure your fork is up-to-date**
 
     <details><summary>Expand details 👇</summary><br/>
 
@@ -91,7 +91,7 @@ When you're ready to contribute code to address an open issue, please follow the
 
     </details>
 
-4. **Create a new branch to work on your fix or enhancement**
+3. **Create a new branch to work on your fix or enhancement**
 
     <details><summary>Expand details 👇</summary><br/>
 
@@ -105,15 +105,17 @@ When you're ready to contribute code to address an open issue, please follow the
 
     </details>
 
-5. **Test your changes**
+4. **Test your changes**
 
     <details><summary>Expand details 👇</summary><br/>
 
     Our continuous integration (CI) testing runs [a number of checks](https://github.com/3dgeo-heidelberg/pytreedb/actions) for each pull request on [GitHub Actions](https://github.com/features/actions). 
     You can run the linters and the tests locally, which is something you should do *before* opening a PR to help speed up the review process and make it easier for us.
-
-    First, you should install pre-commit hooks:
+    For this, pre-commit hooks are very useful. These are scripts that run before your git commit is accepted and which ensure that you commit well-formatted code.
     
+    The `pre-commit` package is included in our [`environment.yml`](environment.yml) and [`requirements.txt`](requirements.txt).
+    To install the pre-commit hooks that we defined for our repository (see [.pre-commit-config.yaml](.pre-commit-config.yaml)), please run
+ 
         pre-commit install
     
     Now, the code you push is checked for syntax errors before you are able to commit.

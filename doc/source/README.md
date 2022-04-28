@@ -35,8 +35,7 @@ Install and update using [pip](https://pypi.org/) for 1) core library and 2) ser
 
 `$ pip install -U pytreedb-server`
 
-### Using Anaconda 
-ironment
+### Using Anaconda Environment
 Simply use the given `Anaconda` environment file [environment.yml](https://github.com/3dgeo-heidelberg/pytreedb/blob/main/environment.yml) provided in this distribution, which contains all dependencies to run and build resources.
 
 `$ conda env create --file environment.yml --force`

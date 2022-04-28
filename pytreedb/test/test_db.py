@@ -12,6 +12,8 @@ from numpy.lib.recfunctions import structured_to_unstructured
 import pytreedb.db_utils
 import zipfile
 
+# from pytest_mock_resources import create_mongo_fixture
+
 # import tempfile
 
 
@@ -49,6 +51,26 @@ def mydb(tmp_path):
     """Fixture for a database instance"""
     my_dbfile = tmp_path / "temp.db"
     mydb = db.PyTreeDB(dbfile=my_dbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col})
+    return mydb
+
+
+@pytest.fixture(scope="session")
+def mydb_dbfile_local(tmp_path_factory):
+    test_dir = tmp_path_factory.mktemp("test_db_local")
+    my_dbfile = test_dir / "temp.db"
+    test_dbfile = f"{root_path}/data/test/data.db"
+    mydb = db.PyTreeDB(dbfile=my_dbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col})
+    mydb.import_db(test_dbfile, overwrite=True)
+    return mydb
+
+
+@pytest.fixture(scope="session")
+def mydb_test_geojsons_local(tmp_path_factory):
+    test_dir = tmp_path_factory.mktemp("test_geojsons_local")
+    my_dbfile = test_dir / "temp.db"
+    test_geojsons = f"{root_path}/data/test/test_geojsons"
+    mydb = db.PyTreeDB(dbfile=my_dbfile, mongodb={"uri": conn_uri, "db": conn_db, "col": conn_col + "_2"})
+    mydb.import_data(test_geojsons, overwrite=True)
     return mydb
 
 
@@ -300,13 +322,13 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
         ([100, 101, 102], ["CarBet_BR01_P22T27", "CarBet_BR01_P22T34", "CarBet_BR01_P22T35"]),
     ],
 )
-def test_query_by_index(mydb, index, treeids_expected):
+def test_query_by_index(mydb_dbfile_local, index, treeids_expected):
     """Test for querying the database by index"""
-    test_dbfile = f"{root_path}/data/test/data.db"
-    mydb.load(test_dbfile)
+    # test_dbfile = f"{root_path}/data/test/data.db"
+    # mydb.load(test_dbfile)
 
-    assert [fname["properties"]["id"] for fname in mydb[index]] == treeids_expected
-    assert mydb.get_ids(mydb[index]) == index
+    assert [fname["properties"]["id"] for fname in mydb_dbfile_local[index]] == treeids_expected
+    assert mydb_dbfile_local.get_ids(mydb_dbfile_local[index]) == index
 
 
 @pytest.mark.query
@@ -318,13 +340,13 @@ def test_query_by_index(mydb, index, treeids_expected):
         ({"properties.measurements.source": "FI"}, 1060),
     ],
 )
-def test_query_single(mydb, filter_dict, n_expected):
+def test_query_single(mydb_dbfile_local, filter_dict, n_expected):
     """Test for using a single query"""
-    test_dbfile = f"{root_path}/data/test/data.db"
-    mydb.db = list()
-    mydb.load(test_dbfile)
+    # test_dbfile = f"{root_path}/data/test/data.db"
+    # mydb.db = list()
+    # mydb.load(test_dbfile)
 
-    assert len(mydb.query(filter_dict)) == n_expected
+    assert len(mydb_dbfile_local.query(filter_dict)) == n_expected
 
 
 @pytest.mark.query
@@ -337,12 +359,12 @@ def test_query_single(mydb, filter_dict, n_expected):
         ({"properties.data.quality": {"$lte": 2}}, 4),
     ],
 )
-def test_query_numeric_comparison(mydb, filter_dict, n_expected):
+def test_query_numeric_comparison(mydb_test_geojsons_local, filter_dict, n_expected):
     """Test for querying with numeric comparisons (greater than, etc.)"""
-    input_data = f"{root_path}/data/test/test_geojsons"
-    mydb.import_data(input_data)
+    # input_data = f"{root_path}/data/test/test_geojsons"
+    # mydb.import_data(input_data)
 
-    assert len(mydb.query(filter_dict)) == n_expected
+    assert len(mydb_test_geojsons_local.query(filter_dict)) == n_expected
 
 
 @pytest.mark.query
@@ -364,12 +386,12 @@ def test_query_numeric_comparison(mydb, filter_dict, n_expected):
         ),
     ],
 )
-def test_query_logical(mydb, filter_dict, n_expected):
+def test_query_logical(mydb_dbfile_local, filter_dict, n_expected):
     """Test for combining several queries using logical operators"""
-    test_dbfile = f"{root_path}/data/test/data.db"
-    mydb.load(test_dbfile)
+    # test_dbfile = f"{root_path}/data/test/data.db"
+    # mydb.load(test_dbfile)
 
-    assert len(mydb.query(filter_dict)) == n_expected
+    assert len(mydb_dbfile_local.query(filter_dict)) == n_expected
 
 
 @pytest.mark.query
@@ -391,22 +413,22 @@ def test_query_logical(mydb, filter_dict, n_expected):
         ),
     ],
 )
-def test_query_elemmatch(mydb, filter_dict, n_expected):
+def test_query_elemmatch(mydb_dbfile_local, filter_dict, n_expected):
     """Test for queries using elemMatch operator"""
-    test_dbfile = f"{root_path}/data/test/data.db"
-    mydb.load(test_dbfile)
+    # test_dbfile = f"{root_path}/data/test/data.db"
+    # mydb.load(test_dbfile)
 
-    assert len(mydb.query(filter_dict)) == n_expected
+    assert len(mydb_dbfile_local.query(filter_dict)) == n_expected
 
 
 @pytest.mark.query
-def test_query_by_key_exists(mydb):
+def test_query_by_key_exists(mydb_test_geojsons_local):
     """Test for querying by the existence of a given key"""
-    input_data = f"{root_path}/data/test/test_geojsons"
+    # input_data = f"{root_path}/data/test/test_geojsons"
 
-    mydb.import_data(input_data, overwrite=True)
+    # mydb.import_data(input_data, overwrite=True)
 
-    assert len(mydb.query_by_key_exists("properties.measurements.DBH_cm")) == 5
+    assert len(mydb_test_geojsons_local.query_by_key_exists("properties.measurements.DBH_cm")) == 5
 
 
 @pytest.mark.query
@@ -414,12 +436,12 @@ def test_query_by_key_exists(mydb):
     "regex, n_expected",
     [("Quercus*", 274), ("Quercus pet*", 156), ("[Aa]bies+", 230), ("Picea abies", 205)],
 )
-def test_query_by_species_regex(mydb, regex, n_expected):
+def test_query_by_species_regex(mydb_dbfile_local, regex, n_expected):
     """Test for querying by species using regex"""
-    test_dbfile = f"{root_path}/data/test/data.db"
-    mydb.load(test_dbfile)
+    # test_dbfile = f"{root_path}/data/test/data.db"
+    # mydb.load(test_dbfile)
 
-    assert len(mydb.query_by_species(regex)) == n_expected
+    assert len(mydb_dbfile_local.query_by_species(regex)) == n_expected
 
 
 @pytest.mark.query
@@ -427,12 +449,12 @@ def test_query_by_species_regex(mydb, regex, n_expected):
     "key, value, regex, n_expected",
     [("properties.species", "Abies alba", False, 25), ("properties.id", "BR05+", True, 278)],
 )
-def test_query_by_key_value(mydb, key, value, regex, n_expected):
+def test_query_by_key_value(mydb_dbfile_local, key, value, regex, n_expected):
     """Test for querying with key-value pairs (and regex)"""
-    test_dbfile = f"{root_path}/data/test/data.db"
-    mydb.load(test_dbfile)
+    # test_dbfile = f"{root_path}/data/test/data.db"
+    # mydb.load(test_dbfile)
 
-    assert len(mydb.query_by_key_value(key, value, regex)) == n_expected
+    assert len(mydb_dbfile_local.query_by_key_value(key, value, regex)) == n_expected
 
 
 @pytest.mark.query
@@ -444,19 +466,19 @@ def test_query_by_key_value(mydb, key, value, regex, n_expected):
         ("properties.data.date", "2019-12-01", "2019-12-31", 1173),
     ],
 )
-def test_query_by_date(mydb, key, start, end, n_expected):
+def test_query_by_date(mydb_dbfile_local, key, start, end, n_expected):
     """Test for querying by date (start and end)"""
-    test_dbfile = f"{root_path}/data/test/data.db"
-    mydb.load(test_dbfile)
+    # test_dbfile = f"{root_path}/data/test/data.db"
+    # mydb.load(test_dbfile)
 
-    assert len(mydb.query_by_date(key=key, start=start, end=end)) == n_expected
+    assert len(mydb_dbfile_local.query_by_date(key=key, start=start, end=end)) == n_expected
 
 
 @pytest.mark.query
-def test_query_by_poly_geometry(mydb):
+def test_query_by_poly_geometry(mydb_dbfile_local):
     """Test for querying by geometry: within polygon"""
-    test_dbfile = f"{root_path}/data/test/data.db"
-    mydb.load(test_dbfile)
+    # test_dbfile = f"{root_path}/data/test/data.db"
+    # mydb.load(test_dbfile)
     coords = [
         [
             [8.657777973760469, 49.019526417240272],
@@ -467,21 +489,21 @@ def test_query_by_poly_geometry(mydb):
         ]
     ]
     poly_dict = json.dumps({"type": "Polygon", "coordinates": coords})
-    res = mydb.query_by_geometry(poly_dict)
+    res = mydb_dbfile_local.query_by_geometry(poly_dict)
 
     assert len(res) == 22
 
 
 @pytest.mark.query
-def test_query_by_point_geometry(mydb):
+def test_query_by_point_geometry(mydb_dbfile_local):
     """Test for querying by geometry: within distance to query point"""
 
-    test_dbfile = f"{root_path}/data/test/data.db"
-    mydb.load(test_dbfile)
+    # test_dbfile = f"{root_path}/data/test/data.db"
+    # mydb.load(test_dbfile)
 
     query_point = [8.6995085, 49.0131634]
     point_dict = json.dumps({"type": "Point", "coordinates": query_point})
     search_radius = 150.0
-    res = mydb.query_by_geometry(point_dict, distance=search_radius)
+    res = mydb_dbfile_local.query_by_geometry(point_dict, distance=search_radius)
 
     assert len(res) == 40

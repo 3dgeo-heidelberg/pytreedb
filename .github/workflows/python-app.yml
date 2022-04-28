@@ -17,8 +17,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
-        python-version: ["3.8", "3.9"]
+        os: ["ubuntu-latest"] #, "windows-latest", "macos-latest"]
+        python-version: ["3.8"]
 
     steps:
     - name: Checkout repository
@@ -44,7 +44,7 @@ jobs:
         CONN_DB: ${{ secrets.CONN_DB }}
         CONN_COL: ${{ secrets.CONN_COL }}
       run: |
-        python -m pytest pytreedb -m query
+        python -m pytest pytreedb
     - name: build sphinx doc
       run: |
         cd doc

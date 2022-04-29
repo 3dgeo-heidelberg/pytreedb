@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -36,8 +36,8 @@ jobs:
         pip install -r requirements.txt
     - name: Test with pytest
       env: |
-        CONN_URI = "mongodb://127.0.0.1:27017/"
-        CONN_DB = "pytreedb"
-        CONN_COL = "test"
+        CONN_URI:"mongodb://127.0.0.1:27017/"
+        CONN_DB:"pytreedb"
+        CONN_COL:"test"
       run: |
         python -m pytest pytreedb

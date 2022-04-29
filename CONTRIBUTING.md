@@ -1,6 +1,7 @@
 # Contributing
 
 Thanks for considering contributing! Please read this document to learn the various ways you can contribute to this project and how to go about doing it.
+> The instructions in this file are based on [this template](https://github.com/allenai/python-package-template/blob/main/CONTRIBUTING.md).
 
 ## Bug reports and feature requests
 
@@ -131,10 +132,10 @@ When you're ready to contribute code to address an open issue, please follow the
     for each function, method, class, or module that you add.
     See the [Writing docstrings](#writing-docstrings) section below for details on the syntax.
     You should test to make sure the API documentation can build without errors by running
-
+      ```
       cd doc  
       make html
-
+      ```
     If the build fails, it's most likely due to small formatting issues. If the error message isn't clear, feel free to comment on this in your pull request.
 
     After all of the above checks have passed, you can now open [a new GitHub pull request](https://github.com/3dgeo-heidelberg/pytreedb/pulls).
@@ -149,3 +150,4 @@ When you're ready to contribute code to address an open issue, please follow the
 We use [Sphinx](https://www.sphinx-doc.org/en/master/index.html) to build our API docs, which automatically parses all docstrings
 of public classes and methods using the [autodoc](https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html) extension.
 Please refer to the documentation of the [Sphinx/ReStructuredText docstring format](https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html) to learn about the syntax.
+

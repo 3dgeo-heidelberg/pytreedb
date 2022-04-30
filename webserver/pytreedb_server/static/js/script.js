@@ -457,12 +457,12 @@ constrQueryExp = () => {
     };
 }
 
-// Utility function: save a string to a txt file that will pop up for the user to download
+// Utility function: generate a download link according to the current query and get requested info from backend
 // Source: https://stackoverflow.com/questions/283956/is-there-any-way-to-specify-a-suggested-filename-when-using-data-uri
-saveContent = (fileContents, fileName) => {
+saveContent = (fileName, url) => {
     var link = document.createElement('a');
     link.download = fileName;
-    link.href = 'data:,' + fileContents;
+    link.href = url + btoa(JSON.stringify(currReq.backendQ));
     link.click();
 }
 // Utility function: export an object to Json file for download
@@ -482,34 +482,16 @@ saveJsonOutput = () => {
 }
 // Save all result jsons into one json file
 saveAllJsons = () => {
-    var link = document.createElement('a');
-    link.download = 'res_feature_collection.json';
-    link.href = '/download/exportcollection/' + btoa(JSON.stringify(currReq.backendQ));
-    link.click();
+    saveContent('res_feature_collection.json', '/download/exportcollection/');
 }
 // Save all results into zipped csv-files
 saveCSV = () => {
-    $.ajax({
-        url: '/download/exportcsv',
-        type: "POST",
-        data: {"data": JSON.stringify(currReq.backendQ)},
-        success: file => {
-            var link = document.createElement('a');
-            link.href = window.URL.createObjectURL(file);
-            console.log(link.href);
-            link.download = 'csv.zip';
-            document.body.appendChild(link);
-            link.click();
-        },
-        xhrFields:{
-            responseType: 'blob'
-        }
-    })
+    saveContent('csv.zip', '/download/exportcsv/');
 }
 // Save point clouds of all results into a zip
 // The JSZip library: https://github.com/Stuk/jszip
 savePointClouds = () => {
-    $.post('/download/lazlinks', {"query": JSON.stringify(currReq.backendQ)}, data => {
+    $.get('/download/lazlinks/' + btoa(JSON.stringify(currReq.backendQ)), data => {
         pcUrls = data['links'];
         // If the response exceed threshold, enable bulk-download instead of zipping point clouds
         if (pcUrls.length >= lazDlLimit) {

@@ -118,23 +118,27 @@ def webserverQuery():
     print('Number of results: ', num_res)
     return {'res_preview': trees[limit*entry_set:limit*(entry_set+1)], 'res_coords': res_coords, 'num_res': num_res}
 
+def decodeB64Query(query):
+    return json.loads(base64.b64decode(query).decode("utf-8"))
+
 @app.route('/download/exportcollection/<query>', methods=['GET'])
 def exportFC(query):
-    res = mydb.query(json.loads(base64.b64decode(query).decode("utf-8")), {'_id': False})
+    query = decodeB64Query(query)
+    res = mydb.query(query, {'_id': False})
     collection = json.dumps({'type': 'FeatureCollection', 'features': res})
     return Response(collection,
             mimetype='application/json',
             headers={'Content-Disposition':'attachment; filename=res_feature_collection.json'})
 
-@app.route('/download/lazlinks', methods=['POST'])
-def exportLazLinks():
-    query = json.loads(request.form['query'])
+@app.route('/download/lazlinks/<query>', methods=['GET'])
+def exportLazLinks(query):
+    query = decodeB64Query(query)
     links = mydb.get_pointcloud_urls(mydb.query(query, {'_id': False, 'properties.data': 1}))
     return {'links': links}
 
-@app.route('/download/exportcsv', methods=['POST'])
-def exportcsv():
-    query = json.loads(request.form['data'])
+@app.route('/download/exportcsv/<query>', methods=['GET'])
+def exportcsv(query):
+    query = decodeB64Query(query)
     # get ids of resulting trees
     trees_idx = [tree['_id_x'] for tree in mydb.query(query, {'_id': False, '_id_x': 1})]
     # convert trees to csv files, save to disk

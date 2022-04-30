@@ -135,7 +135,7 @@
                             <button type="button" class="btn btn-outline-success float-start" id="exportQBtn" onclick="exportQuery()" style="margin-left: .25rem;">
                                 Export
                             </button>
-                            <input id="queryUpload" type="file" accept=".json" style="display:none"/>
+                            <input id="queryUpload" type="file" accept=".json" style="display: none"/>
                             <button type="button" class="btn btn-outline-success float-start" id="importQBtn" onclick="importQuery()" style="margin-left: .25rem;">
                                 Import
                             </button>
@@ -216,7 +216,31 @@
                 </div>
             </div>
         </footer>
-        
+
+        <button id="modalBtn" type="button" data-bs-toggle="modal" style="display: none;" class="btn" data-bs-target="#bulkDlModal">Bulk download</button>
+        <div class="modal fade" tabindex="-1" style="display: none;" id="bulkDlModal" aria-labelledby="bulkDownloadModalMsg" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="bulkDlModalLabel">Point Clouds Bulk Download</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>You are downloading a lot of point clouds data. We recommend you to use the following 
+                            <a href="/static/dl_script.py">python script</a> to manually execute the download on your local machine.
+                        </p>
+                        <p>Download your point clouds URLs:
+                            <br><a id="pcUrlListLink" href="">urls.txt</a>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <section id="downLoadProgressSection" style="width: 100%; position: fixed; bottom: 0; background-color: #fff; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); z-index: 9999;">
             <div id="progressContainer" class="container" style="padding: 1rem 0;">
                 <label class="lh-base" id="pcState">

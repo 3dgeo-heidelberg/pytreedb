@@ -513,11 +513,10 @@ savePointClouds = () => {
         pcUrls = data['links'];
         // If the response exceed threshold, enable bulk-download instead of zipping point clouds
         if (pcUrls.length >= lazDlLimit) {
-            var newpage = '<h1 class="pageTitle">Point Clouds Bulk Download</h1><p>You are downloading a lot of point clouds data. We recommend you to use the following <a href="/static/dl_script.py">python script</a> to manually execute the download on your local machine.</p><p>You should be able to save the text file containing your point clouds URLs now.</p>';
-            var tab = window.open('about:blank', '_blank');
-            tab.document.write(newpage);
-            tab.document.close();
-            saveContent(pcUrls, 'urls');
+            $('#modalBtn').click();
+            var link = $('#pcUrlListLink')[0];
+            link.download = 'urls.txt';
+            link.href = 'data:,' + pcUrls;
             return;
         }
         // For fewer data, provide a zip file of the point clouds for users to download

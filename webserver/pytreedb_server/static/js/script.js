@@ -482,10 +482,10 @@ saveJsonOutput = () => {
 }
 // Save all result jsons into one json file
 saveAllJsons = () => {
-    $.post('/download/exportcollection', {"query": JSON.stringify(currReq.backendQ)}, data => {
-        outString = JSON.stringify(data);
-        saveJsonContent(outString, 'res_feature_collection');
-    });
+    var link = document.createElement('a');
+    link.download = 'res_feature_collection.json';
+    link.href = '/download/exportcollection/' + btoa(JSON.stringify(currReq.backendQ));
+    link.click();
 }
 // Save all results into zipped csv-files
 saveCSV = () => {

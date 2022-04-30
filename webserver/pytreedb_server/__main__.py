@@ -11,12 +11,14 @@ import flask
 import shutil
 import tempfile
 import json
+import base64
 from pathlib import Path
 
 from zipfile import ZipFile
 
 from flask import Flask
 from flask import request
+from flask import Response
 from flask import render_template
 
 from dotenv import load_dotenv
@@ -116,12 +118,13 @@ def webserverQuery():
     print('Number of results: ', num_res)
     return {'res_preview': trees[limit*entry_set:limit*(entry_set+1)], 'res_coords': res_coords, 'num_res': num_res}
 
-@app.route('/download/exportcollection', methods=['POST'])
-def exportFC():
-    query = json.loads(request.form['query'])
-    res = mydb.query(query, {'_id': False})
-    collection = {'type': 'FeatureCollection', 'features': res}
-    return collection
+@app.route('/download/exportcollection/<query>', methods=['GET'])
+def exportFC(query):
+    res = mydb.query(json.loads(base64.b64decode(query).decode("utf-8")), {'_id': False})
+    collection = json.dumps({'type': 'FeatureCollection', 'features': res})
+    return Response(collection,
+            mimetype='application/json',
+            headers={'Content-Disposition':'attachment; filename=res_feature_collection.json'})
 
 @app.route('/download/lazlinks', methods=['POST'])
 def exportLazLinks():

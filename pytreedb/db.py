@@ -178,8 +178,8 @@ class PyTreeDB:
         self.mongodb_clear_col()
 
     def import_data(self, path: Union[PathLike, URL], overwrite: bool = False):
-        """
-        Read data (json files) from local file or from URL of ZIP archive with files named like *.*json.
+        r"""
+        Read data (json files) from local file or from URL of ZIP archive with files named like \*.\*json.
 
         :param str path: path to input folder or URL of ZIP archive
         :param bool overwrite: Overwrite current data in database (clears database and then adds data)
@@ -307,6 +307,7 @@ class PyTreeDB:
         Add single tree object from JSON file to db and add meta info
 
         :param filenamepath: path to JSON file
+        :raises ValueError: if the content of the JSON file is not in the right format for pytreedb.
 
         """
         # Validate input file first
@@ -369,9 +370,12 @@ class PyTreeDB:
         """
         General MongDB query forwarding: Returns trees (list of dict) fulfilling the arguments.
         Returns list of dict (=trees)
-          - Example: filter = {"properties.species": "Abies alba"}
-          - Query ops: https://docs.mongodb.com/manual/reference/operator/query/
-          - e.g. AND: https://docs.mongodb.com/manual/reference/operator/query/and/#mongodb-query-op.-and
+
+        Example: ``filter = {"properties.species": "Abies alba"}``
+
+        Query ops: https://docs.mongodb.com/manual/reference/operator/query/
+
+        e.g. AND: https://docs.mongodb.com/manual/reference/operator/query/and/#mongodb-query-op.-and
 
         :return: list of trees (tree dictionaries) fulfilling the query
         :rtype: list[dict]
@@ -388,7 +392,8 @@ class PyTreeDB:
         """
         Returns trees (list) fulfilling the regex or exact matching of value for a given key
         (including nested path of key).
-        Keys must written exactly the same, e.g. key = properties.species, value="Quercus *", regex=True
+
+        Keys must be written exactly the same, e.g. ``key=properties.species, value="Quercus *", regex=True``
 
         :param str key: Key in the dictionary to use in the query
         :param str value: Value that the key must have
@@ -432,9 +437,12 @@ class PyTreeDB:
         """
         Returns trees(list) fulfilling the date of key lies between start and end date in format 'YYYY-MM-DD'
         If no end date is given, the current day is taken.
-        Examples:
-            - query_by_date(key="properties.measurements.date", start="2019-08-28", end='2022-01-01')
-            - query_by_date(key="properties.data.date", start="2019-08-28")
+
+        Examples::
+
+            query_by_date(key="properties.measurements.date", start="2019-08-28", end='2022-01-01')
+
+            query_by_date(key="properties.data.date", start="2019-08-28")
 
         :param str key:
         :param DateString start: String representation ('YYYY-MM-DD') of the start date
@@ -458,25 +466,25 @@ class PyTreeDB:
     def query_by_geometry(self, geom: Union[JSONString, dict], distance: float = 0.0) -> List[dict]:
         """
         Returns list of trees(dict) that are within a defined distance (in meters) from search geometry which is
-        provided as GEOJSON dictionary or string; Geometry types Point and Polygon are supported, for example:
+        provided as GEOJSON dictionary or string; Geometry types Point and Polygon are supported, for example::
 
-        {"type": "Point", "coordinates": [0.0, 0.0]}
+            {"type": "Point", "coordinates": [0.0, 0.0]}``
 
-        { "type": "Polygon",
-        "coordinates": [[[8.700980940620983, 49.012725603975355],
+            { "type": "Polygon", "coordinates": [[[8.700980940620983, 49.012725603975355],
                          [8.700972890122355, 49.011695140150906],
                          [8.70235623413669, 49.01167501390433],
                          [8.702310614644462, 49.012713528227415],
                          [8.702310614644462, 49.012713528227415],
                          [8.700980940620983, 49.012725603975355]]]}
 
-        - Online help for geometries in MongoDB:
-            - https://docs.mongodb.com/manual/geospatial-queries/
-            - https://pymongo.readthedocs.io/en/stable/examples/geo.html
+        Online help for geometries in MongoDB:
+        - https://docs.mongodb.com/manual/geospatial-queries/
+        - https://pymongo.readthedocs.io/en/stable/examples/geo.html
 
         :param geom: json string representing a geometry
         :type geom: str or dict
         :param float distance: distance from search geometry in meters
+        :raises ValueError: if the search geometry cannot be converted to a dictionary
         :return: list of trees (tree dictionaries) fulfilling the query
         :rtype: list[dict]
 
@@ -532,6 +540,7 @@ class PyTreeDB:
         Returns a list of point clouds for the given trees
 
         :param list[dict] trees: list of tree dictionaries
+        :raises TypeError: if the trees are not provided in a list
         :return: list with .laz point cloud files of trees
         :rtype: list[str]
         """

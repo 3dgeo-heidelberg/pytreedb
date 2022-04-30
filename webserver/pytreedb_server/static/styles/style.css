@@ -479,6 +479,14 @@ input.form-check-input {
     width: 80%;
 }
 
+.modal-body p {
+    font-size: small;
+}
+.modal-body a {
+    text-decoration: underline;
+    color: blue;
+}
+
 /* lg */
 
 @media (min-width: 992px) {

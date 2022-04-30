@@ -2,10 +2,10 @@
 name: Python application
 
 on:
-  #push:
-  #  branches: [ main ]
-  #pull_request:
-  #  branches: [ main ]
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -16,10 +16,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
+      max-parallel: 1
       matrix:
-        #os: ["ubuntu-latest", "windows-latest", "macos-latest"]
-        os: ["windows_latest", "ubuntu-latest"]
-        python-version: ["3.9"]
+        os: ["ubuntu-latest"] #, "windows-latest", "macos-latest"]
+        python-version: ["3.8", "3.9"]
 
     steps:
     - name: Checkout repository
@@ -45,7 +45,7 @@ jobs:
         CONN_DB: ${{ secrets.CONN_DB }}
         CONN_COL: ${{ secrets.CONN_COL }}
       run: |
-        python -m pytest pytreedb -m query
+        python -m pytest pytreedb
     - name: build sphinx doc
       run: |
         cd doc

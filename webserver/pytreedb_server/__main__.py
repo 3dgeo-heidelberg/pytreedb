@@ -130,8 +130,13 @@ def exportFC(query):
             mimetype='application/json',
             headers={'Content-Disposition':'attachment; filename=res_feature_collection.json'})
 
+@app.route('/download/lazlinks/tree/<index>', methods=['GET'])
+def exportTreeLazLinks(index):
+    links = mydb.get_pointcloud_urls([mydb[int(index)]])
+    return {'links': links}
+
 @app.route('/download/lazlinks/<query>', methods=['GET'])
-def exportLazLinks(query):
+def exportQueryLazLinks(query):
     query = decodeB64Query(query)
     links = mydb.get_pointcloud_urls(mydb.query(query, {'_id': False, 'properties.data': 1}))
     return {'links': links}

@@ -100,8 +100,8 @@ getItem = () => {
         $('#treeTabs').hide();
         $('#dlButtons').show();
         $('#saveJsonButton').show();
+        $('#savePointCButton').show();
         $('#saveAllButton').hide();
-        $('#savePointCButton').hide();
         $('#saveCSVButton').hide();
         $('#mapContainer').show();
         $('#jsonSnippetSection').show();
@@ -491,7 +491,14 @@ saveCSV = () => {
 // Save point clouds of all results into a zip
 // The JSZip library: https://github.com/Stuk/jszip
 savePointClouds = () => {
-    $.get('/download/lazlinks/' + btoa(JSON.stringify(currReq.backendQ)), data => {
+    if (currReq.url.startsWith('/getitem')) {
+        var getReqUrl = '/download/lazlinks/tree/' + currReq.url.split('/')[2];
+    } else {
+        getReqUrl = '/download/lazlinks/' + btoa(JSON.stringify(currReq.backendQ));
+    }
+    console.log(getReqUrl);
+    $.get(getReqUrl, data => {
+        console.log(data);
         pcUrls = data['links'];
         // If the response exceed threshold, enable bulk-download instead of zipping point clouds
         if (pcUrls.length >= lazDlLimit) {

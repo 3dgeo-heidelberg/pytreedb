@@ -40,35 +40,35 @@ When you're ready to contribute code to address an open issue, please follow the
 
     If you haven't already done so, please [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) this repository on GitHub.
 
-   </details>
+    </details>
    
 2. **Clone the repository and set up your environment** (only do this once)
 
-   <details><summary>Expand details 👇</summary><br/>
+    <details><summary>Expand details 👇</summary><br/>
 
-   If you only make small changes, like fixing a typo, you can skip cloning and edit files online. 
+    If you only make small changes, like fixing a typo, you can skip cloning and edit files online. 
 
-   For bigger changes in the source code, clone your fork locally with
+    For bigger changes in the source code, clone your fork locally with
 
         git clone https://github.com/USERNAME/pytreedb.git
 
-   or 
+    or 
 
         git clone git@github.com:USERNAME/pytreedb.git
 
-   Finally, you'll need to create a Python 3 environment suitable for working on this project. There a number of tools out there that making working with virtual environments easier.
-   We recommend [Anaconda](https://anaconda.org/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
+    Finally, you'll need to create a Python 3 environment suitable for working on this project. There a number of tools out there that making working with virtual environments easier.
+    We recommend [Anaconda](https://anaconda.org/) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
 
-   Once you installed Anaconda or Miniconda, open an Anaconda/Miniconda prompt and navigate to your `pytreedb` directory. 
+    Once you installed Anaconda or Miniconda, open an Anaconda/Miniconda prompt and navigate to your `pytreedb` directory. 
 
-   Then you can create and activate a new Python environment from our [environment.yml](https://github.com/3dgeo-heidelberg/pytreedb/blob/main/environment.yml) by running:
+    Then you can create and activate a new Python environment from our [environment.yml](https://github.com/3dgeo-heidelberg/pytreedb/blob/main/environment.yml) by running:
 
-       conda env create --file environment.yml --force
-       conda activate pytreedb
+        conda env create --file environment.yml --force
+        conda activate pytreedb
    
-   Our continuous integration (CI) testing runs [a number of checks](https://github.com/3dgeo-heidelberg/pytreedb/actions) for each pull request on [GitHub Actions](https://github.com/features/actions). 
-   You can run the linters and the tests locally, which is something you should do *before* opening a PR to help speed up the review process and make it easier for us.
-   For this, pre-commit hooks are very useful. These are scripts that run before your git commit is accepted and which ensure that you commit well-formatted code.
+    Our continuous integration (CI) testing runs [a number of checks](https://github.com/3dgeo-heidelberg/pytreedb/actions) for each pull request on [GitHub Actions](https://github.com/features/actions). 
+    You can run the linters and the tests locally, which is something you should do *before* opening a PR to help speed up the review process and make it easier for us.
+    For this, pre-commit hooks are very useful. These are scripts that run before your git commit is accepted and which ensure that you commit well-formatted code.
     
     The `pre-commit` package is included in our [`environment.yml`](environment.yml) and [`requirements.txt`](requirements.txt), so at this point, you probably have it installed.
     To install the pre-commit hooks that we defined for our repository (see [.pre-commit-config.yaml](.pre-commit-config.yaml)), please run
@@ -100,20 +100,20 @@ When you're ready to contribute code to address an open issue, please follow the
     These tests are run with [`pytest`](https://docs.pytest.org/en/latest/), which you can use to locally run any test modules that you've added or changed.
     
         python -m pytest pytreedb
-   
-    We use pytest markers to categorize our tests into `imports`, `export` and `query` (see [pyproject.toml](https://github.com/3dgeo-heidelberg/pytreedb/blob/main/pyproject.toml)).
+
+    We use pytest markers to categorize our tests into `imports`, `export` and `query` (see [pyproject.toml](https://github.com/3dgeo-heidelberg/pytreedb/blob/main/pyproject.toml)). 
     This allows you to test features of a specific category, e.g.:
 
-        python -m pytest pytreedb -m query
+      python -m pytest pytreedb -m query
 
     If your contribution involves additions to any public part of the API, we require that you write docstrings
     for each function, method, class, or module that you add.
     See the [Writing docstrings](#writing-docstrings) section below for details on the syntax.
     You should test to make sure the API documentation can build without errors by running
-      ```
-      cd doc  
-      make html
-      ```
+
+        cd doc  
+        make html
+
     If the build fails, it's most likely due to small formatting issues. If the error message isn't clear, feel free to comment on this in your pull request.
 
     </details>

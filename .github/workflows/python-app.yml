@@ -53,6 +53,7 @@ jobs:
         CONN_URI: "mongodb://127.0.0.1:27017/"
         CONN_DB: "pytreedb"
         CONN_COL: "test_server"
+        FLASK_RUN: "1"
         FLASK_RUN_HOST: "127.0.0.1"
         FLASK_RUN_PORT: "12789"
         PYTREEDB_FILENAME: "pytree.db"
@@ -64,12 +65,22 @@ jobs:
         CONN_URI: ${{ secrets.CONN_URI }}
         CONN_DB: ${{ secrets.CONN_DB }}
         CONN_COL: "test_server"
+        FLASK_RUN: "1"
         FLASK_RUN_HOST: "127.0.0.1"
         FLASK_RUN_PORT: "12789"
         PYTREEDB_FILENAME: "pytree.db"
         PYTREEDB_DOWNLOAD: "https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip"
       run: |
         python -m pytest webserver/pytreedb_server
+
+    - name: Test pytreedb-server on pytreedb.geog.uni-heidelberg.de with pytest
+      env:
+        FLASK_RUN: "0"
+        FLASK_RUN_HOST: "pytreedb.geog.uni-heidelberg.de"
+        FLASK_RUN_PORT: "80"
+      run: |
+        python -m pytest webserver/pytreedb_server
+
     - name: build sphinx doc
       run: |
         cd doc

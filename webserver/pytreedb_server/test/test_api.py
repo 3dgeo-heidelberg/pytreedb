@@ -15,9 +15,14 @@ import json
 import base64
 
 load_dotenv()
-conn_uri = os.environ.get("CONN_URI")
-conn_db = os.environ.get("CONN_DB")
-conn_col = os.environ.get("CONN_COL")
+run_flask = os.environ.get("FLASK_RUN")
+if run_flask is None:
+    run_flask = "1"
+if run_flask == "1":
+    conn_uri = os.environ.get("CONN_URI")
+    conn_db = os.environ.get("CONN_DB")
+    conn_col = os.environ.get("CONN_COL")
+
 host = os.environ.get("FLASK_RUN_HOST")
 port = os.environ.get("FLASK_RUN_PORT")
 
@@ -25,12 +30,15 @@ root_path = str(Path(__file__).parent.parent.parent)
 
 @pytest.fixture(scope="module")  # module scope to create server only once for all tests in this module
 def myserver():
-    from ..__main__ import app
-    th = threading.Thread(target=lambda: app.run(port=port, host=host, use_reloader=False))
-    th.daemon = True  # run as daemon so that it stops automatically when the parent process (i.e., this test) exits
-    th.start()
-    yield th
-    os.remove(os.environ.get("PYTREEDB_FILENAME"))  # clean up db file after running tests
+    if run_flask == "1":
+        from ..__main__ import app
+        th = threading.Thread(target=lambda: app.run(port=port, host=host, use_reloader=False))
+        th.daemon = True  # run as daemon so that it stops automatically when the parent process (i.e., this test) exits
+        th.start()
+        yield th
+        os.remove(os.environ.get("PYTREEDB_FILENAME"))  # clean up db file after running tests
+    else:
+        yield None
 
 def test_get_tree_number(myserver):
     response = requests.get(f"http://{host}:{port}/stats")

@@ -173,12 +173,19 @@ GET methods:
 | /listspecies | Unique species names in DB |
 | /sharedproperties | A list of all object.properties that are shared among all objects |
 | /getitem/\<index> | Get a specific tree by its index |
+| /download/exportcollection/\<query> | Generate a feature collection of all trees from query results |
+| /download/lazlinks/tree/\<index> | Get a list of point-cloud-URLs for a tree by its index |
+| /download/lazlinks/\<query> | Get a list of point-cloud-URLs for all trees from query results |
+| /download/exportcsv/\<query> | Get csv files containing information of all trees from query results |
+
 
 POST methods:
 
 | Request  | Description | Example Message|
 | ------- |-------------|-------------|
 | /search | Search based on a given query. Returns a Json objects containing search results |  {"properties.species": "Abies alba"} |
-| /exportcsv | Download results as csv for the given query |  {"properties.species": "Abies alba"} |
+| /search/wssearch | This endpoint is created only for search requests from the frontend UI in order to improve site performance |  {"properties.species": "Abies alba", "limit": 10, "nthEntrySet": 3, "getCoords": false} |
+
+Note: all \<query> parameters in GET methods should be encoded with base64
 
 See [example_queries](../examples/example_queries.py) for more examples on how to query.

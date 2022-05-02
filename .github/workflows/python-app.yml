@@ -41,13 +41,35 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
         flake8_nb
-    - name: Test with pytest
+    - name: Test pytreedb with pytest
       env:
         CONN_URI: "mongodb://127.0.0.1:27017/"
         CONN_DB: "pytreedb"
         CONN_COL: "test"
       run: |
         python -m pytest pytreedb
+    - name: Test pytreedb-server with pytest
+      env:
+        CONN_URI: "mongodb://127.0.0.1:27017/"
+        CONN_DB: "pytreedb"
+        CONN_COL: "test_server"
+        FLASK_RUN_HOST: "127.0.0.1"
+        FLASK_RUN_PORT: "12789"
+        PYTREEDB_FILENAME: "pytree.db"
+        PYTREEDB_DOWNLOAD: "https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip"
+      run: |
+        python -m pytest webserver/pytreedb_server
+    - name: Test pytreedb-server ON CLOUD with pytest
+      env:
+        CONN_URI: ${{ secrets.CONN_URI }}
+        CONN_DB: ${{ secrets.CONN_DB }}
+        CONN_COL: "test_server"
+        FLASK_RUN_HOST: "127.0.0.1"
+        FLASK_RUN_PORT: "12789"
+        PYTREEDB_FILENAME: "pytree.db"
+        PYTREEDB_DOWNLOAD: "https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip"
+      run: |
+        python -m pytest webserver/pytreedb_server
     - name: build sphinx doc
       run: |
         cd doc

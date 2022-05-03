@@ -24,6 +24,9 @@ if run_flask == "1":
     conn_col = os.environ.get("CONN_COL")
 
 host = os.environ.get("FLASK_RUN_HOST")
+flask_host = host
+if not host.startswith("http"):  # could be http or https
+    host = "http://" + host
 port = os.environ.get("FLASK_RUN_PORT")
 
 root_path = str(Path(__file__).parent.parent.parent)
@@ -32,7 +35,7 @@ root_path = str(Path(__file__).parent.parent.parent)
 def myserver():
     if run_flask == "1":
         from ..__main__ import app
-        th = threading.Thread(target=lambda: app.run(port=port, host=host, use_reloader=False))
+        th = threading.Thread(target=lambda: app.run(port=port, host=flask_host, use_reloader=False))
         th.daemon = True  # run as daemon so that it stops automatically when the parent process (i.e., this test) exits
         th.start()
         yield th
@@ -41,14 +44,14 @@ def myserver():
         yield None
 
 def test_get_tree_number(myserver):
-    response = requests.get(f"http://{host}:{port}/stats")
+    response = requests.get(f"{host}:{port}/stats")
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert values['n_species'] == 22
     assert values['n_trees'] == 1491
 
 def test_get_listspecies(myserver):
-    response = requests.get(f"http://{host}:{port}/listspecies")
+    response = requests.get(f"{host}:{port}/listspecies")
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert len(values["species"]) == 22
@@ -56,7 +59,7 @@ def test_get_listspecies(myserver):
 
 
 def test_get_sharedproperties(myserver):
-    response = requests.get(f"http://{host}:{port}/sharedproperties")
+    response = requests.get(f"{host}:{port}/sharedproperties")
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert values["properties"][0] == "data"
@@ -71,7 +74,7 @@ def test_get_uls_only(myserver):
              "limit": "3",
              "nthEntrySet": "0",
              "getCoords": "true"}
-    response = requests.post(f"http://{host}:{port}/search/wssearch", data=query)
+    response = requests.post(f"{host}:{port}/search/wssearch", data=query)
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert values['num_res'] == 1291
@@ -81,7 +84,7 @@ def test_get_complex1_and(myserver):
              "limit": "3",
              "nthEntrySet": "0",
              "getCoords": "true"}
-    response = requests.post(f"http://{host}:{port}/search/wssearch", data=query)
+    response = requests.post(f"{host}:{port}/search/wssearch", data=query)
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert values['num_res'] == 186
@@ -92,7 +95,7 @@ def test_get_complex2_and_or(myserver):
         "limit": "3",
         "nthEntrySet": "0",
         "getCoords": "true"}
-    response = requests.post(f"http://{host}:{port}/search/wssearch", data=query)
+    response = requests.post(f"{host}:{port}/search/wssearch", data=query)
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert values['num_res'] == 39
@@ -130,7 +133,7 @@ def test_get_lazlinks(myserver):
     assert len(values['links']) == 1009
 
 def test_get_lazlinks_single_tree(myserver):
-    response = requests.get(f"http://{host}:{port}/download/lazlinks/tree/42")
+    response = requests.get(f"{host}:{port}/download/lazlinks/tree/42")
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert len(values['links']) == 3

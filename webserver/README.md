@@ -186,6 +186,6 @@ POST methods:
 | /search | Search based on a given query. Returns a Json objects containing search results |  {"properties.species": "Abies alba"} |
 | /search/wssearch | This endpoint is created only for search requests from the frontend UI in order to improve site performance |  {"properties.species": "Abies alba", "limit": 10, "nthEntrySet": 3, "getCoords": false} |
 
-Note: all \<query> parameters in GET methods should be encoded with base64 (same as in query permalinks)
+Note: all \<query> parameters in GET methods should be encoded with base64.
 
 See [example_queries](../examples/example_queries.py) for more examples on how to query.

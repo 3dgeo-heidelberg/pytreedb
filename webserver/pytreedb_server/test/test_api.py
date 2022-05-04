@@ -2,6 +2,7 @@
 # -- coding: utf-8 --
 
 import os
+import time
 import zipfile
 import io
 
@@ -42,6 +43,7 @@ def myserver(tmp_path_factory):
         th = threading.Thread(target=lambda: app.run(port=port, host=flask_host, use_reloader=False))
         th.daemon = True  # run as daemon so that it stops automatically when the parent process (i.e., this test) exits
         th.start()
+        time.sleep(5)  # 5 seconds for the server to start
         yield th
         os.remove(os.environ.get("PYTREEDB_FILENAME"))  # clean up db file after running tests
     else:
@@ -117,7 +119,7 @@ def test_get_exportcsv(myserver, session):
     query = {
         "data": "{\"$or\":[{\"$and\":[{\"$and\":[{\"properties.data.quality\":1},{\"properties.data.quality\":2}]},{\"properties.data.canopy_condition\":\"leaf-on\"}]},{\"properties.species\":\"Acer campestre\"}]}"
     }
-    response = session.get(f"http://{host}:{port}/download/exportcsv/{base64.b64encode(query['data'].encode()).decode()}")
+    response = session.get(f"{host}:{port}/download/exportcsv/{base64.b64encode(query['data'].encode()).decode()}")
     assert response.status_code == 200
     zf = zipfile.ZipFile(io.BytesIO(response.content), "r")
     filelist = sorted(zf.infolist(), key=lambda x: x.file_size)
@@ -130,7 +132,7 @@ def test_get_exportcollection(myserver, session):
     query = {
         "data": "{\"$or\":[{\"$and\":[{\"$and\":[{\"properties.data.quality\":1},{\"properties.data.quality\":2}]},{\"properties.data.canopy_condition\":\"leaf-on\"}]},{\"properties.species\":\"Acer campestre\"}]}"
     }
-    response = session.get(f"http://{host}:{port}/download/exportcollection/{base64.b64encode(query['data'].encode()).decode()}")
+    response = session.get(f"{host}:{port}/download/exportcollection/{base64.b64encode(query['data'].encode()).decode()}")
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert len(values['features']) == 39
@@ -139,7 +141,7 @@ def test_get_lazlinks(myserver, session):
     query = {
         "data": "{\"properties.data.mode\":\"TLS\"}"
     }
-    response = session.get(f"http://{host}:{port}/download/lazlinks/{base64.b64encode(query['data'].encode()).decode()}")
+    response = session.get(f"{host}:{port}/download/lazlinks/{base64.b64encode(query['data'].encode()).decode()}")
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert len(values['links']) == 1009

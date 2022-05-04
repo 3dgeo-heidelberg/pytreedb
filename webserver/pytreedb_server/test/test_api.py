@@ -6,7 +6,6 @@ import zipfile
 import io
 
 import pytest
-from pytreedb import db
 from dotenv import load_dotenv
 from pathlib import Path
 import requests
@@ -28,6 +27,7 @@ flask_host = host
 if not host.startswith("http"):  # could be http or https
     host = "http://" + host
 port = os.environ.get("FLASK_RUN_PORT")
+
 
 root_path = str(Path(__file__).parent.parent.parent)
 

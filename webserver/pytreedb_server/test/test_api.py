@@ -127,7 +127,7 @@ def test_get_exportcsv(myserver, session):
     query = {
         "data": "{\"$or\":[{\"$and\":[{\"$and\":[{\"properties.data.quality\":1},{\"properties.data.quality\":2}]},{\"properties.data.canopy_condition\":\"leaf-on\"}]},{\"properties.species\":\"Acer campestre\"}]}"
     }
-    response = post_query(session, f"{host}:{port}/download/exportcsv/{base64.b64encode(query['data'].encode()).decode()}")
+    response = get_query(session, f"{host}:{port}/download/exportcsv/{base64.b64encode(query['data'].encode()).decode()}")
     assert response.status_code == 200
     zf = zipfile.ZipFile(io.BytesIO(response.content), "r")
     filelist = sorted(zf.infolist(), key=lambda x: x.file_size)

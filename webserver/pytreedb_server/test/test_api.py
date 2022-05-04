@@ -58,14 +58,22 @@ def session():
     return s
 
 def test_get_tree_number(myserver, session):
-    response = session.get(f"{host}:{port}/stats")
+    response = get_query(session, f"{host}:{port}/stats")
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert values['n_species'] == 22
     assert values['n_trees'] == 1491
 
+
+def get_query(session, url, **kwargs):
+    return session.get(url, timeout=(5,15), **kwargs)
+
+def post_query(session, url, **kwargs):
+    return session.post(url, timeout=(5,15), **kwargs)
+
+
 def test_get_listspecies(myserver, session):
-    response = session.get(f"{host}:{port}/listspecies")
+    response = get_query(session, f"{host}:{port}/listspecies")
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert len(values["species"]) == 22
@@ -73,7 +81,7 @@ def test_get_listspecies(myserver, session):
 
 
 def test_get_sharedproperties(myserver, session):
-    response = session.get(f"{host}:{port}/sharedproperties")
+    response = get_query(session, f"{host}:{port}/sharedproperties")
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert values["properties"][0] == "data"
@@ -88,7 +96,7 @@ def test_get_uls_only(myserver, session):
              "limit": "3",
              "nthEntrySet": "0",
              "getCoords": "true"}
-    response = session.post(f"{host}:{port}/search/wssearch", data=query)
+    response = post_query(session, f"{host}:{port}/search/wssearch", data=query)
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert values['num_res'] == 1291
@@ -98,7 +106,7 @@ def test_get_complex1_and(myserver, session):
              "limit": "3",
              "nthEntrySet": "0",
              "getCoords": "true"}
-    response = session.post(f"{host}:{port}/search/wssearch", data=query)
+    response = post_query(session, f"{host}:{port}/search/wssearch", data=query)
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert values['num_res'] == 186
@@ -109,7 +117,7 @@ def test_get_complex2_and_or(myserver, session):
         "limit": "3",
         "nthEntrySet": "0",
         "getCoords": "true"}
-    response = session.post(f"{host}:{port}/search/wssearch", data=query)
+    response = post_query(session, f"{host}:{port}/search/wssearch", data=query)
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert values['num_res'] == 39
@@ -119,7 +127,7 @@ def test_get_exportcsv(myserver, session):
     query = {
         "data": "{\"$or\":[{\"$and\":[{\"$and\":[{\"properties.data.quality\":1},{\"properties.data.quality\":2}]},{\"properties.data.canopy_condition\":\"leaf-on\"}]},{\"properties.species\":\"Acer campestre\"}]}"
     }
-    response = session.get(f"{host}:{port}/download/exportcsv/{base64.b64encode(query['data'].encode()).decode()}")
+    response = post_query(session, f"{host}:{port}/download/exportcsv/{base64.b64encode(query['data'].encode()).decode()}")
     assert response.status_code == 200
     zf = zipfile.ZipFile(io.BytesIO(response.content), "r")
     filelist = sorted(zf.infolist(), key=lambda x: x.file_size)
@@ -132,7 +140,7 @@ def test_get_exportcollection(myserver, session):
     query = {
         "data": "{\"$or\":[{\"$and\":[{\"$and\":[{\"properties.data.quality\":1},{\"properties.data.quality\":2}]},{\"properties.data.canopy_condition\":\"leaf-on\"}]},{\"properties.species\":\"Acer campestre\"}]}"
     }
-    response = session.get(f"{host}:{port}/download/exportcollection/{base64.b64encode(query['data'].encode()).decode()}")
+    response = get_query(session, f"{host}:{port}/download/exportcollection/{base64.b64encode(query['data'].encode()).decode()}")
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert len(values['features']) == 39
@@ -141,13 +149,13 @@ def test_get_lazlinks(myserver, session):
     query = {
         "data": "{\"properties.data.mode\":\"TLS\"}"
     }
-    response = session.get(f"{host}:{port}/download/lazlinks/{base64.b64encode(query['data'].encode()).decode()}")
+    response = get_query(session, f"{host}:{port}/download/lazlinks/{base64.b64encode(query['data'].encode()).decode()}")
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert len(values['links']) == 1009
 
 def test_get_lazlinks_single_tree(myserver, session):
-    response = session.get(f"{host}:{port}/download/lazlinks/tree/42")
+    response = get_query(session, f"{host}:{port}/download/lazlinks/tree/42")
     assert response.status_code == 200
     values = json.loads(response.content.decode())
     assert len(values['links']) == 3

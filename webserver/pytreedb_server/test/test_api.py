@@ -49,7 +49,7 @@ def myserver(tmp_path_factory):
     else:
         yield None
 
-@pytest.fixture()  # module scope to create server only once for all tests in this module
+@pytest.fixture()
 def session():
     s = requests.Session()
     retries = Retry(total=5,

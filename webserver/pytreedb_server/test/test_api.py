@@ -32,8 +32,10 @@ port = os.environ.get("FLASK_RUN_PORT")
 root_path = str(Path(__file__).parent.parent.parent)
 
 @pytest.fixture(scope="module")  # module scope to create server only once for all tests in this module
-def myserver():
+def myserver(tmp_path_factory):
     if run_flask == "1":
+        db_path = tmp_path_factory.mktemp("db_path")
+        os.environ["PYTREEDB_FILENAME"] = str(db_path / "temp.db")
         from ..__main__ import app
         th = threading.Thread(target=lambda: app.run(port=port, host=flask_host, use_reloader=False))
         th.daemon = True  # run as daemon so that it stops automatically when the parent process (i.e., this test) exits

@@ -52,9 +52,9 @@ def myserver(tmp_path_factory):
 @pytest.fixture()
 def session():
     s = requests.Session()
-    retries = Retry(total=5,
-                    backoff_factor=0.1)
-    s.mount('*', HTTPAdapter(max_retries=retries))
+    #retries = Retry(total=5,
+    #                backoff_factor=0.1)
+    #s.mount('*', HTTPAdapter(max_retries=retries))
     return s
 
 def test_get_tree_number(myserver, session):

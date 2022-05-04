@@ -35,7 +35,7 @@ getTrees <- function(pcMode, species, minHeight = NA, maxHeight = NA, minDBH = N
                   ", \"properties.data.canopy_condition\" : \"", canopyCondition, "\"}")
   req <- list(query = c(query))                      
   
-  res <- POST("http://pytreedb.geog.uni-heidelberg.de/search", body = req, encode="form")
+  res <- POST("https://pytreedb.geog.uni-heidelberg.de/search", body = req, encode="form")
   
   data = fromJSON(rawToChar(res$content))
   

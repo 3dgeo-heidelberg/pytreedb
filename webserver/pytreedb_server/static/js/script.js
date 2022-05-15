@@ -776,16 +776,23 @@ capitalizeFirstLetter = arr => {
 L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Data © <a href="http://osm.org/copyright">OpenStreetMap</a>',
-    maxZoom: 18
+    maxNativeZoom: 19,
+    maxZoom: 25
 }).addTo(map);
+
+// Init marker cluster group
+var markers = L.markerClusterGroup();
 // Init geoJSONLayer(group)
 var geoJSONLayer = L.geoJSON(null, {
         pointToLayer: function (feature, latlng) { // Each tree will be stored in one layer
             var marker = L.marker(latlng).bindPopup('<a target="_blank" href="/getitem/' + feature._id_x + '">' + feature.properties.id + '</a>');
             marker._pmTempLayer = true; // Disable marker dragging
+            markers.addLayer(marker);
             return marker;
         }
-    }).addTo(map);
+    });
+// markers.addLayer(geoJSONLayer);
+map.addLayer(markers);
 
 // Initialise the FeatureGroup to store drawing layers
 // Source: https://github.com/geoman-io/leaflet-geoman
@@ -886,6 +893,7 @@ drawMap = trees => {
     
     map.invalidateSize();  // Make sure tiles render correctly
     geoJSONLayer.clearLayers();  // Remove previous markers
+    markers.clearLayers();
     drawnItems.clearLayers(); // Remove previous polygons
     setTimeout(() => {
         // Add each tree to the geoJSONLayer. They will be displayed as markers by default

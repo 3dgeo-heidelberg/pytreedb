@@ -777,11 +777,11 @@ L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Data © <a href="http://osm.org/copyright">OpenStreetMap</a>',
     maxNativeZoom: 19,
-    maxZoom: 25
+    maxZoom: 22
 }).addTo(map);
 
 // Init marker cluster group
-var markers = L.markerClusterGroup();
+var markers = L.markerClusterGroup({zoomToBoundsOnClick: false});
 // Init geoJSONLayer(group)
 var geoJSONLayer = L.geoJSON(null, {
         pointToLayer: function (feature, latlng) { // Each tree will be stored in one layer
@@ -790,8 +790,13 @@ var geoJSONLayer = L.geoJSON(null, {
             markers.addLayer(marker);
             return marker;
         }
-    });
-// markers.addLayer(geoJSONLayer);
+});
+// Set zooming bounds of clusters (avoid zooming in too far)
+markers.on('clusterclick', function (a) {
+    map.fitBounds(a.layer.getBounds().pad(0.3)); 
+});
+    
+    
 map.addLayer(markers);
 
 // Initialise the FeatureGroup to store drawing layers

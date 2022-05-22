@@ -803,6 +803,7 @@ map.addLayer(markers);
 // Source: https://github.com/geoman-io/leaflet-geoman
 var drawnItems = L.featureGroup().addTo(map);
 
+/*
 // Add Leaflet-Geoman controls with some options to the map  
 map.pm.addControls({  
     position: 'topleft',
@@ -875,6 +876,7 @@ map.on('pm:remove', function(e) {
         });
     }
 });
+*/
 
 // Check if a marker is inside a polygon
 isMarkerInsidePolygon = (marker, poly) => {

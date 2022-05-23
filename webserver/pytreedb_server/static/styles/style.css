@@ -89,6 +89,7 @@ a.inPLink {
 
 .dropdown-menu {
     min-width: 3rem;
+    z-index: 99999;
 }
 
 #showSpecies {

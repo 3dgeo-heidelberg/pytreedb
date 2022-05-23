@@ -116,76 +116,16 @@ getItem = () => {
 searchDB = () => {
     updateQueryPreview();
     previewLimit = Math.min($('#numPreviewTrees').val(), maxPreviewLimit);
+    nthEntrySet = 0;
     let renderMarkers = $('#markerRenderCheckbox')[0].checked;
     let qfilters = currReq.qfilters, operands = currReq.operands, brackets = currReq.brackets;
     currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets);
-    if (!currReq.backendQ) {currReq.backendQ = null;}
+    if (!currReq.backendQ) {currReq.backendQ = {};}
 
     // Send POST request to API endpoint specifically for webserver search request
     // where only a (user-defined) limited number of the first full-json documents are returned
     // along with coordinates of all resulting trees for rendering in the map if demanded
-    $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": previewLimit, "nthEntrySet": nthEntrySet, "getCoords": renderMarkers})
-        .done(data => {
-            var trees = data['res_preview'];
-            var coords = data['res_coords'];
-            var numRes = data['num_res'];
-            currReq.url = '/search/wssearch';
-            // Clear previous results
-            $('#jsonViewerContainer').empty(); 
-            $('#treeTabs').empty();
-            // Show number of results
-            $('#numRes').html(numRes);
-            $('#numResContainer').show();
-            // Show json code snippets if trees found
-            if (numRes != 0) {
-                $('#dlButtons').show();
-                $('#dlButtons').find('*').show();
-                $('#mapContainer').show();
-                // Update for output
-                jsonOutput = JSON.stringify(trees[0]);
-                $('.treeTab').removeClass('active');
-                // Show json data of the given preview number of trees
-                for (let i = 0; i < Math.min(previewLimit, numRes - previewLimit*nthEntrySet); i++) {
-                    var idx = i+nthEntrySet*previewLimit;
-                    // Show tabs
-                    $('#treeTabs').css('display', 'flex');
-                    $('#treeTabs').append('<li id="treeTab'+idx+'" class="page-item nav-item"><a class="page-link nav-link treeTab" onclick="toggleTab(this)">'+(idx+1)+'</a></li>');
-                    $('#treeTab' + idx).show();
-                    // Load data into html
-                    $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + idx + '"></pre>');
-                    $('#tree-' + idx).jsonViewer(trees[i]);
-                    previewTrees.push(JSON.stringify(trees[i]));
-                    // Show only one code block
-                    if (i > 0) {
-                        $('#tree-' + idx).hide();
-                    }
-                }
-                // Add "Next" for pagination
-                if (numRes - previewLimit*(nthEntrySet+1) > 0) {
-                    $('#treeTabs').append('<li class="page-item nav-item"><a class="page-link nav-link" onclick="nextPageSet()" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>');
-                }
-                $('#treeTab' + nthEntrySet*previewLimit).children().addClass('active');
-
-                // Draw map 
-                if (renderMarkers) {
-                    drawMap(coords);
-                } else {
-                    cleanMap();
-                }
-            } 
-            // If no trees satisfy the query, clear prev results
-            else {
-                $('#treeTabs').hide();
-                $('#dlButtons').hide();
-                cleanMap();
-                $('#mapContainer').hide();
-            }
-    })
-    .fail((xhr, status, error) => {
-        console.log(xhr);
-        console.log(status);
-        console.log(error);
-    });
+    queryBackend(previewLimit, nthEntrySet, renderMarkers, false);
     $('#jsonSnippetSection').show();
     $('#jsonViewerContainer').css('padding-bottom', '85px');
     $('html,body').animate({scrollTop: $('#jsonSnippetSection').offset().top - 62}, 'slow');
@@ -312,48 +252,73 @@ updateQueryPreview = () => {
     $('#queryPreviewArea').text(currReq.stringFormat);
     return currReq.stringFormat;
 }
-// Post request mainly for pagination
-queryBackend = (previewLimit, nthEntrySet) => {
+// Post request for querying
+queryBackend = (previewLimit, nthEntrySet, renderMarkers, turnPage) => {
     $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": previewLimit, 
-        "nthEntrySet": nthEntrySet, "getCoords": false})
+        "nthEntrySet": nthEntrySet, "getCoords": renderMarkers})
         .done(data => {
             var trees = data['res_preview'];
+            var coords = data['res_coords'];
             var numRes = data['num_res'];
             currReq.url = '/search/wssearch';
+            // Clear previous results
             $('#jsonViewerContainer').empty(); 
             $('#treeTabs').empty();
+            // Show number of results
             $('#numRes').html(numRes);
             $('#numResContainer').show();
-            $('#dlButtons').show();
-            $('#dlButtons').find('*').show();
-            $('#mapContainer').show();
-            jsonOutput = JSON.stringify(trees[0]);
-            $('.treeTab').removeClass('active');
-            if (nthEntrySet > 0) {
-                $('#treeTabs').append('<li class="page-item nav-item"><a class="page-link nav-link" onclick="prevPageSet()" aria-label="Next"><span aria-hidden="true">&laquo;</span></a></li>');
-            }
-            for (let i = 0; i < Math.min(previewLimit, numRes - previewLimit*nthEntrySet); i++) {
-                var idx = i+nthEntrySet*previewLimit;
-                $('#treeTabs').css('display', 'flex');
-                $('#treeTabs').append('<li id="treeTab'+ idx +'" class="page-item nav-item"><a class="page-link nav-link treeTab" onclick="toggleTab(this)">'+(idx+1)+'</a></li>');
-                $('#treeTab' + idx).show();
-                $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + idx + '"></pre>');
-                $('#tree-' + idx).jsonViewer(trees[i]);
-                previewTrees.push(JSON.stringify(trees[i]));
-                if (i > 0) {
-                    $('#tree-' + idx).hide();
+            // Show json code snippets if trees found
+            if (numRes != 0) {
+                $('#dlButtons').find('*').show();
+                $('#mapContainer').show();
+                // Update for output
+                jsonOutput = JSON.stringify(trees[0]);
+                $('.treeTab').removeClass('active');
+                // Show json data of the given preview number of trees
+                if (nthEntrySet > 0) {
+                    $('#treeTabs').append('<li class="page-item nav-item"><a class="page-link nav-link" onclick="prevPageSet()" aria-label="Next"><span aria-hidden="true">&laquo;</span></a></li>');
+                }
+                for (let i = 0; i < Math.min(previewLimit, numRes - previewLimit*nthEntrySet); i++) {
+                    var idx = i+nthEntrySet*previewLimit;
+                    // Show tabs
+                    $('#treeTabs').css('display', 'flex');
+                    $('#treeTabs').append('<li id="treeTab'+ idx +'" class="page-item nav-item"><a class="page-link nav-link treeTab" onclick="toggleTab(this)">'+(idx+1)+'</a></li>');
+                    $('#treeTab' + idx).show();
+                    // Load data into html
+                    $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + idx + '"></pre>');
+                    $('#tree-' + idx).jsonViewer(trees[i]);
+                    previewTrees.push(JSON.stringify(trees[i]));
+                    // Show only one code block
+                    if (i > 0) {
+                        $('#tree-' + idx).hide();
+                    }
+                }
+                // Add "Next" for pagination
+                if (numRes - previewLimit*(nthEntrySet+1) > 0) {
+                    $('#treeTabs').append('<li class="page-item nav-item"><a class="page-link nav-link" onclick="nextPageSet()" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>');
+                }
+                $('#treeTab' + nthEntrySet*previewLimit).children().addClass('active');
+
+                // Draw map 
+                if (renderMarkers) {
+                    drawMap(coords);
+                } else if (!renderMarkers && !turnPage) {
+                    cleanMap();
                 }
             }
-            if (numRes - previewLimit*(nthEntrySet+1) > 0) {
-                $('#treeTabs').append('<li class="page-item nav-item"><a class="page-link nav-link" onclick="nextPageSet()" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>');
+            // If no trees satisfy the query, clear prev results
+            else {
+                $('#treeTabs').hide();
+                $('#dlButtons').hide();
+                cleanMap();
+                $('#mapContainer').hide();
             }
-            $('#treeTab' + nthEntrySet*previewLimit).children().addClass('active');
-    })
-    .fail((xhr, status, error) => {
-        console.log(xhr);
-        console.log(status);
-        console.log(error);
-    });
+        })
+        .fail((xhr, status, error) => {
+            console.log(xhr);
+            console.log(status);
+            console.log(error);
+        });
 }
 // Next set of trees for pagination
 nextPageSet = () => {
@@ -364,6 +329,20 @@ nextPageSet = () => {
 prevPageSet = () => {
     nthEntrySet -= 1;
     queryBackend(previewLimit, nthEntrySet);
+}
+// Apply geometric bounding box restriction to the existing results
+geoSearch = () => {
+    var latlngObj = map.getBounds();
+    var geom = {"type": "Polygon", "coordinates": [[
+                    [latlngObj._northEast.lng, latlngObj._northEast.lat],
+                    [latlngObj._southWest.lng, latlngObj._northEast.lat],
+                    [latlngObj._southWest.lng, latlngObj._southWest.lat],
+                    [latlngObj._northEast.lng, latlngObj._southWest.lat],
+                    [latlngObj._northEast.lng, latlngObj._northEast.lat],
+                ]]};
+    currReq.backendQ["geometry"] = {"$geoWithin": {"$geometry": geom}};
+    let renderMarkers = $('#markerRenderCheckbox')[0].checked;
+    queryBackend(previewLimit, nthEntrySet, renderMarkers, false);
 }
 
 // Copy the query in preview to clipboard

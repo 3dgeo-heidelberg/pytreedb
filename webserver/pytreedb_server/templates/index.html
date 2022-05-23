@@ -184,7 +184,13 @@
                 </div>
                 <div id="jsonViewerContainer" style="height: 100%; margin-bottom: 1rem;"></div>
             </div>
-            <div id="mapContainer" style="height: 100%; width: 49%; vertical-align: top; display: inline-block;"></div>
+            <div style="height: 100%; width: 49%; vertical-align: top; display: inline-block;">
+                <div id="mapContainer" style="height: 90%;">
+                </div>
+                <button id="geoSelect" type="button" class="btn btn-outline-success" onclick="geoSearch()" style="float: none; display: block; margin-top: .5rem;">
+                    Select by map extent
+                </button>
+            </div>
         </section>
 
         <footer>

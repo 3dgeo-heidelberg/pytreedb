@@ -269,6 +269,7 @@ queryBackend = (previewLimit, nthEntrySet, renderMarkers, turnPage) => {
             $('#numResContainer').show();
             // Show json code snippets if trees found
             if (numRes != 0) {
+                $('#dlButtons').show();
                 $('#dlButtons').find('*').show();
                 $('#mapContainer').show();
                 // Update for output
@@ -332,14 +333,19 @@ prevPageSet = () => {
 }
 // Apply geometric bounding box restriction to the existing results
 geoSearch = () => {
-    var latlngObj = map.getBounds();
-    var geom = {"type": "Polygon", "coordinates": [[
+    var latlngObj = snapLatLngToBound(map.getBounds());
+    var geom = {    "type": "Polygon", "coordinates": [[
                     [latlngObj._northEast.lng, latlngObj._northEast.lat],
                     [latlngObj._southWest.lng, latlngObj._northEast.lat],
                     [latlngObj._southWest.lng, latlngObj._southWest.lat],
                     [latlngObj._northEast.lng, latlngObj._southWest.lat],
                     [latlngObj._northEast.lng, latlngObj._northEast.lat],
-                ]]};
+                ]],
+                    "crs": {
+                        "type": "name",
+                        "properties": { "name": "urn:x-mongodb:crs:strictwinding:EPSG:4326" }
+                    }
+                };
     currReq.backendQ["geometry"] = {"$geoWithin": {"$geometry": geom}};
     let renderMarkers = $('#markerRenderCheckbox')[0].checked;
     queryBackend(previewLimit, nthEntrySet, renderMarkers, false);
@@ -744,6 +750,18 @@ capitalizeFirstLetter = arr => {
         res.push(string.charAt(0).toUpperCase() + string.slice(1));
     });
     return res;
+}
+// Snap lat/lng to bounds
+snapLatLngToBound = latlngObj => {
+    if (latlngObj._northEast.lng > 180) {latlngObj._northEast.lng = 180;}
+    if (latlngObj._southWest.lng > 180) {latlngObj._southWest.lng = 180;}
+    if (latlngObj._northEast.lng < -180) {latlngObj._northEast.lng = -180;}
+    if (latlngObj._southWest.lng < -180) {latlngObj._southWest.lng = -180;}
+    if (latlngObj._northEast.lat > 90) {latlngObj._northEast.lat = 90;}
+    if (latlngObj._southWest.lat > 90) {latlngObj._southWest.lat = 90;}
+    if (latlngObj._northEast.lat < -90) {latlngObj._northEast.lat = -90;}
+    if (latlngObj._southWest.lat < -90) {latlngObj._southWest.lat = -90;}
+    return latlngObj;
 }
 
 //////////////////////////////////////////////////////////////////////////

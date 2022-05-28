@@ -86,7 +86,7 @@ getItem = () => {
             currReq.url = '/getitem/' + idx;
             var jsonObj = data['item'];
             // Update jsonOutput
-            jsonOutput = JSON.stringify(data['item']);
+            jsonOutput = JSON.stringify(data['item'], null, 2);
             // Clear previous results
             $('#jsonViewerContainer').empty();
             // Write new result
@@ -273,7 +273,7 @@ queryBackend = (previewLimit, nthEntrySet, renderMarkers, turnPage) => {
                 $('#dlButtons').find('*').show();
                 $('#mapContainer').show();
                 // Update for output
-                jsonOutput = JSON.stringify(trees[0]);
+                jsonOutput = JSON.stringify(trees[0], null, 2);
                 $('.treeTab').removeClass('active');
                 // Show json data of the given preview number of trees
                 if (nthEntrySet > 0) {
@@ -288,7 +288,7 @@ queryBackend = (previewLimit, nthEntrySet, renderMarkers, turnPage) => {
                     // Load data into html
                     $('#jsonViewerContainer').append('<pre class="previewTree" id="tree-' + idx + '"></pre>');
                     $('#tree-' + idx).jsonViewer(trees[i]);
-                    previewTrees.push(JSON.stringify(trees[i]));
+                    previewTrees.push(JSON.stringify(trees[i], null, 2));
                     // Show only one code block
                     if (i > 0) {
                         $('#tree-' + idx).hide();

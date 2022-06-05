@@ -9,15 +9,21 @@ print("  pytreedb - Showcase of import of trees from Open Government Data source
 print("###################################################################################################")
 
 URL_DATA = "https://data.wien.gv.at/daten/geo?service=WFS&request=GetFeature&version=1.1.0&typeName=ogdwien:BAUMKATOGD&srsName=EPSG:4326&outputFormat=csv"
+URL_METADATA = "https://www.data.gv.at/katalog/api/3/action/package_show?id=c91a4635-8b7d-43fe-9b27-d95dec8392a7"
 
 # Use pytreedb json template and tweak a little bit
 template = json.loads(db_conf.TEMPLATE_GEOJSON)
+metadata_file = db_utils.download_file_to_tempdir(URL_METADATA)
+with open(metadata_file, "r") as f:
+    metadata = json.load(f)
+last_modified = metadata["result"]["resources"][0]["last_modified"]
+last_modified = last_modified.split("T")[0]
 
-print ("Download OGC WFS data from: https://data.wien.gv.at")
+print("Download OGC WFS data from: https://data.wien.gv.at")
 data_csv = db_utils.download_file_to_tempdir(URL_DATA)
 
 # Read csv file as dict
-with open(data_csv, 'r', encoding='utf-8') as f:
+with open(data_csv, "r", encoding="utf-8") as f:
     data = list(csv.DictReader(f, delimiter=","))
 
 # Count things
@@ -39,30 +45,40 @@ for tree in data:
         tree_json = copy.deepcopy(template)
 
         # Fake individual input file name
-        json_file_name = "tree_id_" + tree['OBJECTID'] + ".geojson"
+        json_file_name = "tree_id_" + tree["OBJECTID"] + ".geojson"
         tree_json["_file"] = json_file_name
 
         # READ DATA FROM INPUT
-        tree_json['properties']['id'] = tree['BAUM_ID']
-        tree_json['properties']['source'] = URL_DATA
-        tree_json['properties']['species'] = tree['GATTUNG_ART']
-        tree_json['properties']['measurements'][0]['DBH_cm'] = int(tree['STAMMUMFANG_TXT'].split("cm")[0])
-        tree_json['properties']['measurements'][0]['crown_diameter_m'] = (float(tree['KRONENDURCHMESSER_TXT'][:-1].split("-")[0]) + float(tree['KRONENDURCHMESSER_TXT'][:-1].split("-")[1])) / 2.0
-        tree_json['properties']['measurements'][0]['height_m'] = (float(tree['BAUMHOEHE_TXT'][:-1].split("-")[0]) + float(tree['BAUMHOEHE_TXT'][:-1].split("-")[1]) ) / 2.0
+        tree_json["properties"]["id"] = tree["BAUM_ID"]
+        tree_json["properties"]["source"] = URL_DATA
+        tree_json["properties"]["species"] = tree["GATTUNG_ART"]
+        tree_json["properties"]["measurements"][0]["DBH_cm"] = int(tree["STAMMUMFANG_TXT"].split("cm")[0])
+        tree_json["properties"]["measurements"][0]["crown_diameter_m"] = (
+            float(tree["KRONENDURCHMESSER_TXT"][:-1].split("-")[0])
+            + float(tree["KRONENDURCHMESSER_TXT"][:-1].split("-")[1])
+        ) / 2.0
+        tree_json["properties"]["measurements"][0]["height_m"] = (
+            float(tree["BAUMHOEHE_TXT"][:-1].split("-")[0]) + float(tree["BAUMHOEHE_TXT"][:-1].split("-")[1])
+        ) / 2.0
+        tree_json["properties"]["measurements"][0]["date"] = last_modified
 
-        #Set geometry/location by dirty string hacking
-        geom_str = tree['SHAPE']
+        # Set geometry/location by dirty string hacking
+        geom_str = tree["SHAPE"]
         lon = geom_str.split("(")[1].split(" ")[0]
         lat = geom_str.split("(")[1].split(" ")[1][:-1]
-        tree_json['geometry']['coordinates'][0] = float(lon)
-        tree_json['geometry']['coordinates'][1] = float(lat)
-        tree_json['geometry']['coordinates'][2] = 0.0
+        tree_json["geometry"]["coordinates"][0] = float(lon)
+        tree_json["geometry"]["coordinates"][1] = float(lat)
+        tree_json["geometry"]["coordinates"][2] = 0.0
 
-        #Add tree directly to database (with faked _file field)
+        tree_json["properties"]["data"] = [{}]
+        tree_json["properties"]["measurements_metadata"][0]["file"] = URL_METADATA
+
+        # Add tree directly to database (with faked _file field)
         mydb.add_tree(tree_json)
 
     except Exception as e:
-        skipped +=1
+        print(f"{e} -> Skipping tree.")
+        skipped += 1
 
 print("\nManual sync local db file with MongoDB connection...")
 mydb.mongodb_synchronize()
@@ -73,4 +89,3 @@ print("done.")
 print("\n{} trees found. {} trees skipped due to formatting problems or missing information.".format(cnt, skipped))
 print(mydb.get_stats())
 print("done.")
-

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Layer_1"
+   data-name="Layer 1"
+   viewBox="0 0 128.98677 42.193767"
+   version="1.1"
+   sodipodi:docname="pytreedb_logo_bw.svg"
+   width="128.98677"
+   height="42.193768"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   inkscape:export-filename="pytreedb_logo_bw.png"
+   inkscape:export-xdpi="5000"
+   inkscape:export-ydpi="5000"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <metadata
+     id="metadata77">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>3DGeo_Logo</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="3840"
+     inkscape:window-height="2068"
+     id="namedview75"
+     showgrid="false"
+     inkscape:zoom="45.254832"
+     inkscape:cx="122.88191"
+     inkscape:cy="14.385204"
+     inkscape:window-x="-12"
+     inkscape:window-y="-12"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Layer_1"
+     fit-margin-top="2"
+     fit-margin-bottom="2"
+     fit-margin-right="2"
+     fit-margin-left="2"
+     inkscape:pagecheckerboard="false"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient2357"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop2355" />
+    </linearGradient>
+    <style
+       id="style2">.cls-1{fill:#231f20;}.cls-2,.cls-7{fill:#c92434;}.cls-3,.cls-4,.cls-5,.cls-6{fill:none;}.cls-3,.cls-5,.cls-6,.cls-7{stroke:#c92434;}.cls-3,.cls-4,.cls-5,.cls-6,.cls-7{stroke-miterlimit:10;}.cls-3{stroke-width:1.9px;}.cls-4{stroke:#231f20;}.cls-4,.cls-6{stroke-width:0.95px;}</style>
+    <style
+       id="style2456">.cls-1,.cls-6{fill:#404040;}.cls-2,.cls-3,.cls-4,.cls-5{fill:none;}.cls-2,.cls-4,.cls-5,.cls-6{stroke:#404040;}.cls-2,.cls-3,.cls-4,.cls-5,.cls-6{stroke-miterlimit:10;}.cls-2{stroke-width:1.9px;}.cls-3{stroke:#000;}.cls-3,.cls-5{stroke-width:0.95px;}</style>
+  </defs>
+  <title
+     id="title6">3DGeo_Logo</title>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:30.6667px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#8f8f8f;fill-opacity:1;stroke:none"
+     x="-1.9251175"
+     y="22.700546"
+     id="text954"><tspan
+       sodipodi:role="line"
+       id="tspan952"
+       x="-1.9251175"
+       y="22.700546"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:30.6667px;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI Bold';fill:#8f8f8f;fill-opacity:1"><tspan
+   style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:30.6667px;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI Bold';fill:#000000;fill-opacity:1"
+   id="tspan2669">py</tspan>tree<tspan
+   style="fill:#000000"
+   id="tspan11416">dl</tspan></tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#8f8f8f;fill-opacity:1;stroke:none;stroke-width:1"
+     x="-0.59999847"
+     y="42.060432"
+     id="text2454"><tspan
+       sodipodi:role="line"
+       id="tspan2452"
+       x="-0.59999847"
+       y="42.060432"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;font-family:'Trade Gothic LT Std';-inkscape-font-specification:'Trade Gothic LT Std, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#8f8f8f;fill-opacity:1;stroke-width:1">3DGEO <tspan
+   style="fill:#000000;fill-opacity:1;stroke-width:1"
+   id="tspan895">HEIDELBERG</tspan></tspan></text>
+  <path
+     class="cls-3"
+     d="m 116.69026,21.407023 a 7.7179522,7.7179522 0 1 0 0.0916,-13.1499998 l -0.151,0.1039606"
+     id="path38"
+     inkscape:connector-curvature="0"
+     style="fill:none;stroke:#000000;stroke-width:0.982852px;stroke-miterlimit:10;stroke-opacity:1" />
+  <circle
+     class="cls-2"
+     cx="111.45612"
+     cy="48.774323"
+     r="0.8949101"
+     id="circle46"
+     style="fill:#000000;stroke:none;stroke-width:0.982852px;stroke-miterlimit:10;stroke-opacity:1;fill-opacity:1"
+     transform="rotate(-18.157019)" />
+  <circle
+     class="cls-2"
+     cx="108.2748"
+     cy="44.382538"
+     r="0.8949101"
+     id="circle48"
+     style="fill:#000000;stroke:none;stroke-width:0.982852px;stroke-miterlimit:10;stroke-opacity:1;fill-opacity:1"
+     transform="rotate(-18.157019)" />
+  <circle
+     class="cls-2"
+     cx="107.05915"
+     cy="50.884861"
+     r="0.8949101"
+     id="circle50"
+     style="fill:#000000;stroke:none;stroke-width:0.982852px;stroke-miterlimit:10;stroke-opacity:1;fill-opacity:1"
+     transform="rotate(-18.157019)" />
+  <circle
+     class="cls-2"
+     cx="109.16969"
+     cy="55.312855"
+     r="0.8949101"
+     id="circle52"
+     style="fill:#000000;stroke:none;stroke-width:0.982852px;stroke-miterlimit:10;stroke-opacity:1;fill-opacity:1"
+     transform="rotate(-18.157019)" />
+  <circle
+     class="cls-2"
+     cx="104.2089"
+     cy="56.725052"
+     r="0.8949101"
+     id="circle54"
+     style="fill:#000000;stroke:none;stroke-width:0.982852px;stroke-miterlimit:10;stroke-opacity:1;fill-opacity:1"
+     transform="rotate(-18.157019)" />
+  <line
+     class="cls-5"
+     x1="117.5994"
+     y1="15.082401"
+     x2="116.74456"
+     y2="8.5251217"
+     id="line58"
+     style="fill:none;stroke:#000000;stroke-width:0.698;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none" />
+  <line
+     class="cls-5"
+     x1="117.63425"
+     y1="14.972976"
+     x2="116.74023"
+     y2="21.559399"
+     id="line60"
+     style="fill:none;stroke:#000000;stroke-width:0.698;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none" />
+  <line
+     class="cls-6"
+     x1="116.71281"
+     y1="21.475842"
+     x2="120.99323"
+     y2="18.558653"
+     id="line62"
+     style="fill:none;stroke:#000000;stroke-width:0.698;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none" />
+  <line
+     class="cls-6"
+     x1="121.10544"
+     y1="11.613459"
+     x2="117.58996"
+     y2="15.003838"
+     id="line64"
+     style="fill:none;stroke:#000000;stroke-width:0.698;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none" />
+  <line
+     class="cls-6"
+     x1="116.74456"
+     y1="8.5251217"
+     x2="121.10544"
+     y2="11.613459"
+     id="line66"
+     style="fill:none;stroke:#000000;stroke-width:0.698;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none" />
+  <line
+     class="cls-6"
+     x1="117.60284"
+     y1="15.043161"
+     x2="120.99323"
+     y2="18.558653"
+     id="line68"
+     style="fill:none;stroke:#000000;stroke-width:0.49785198;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:none" />
+  <path
+     class="cls-2"
+     d="m 125.69135,20.915768 c -0.38336,-0.55477 -1.15411,-1.510563 -0.99959,-2.002199 0.15451,-0.491634 0.64319,-1.076526 0.44492,-1.681111 -0.1984,-0.604545 -0.97527,-0.948603 -0.57177,-1.511007 0.40351,-0.562402 0.12723,-1.27206 1.60927,-1.268141 1.48204,0.0039 2.08763,0.273494 2.34481,-0.137485 0.25718,-0.410982 0.10004,1.633045 0.10004,1.633045 l -0.27672,1.06522 -0.28519,0.790357 -0.47905,0.962813 -0.53388,0.795699 -0.72702,0.820932 z"
+     id="path70"
+     inkscape:connector-curvature="0"
+     style="fill:#000000;stroke:#000000;stroke-width:0.824;stroke-miterlimit:10;stroke-opacity:1;fill-opacity:0;stroke-dasharray:none" />
+  <path
+     class="cls-7"
+     d="m 128.10386,12.219943 q -0.0225,-0.06883 -0.0445,-0.13782 A 7.7231252,7.7231252 0 0 0 122.1677,7.231114 l 0.0113,0.034405 -0.0862,0.2351396 a 1.4742737,1.4742737 0 0 0 -0.13751,0.6929279 1.463928,1.463928 0 0 0 0.61095,0.8503242 5.9333051,5.9333051 0 0 1 1.79783,2.0126133 2.0329459,2.0329459 0 0 0 0.29815,0.57727 1.1225172,1.1225172 0 0 0 0.65274,0.330331 c 0.52296,0.10069 1.09106,0.0069 1.57947,0.151616 0.18623,0.05325 0.3756,0.132688 0.56352,0.174496 0.18791,0.04181 0.77132,0.160784 0.69717,-0.06532"
+     id="path72"
+     inkscape:connector-curvature="0"
+     style="fill:#000000;stroke:#000000;stroke-width:0.824;stroke-miterlimit:10;stroke-opacity:1;fill-opacity:0;stroke-dasharray:none" />
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+     x="48.417698"
+     y="-33.575443"
+     id="text7225"><tspan
+       sodipodi:role="line"
+       id="tspan7223"
+       x="48.417698"
+       y="-33.575443" /></text>
+</svg>

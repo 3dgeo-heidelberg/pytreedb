@@ -283,6 +283,8 @@ input.warning, input.warning:hover, a.warning, a.warning:hover {
 .fieldValue {
     width: 65%;
     background-color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .addFilterBtn::after {

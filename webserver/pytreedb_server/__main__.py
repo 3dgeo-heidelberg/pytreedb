@@ -62,6 +62,8 @@ app = Flask("pytreedb-server",
             static_folder=os.path.join(os.path.dirname(__file__), 'static'),
             template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
 
+max_num_markers = 5000
+
 @app.route('/')
 def index():
     return render_template(r'index.html', server=request.remote_addr)
@@ -105,14 +107,17 @@ def query():
 @app.route('/search/wssearch', methods=['POST'])
 def webserverQuery():
     query = json.loads(request.form['query'])
-    trees = mydb.query(query, {'_id': False})
+    if query == {}:
+        trees = mydb.db
+    else :
+        trees = mydb.query(query, {'_id': False})
     # return only full geojson file within the preview limit
     limit = int(request.form['limit'])
     entry_set = int(request.form['nthEntrySet'])
     num_res = len(trees)
     res_coords = None
-    if request.form['getCoords'] == 'true':
-        # return all resulting tree coordinates to show on the map
+    if request.form['getCoords'] == 'true' and num_res <= max_num_markers:
+        # return all resulting tree coordinates to show on the map when the max number of markers is not exceeded
         res_coords = mydb.query(query, {'_id': False, '_id_x': 1, 'geometry': 1, 'type': 1, 'properties.id': 1})
     print('User query: ', query)
     print('Number of results: ', num_res)

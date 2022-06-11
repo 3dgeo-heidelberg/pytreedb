@@ -35,8 +35,8 @@ window.onload = () => {
     });
     // Get list of species on start to avoid redundant future calls
     $.get('/listspecies', data => {
-        speciesList = data["species"].sort();
-        $('#speciesList').attr('style', 'columns:' + parseInt(speciesList.length / 11 + 1));
+        speciesList = data["species"];
+        $('#speciesList').attr('style', 'columns: 3');
         speciesList.forEach(specie => {
             $('#speciesList').append($('<li>' + specie + '</li>'));
         });

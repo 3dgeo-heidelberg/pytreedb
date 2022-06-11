@@ -314,6 +314,11 @@ queryBackend = (previewLimit, nthEntrySet, renderMarkers, turnPage) => {
                 cleanMap();
                 $('#mapContainer').hide();
             }
+            // Show alert when max number of markers exceeded, 
+            // no marker will be displayed in order to avoid browser crashes
+            if (renderMarkers && !coords) {
+                alert("There are too many results. The markers won't be displayed now for performance reasons.");
+            }
         })
         .fail((xhr, status, error) => {
             console.log(xhr);

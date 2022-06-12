@@ -253,7 +253,7 @@ updateQueryPreview = () => {
     return currReq.stringFormat;
 }
 // Post request for querying
-queryBackend = (previewLimit, nthEntrySet, renderMarkers, turnPage) => {
+queryBackend = (previewLimit, nthEntrySet, renderMarkers, turnPage, bounds = null) => {
     $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": previewLimit, 
         "nthEntrySet": nthEntrySet, "getCoords": renderMarkers})
         .done(data => {
@@ -302,7 +302,7 @@ queryBackend = (previewLimit, nthEntrySet, renderMarkers, turnPage) => {
 
                 // Draw map 
                 if (renderMarkers) {
-                    drawMap(coords);
+                    drawMap(coords, bounds);
                 } else if (!renderMarkers && !turnPage) {
                     cleanMap();
                 }
@@ -328,16 +328,21 @@ queryBackend = (previewLimit, nthEntrySet, renderMarkers, turnPage) => {
 }
 // Next set of trees for pagination
 nextPageSet = () => {
+    var renderMarkers = $('#markerRenderCheckbox')[0].checked;
+    var bounds = map.getBounds();
     nthEntrySet += 1;
-    queryBackend(previewLimit, nthEntrySet);
+    queryBackend(previewLimit, nthEntrySet, renderMarkers, true, bounds);
 }
 // Previous set of trees for pagination
 prevPageSet = () => {
+    var renderMarkers = $('#markerRenderCheckbox')[0].checked;
+    var bounds = map.getBounds();
     nthEntrySet -= 1;
-    queryBackend(previewLimit, nthEntrySet);
+    queryBackend(previewLimit, nthEntrySet, renderMarkers, true, bounds);
 }
 // Apply geometric bounding box restriction to the existing results
 geoSearch = () => {
+    var bounds = map.getBounds();
     var latlngObj = snapLatLngToBound(map.getBounds());
     var geom = {    "type": "Polygon", "coordinates": [[
                     [latlngObj._northEast.lng, latlngObj._northEast.lat],
@@ -353,7 +358,8 @@ geoSearch = () => {
                 };
     currReq.backendQ["geometry"] = {"$geoWithin": {"$geometry": geom}};
     let renderMarkers = $('#markerRenderCheckbox')[0].checked;
-    queryBackend(previewLimit, nthEntrySet, renderMarkers, false);
+    queryBackend(previewLimit, nthEntrySet, renderMarkers, false, bounds);
+    map.fitBounds(bounds);
 }
 
 // Copy the query in preview to clipboard
@@ -898,7 +904,7 @@ isMarkerInsidePolygon = (marker, poly) => {
 };
 
 // Show resulting trees on the map
-drawMap = trees => {
+drawMap = (trees, bounds = null) => {
     
     map.invalidateSize();  // Make sure tiles render correctly
     geoJSONLayer.clearLayers();  // Remove previous markers
@@ -909,7 +915,11 @@ drawMap = trees => {
         trees.forEach(tree => {
             geoJSONLayer.addData(tree);
         });
-        map.fitBounds(geoJSONLayer.getBounds()); // Fit the map display to results
+        if (bounds) {
+            map.fitBounds(bounds); // Fit to previous geo bound            
+        } else {
+            map.fitBounds(geoJSONLayer.getBounds()); // Fit the map display to results
+        }
     }, 100);
 
 }

@@ -24,6 +24,8 @@ var filterKeys = {
 }
 // Init leaflet map
 var map = L.map('mapContainer').fitWorld();
+var index;
+var ready = false;
 
 window.onload = () => {
     // Load stats on start
@@ -779,6 +781,8 @@ snapLatLngToBound = latlngObj => {
 //  Leaflet                                                             //
 //////////////////////////////////////////////////////////////////////////
 // Leaflet Draw API: https://leaflet.github.io/Leaflet.draw/docs/leaflet-draw-latest.html
+// Referencing supercluster sample code: https://stackoverflow.com/questions/51033188/how-to-use-supercluster 
+// Supercluster library: https://github.com/mapbox/supercluster 
 
 // Set up the tile layer
 L.tileLayer(
@@ -788,145 +792,87 @@ L.tileLayer(
     maxZoom: 22
 }).addTo(map);
 
-// Init marker cluster group
-var markers = L.markerClusterGroup({zoomToBoundsOnClick: false});
 // Init geoJSONLayer(group)
-var geoJSONLayer = L.geoJSON(null, {
-        pointToLayer: function (feature, latlng) { // Each tree will be stored in one layer
-            var marker = L.marker(latlng).bindPopup('<a target="_blank" href="/getitem/' + feature._id_x + '">' + feature.properties.id + '</a>');
-            marker._pmTempLayer = true; // Disable marker dragging
-            markers.addLayer(marker);
-            return marker;
-        }
-});
+var markers = L.geoJSON(null, {
+        pointToLayer: createClusterIcon
+}).addTo(map);
 // Set zooming bounds of clusters (avoid zooming in too far)
 markers.on('clusterclick', function (a) {
     map.fitBounds(a.layer.getBounds().pad(0.3)); 
 });
-    
-    
-map.addLayer(markers);
 
-// Initialise the FeatureGroup to store drawing layers
-// Source: https://github.com/geoman-io/leaflet-geoman
-var drawnItems = L.featureGroup().addTo(map);
-
-/*
-// Add Leaflet-Geoman controls with some options to the map  
-map.pm.addControls({  
-    position: 'topleft',
-    drawMarker: false,
-    drawCircleMarker: false,
-    drawPolyline: false,
-    drawRectangle: false,
-    drawCircle: false,
-    dragMode: false,
-    rotateMode: false
-}); 
-
-map.on('pm:create', function (e) {
-    var poly = e.layer;
-    drawnItems.addLayer(poly);
-    geoJSONLayer.eachLayer(marker => {
-        marker._icon.classList.add('grayout');
-        drawnItems.eachLayer(poly => {
-            if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, poly)) {
-                marker._icon.classList.remove('grayout');
-            }
-        });
+function createClusterIcon(feature, latlng) {
+    if (!feature.properties.cluster) {
+        return L.marker(latlng).bindPopup('<a target="_blank" href="/getitem/' + feature._id_x + '">' + feature.properties.id + '</a>');
+    }
+  
+    var count = feature.properties.point_count;
+    var size =
+      count < 100 ? 'small' :
+      count < 1000 ? 'medium' : 'large';
+    var icon = L.divIcon({
+      html: '<div><span>' + feature.properties.point_count_abbreviated + '</span></div>',
+      className: 'marker-cluster marker-cluster-' + size,
+      iconSize: L.point(40, 40)
     });
-});
-
-drawnItems.on('pm:update', function (e) {
-    geoJSONLayer.eachLayer(marker => {
-        marker._icon.classList.add('grayout');
-        drawnItems.eachLayer(poly => {
-            if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, poly)) {
-                marker._icon.classList.remove('grayout');
-            }
-        });
+  
+    return L.marker(latlng, {
+      icon: icon
     });
-});
+}
 
-drawnItems.on('pm:cut', function(e) {
-    drawnItems.removeLayer(e.originalLayer);
-    if (e.layer.getLatLngs().length > 1) {
-        e.layer.getLatLngs().forEach(coords => {
-            drawnItems.addLayer(L.polygon(coords));
-        })
-        map.removeLayer(e.layer);
-    }
-    else {
-        console.log(e.layer.getLatLngs());
-        drawnItems.addLayer(e.layer);
-    }
-    geoJSONLayer.eachLayer(marker => {
-        marker._icon.classList.add('grayout');
-        drawnItems.eachLayer(poly => {
-            if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, poly)) {
-                marker._icon.classList.remove('grayout');
-            }
-        });
-    });
-});
+function update() {
+    if (!ready) return;
+    var bounds = map.getBounds();
+    var bbox = [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()];
+    var zoom = map.getZoom();
+    var clusters = index.getClusters(bbox, zoom);
+    markers.clearLayers();
+    markers.addData(clusters);
+}
 
-map.on('pm:remove', function(e) {    
-    drawnItems.removeLayer(e.layer);
-    if (drawnItems.getLayers().length == 0) {
-        geoJSONLayer.eachLayer(marker => {
-            marker._icon.classList.remove('grayout');
-        });
-    } else {
-        geoJSONLayer.eachLayer(marker => {
-            if (marker instanceof L.Marker && isMarkerInsidePolygon(marker, e.layer)) {
-                marker._icon.classList.add('grayout');
-            }
-        });
+// Update the displayed clusters after panning/zooming
+map.on('moveend', update);
+
+// Zoom to expand the cluster clicked
+markers.on('click', function(e) {
+    var clusterId = e.layer.feature.properties.cluster_id;
+    var center = e.latlng;
+    var expansionZoom;
+    if (clusterId) {
+      expansionZoom = index.getClusterExpansionZoom(clusterId);
+      map.flyTo(center, expansionZoom, {duration: 0.5});
     }
 });
-*/
 
-// Check if a marker is inside a polygon
-isMarkerInsidePolygon = (marker, poly) => {
-    var polyPoints = poly.getLatLngs()[0];
-    var x = marker.getLatLng().lat, y = marker.getLatLng().lng;
-
-    var inside = false;
-    for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
-        var xi = polyPoints[i].lat, yi = polyPoints[i].lng;
-        var xj = polyPoints[j].lat, yj = polyPoints[j].lng;
-
-        var intersect = ((yi > y) != (yj > y))
-            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-        if (intersect) inside = !inside;
-    }
-    return inside;
-};
 
 // Show resulting trees on the map
 drawMap = (trees, bounds = null) => {
     
     map.invalidateSize();  // Make sure tiles render correctly
-    geoJSONLayer.clearLayers();  // Remove previous markers
     markers.clearLayers();
-    drawnItems.clearLayers(); // Remove previous polygons
     setTimeout(() => {
-        // Add each tree to the geoJSONLayer. They will be displayed as markers by default
-        trees.forEach(tree => {
-            geoJSONLayer.addData(tree);
-        });
+        // Initialize the supercluster index.
+        index = new Supercluster({
+            radius: 60,
+            extent: 256,
+            maxZoom: 18
+        }).load(trees); // Load geojson features
+        ready = true;
+        update();
+
         if (bounds) {
             map.fitBounds(bounds); // Fit to previous geo bound            
         } else {
-            map.fitBounds(geoJSONLayer.getBounds()); // Fit the map display to results
+            map.setView([0, 0], 0); // World view
         }
     }, 100);
 
 }
+
 // Clean map, remove all markers and layers
 cleanMap = () => {
     map.invalidateSize();  // Make sure tiles render correctly
-    geoJSONLayer.clearLayers();  // Remove previous markers
-    drawnItems.clearLayers(); // Remove previous polygons
+    markers.clearLayers();  // Remove previous markers
 }
 

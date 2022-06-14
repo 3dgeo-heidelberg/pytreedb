@@ -138,7 +138,7 @@ def webserverQuery():
     print("User query: ", query)
     print("Number of results: ", num_res)
     return {
-        "res_preview": trees[limit * entry_set: limit * (entry_set + 1)],
+        "res_preview": trees[limit * entry_set : limit * (entry_set + 1)],
         "res_coords": res_coords,
         "num_res": num_res,
     }

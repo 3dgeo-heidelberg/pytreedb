@@ -188,4 +188,4 @@ def test_get_lazlinks_single_tree(myserver, session):
     response = get_query(session, f"{host}:{port}/download/lazlinks/tree/42")
     assert response.status_code == 200
     values = json.loads(response.content.decode())
-    assert len(values["links"]) == 3
+    assert len(values["links"]) == 4

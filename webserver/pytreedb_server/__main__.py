@@ -2,7 +2,7 @@
 # -- coding: utf-8 --
 
 """
-Flask backend for PytreeDB
+Flask backend for PyTreeDB
 """
 import sys
 import io
@@ -55,7 +55,7 @@ if not db_name:
     print("Warning: no filename for the local pytreedb supplied.")
     print("         using 'pytree.db' (in the current directory) instead.")
     print(
-        "         To set it in the future, put an 'PYTREEDB_FILENAME' statement in a `.env`-File."
+        "         To set it in the future, put a 'PYTREEDB_FILENAME' statement in a `.env`-File."
     )
     print("         Refer to README.md for more information")
 

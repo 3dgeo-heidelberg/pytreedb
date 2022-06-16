@@ -2,15 +2,15 @@
 <svg
    id="Layer_1"
    data-name="Layer 1"
-   viewBox="0 0 128.98677 42.193767"
+   viewBox="0 0 128.92036 29.903028"
    version="1.1"
    sodipodi:docname="pytreedb_logo.svg"
-   width="128.98677"
-   height="42.193768"
+   width="128.92036"
+   height="29.903028"
    inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
-   inkscape:export-filename="pytreedb_logo_low.png"
-   inkscape:export-xdpi="600"
-   inkscape:export-ydpi="600"
+   inkscape:export-filename="pytreedb_logo.png"
+   inkscape:export-xdpi="2400"
+   inkscape:export-ydpi="2400"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -39,15 +39,15 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="3840"
-     inkscape:window-height="2068"
+     inkscape:window-width="1920"
+     inkscape:window-height="1014"
      id="namedview75"
      showgrid="false"
-     inkscape:zoom="38.010961"
-     inkscape:cx="112.04663"
-     inkscape:cy="24.019387"
-     inkscape:window-x="-12"
-     inkscape:window-y="-12"
+     inkscape:zoom="6.719452"
+     inkscape:cx="37.577469"
+     inkscape:cy="8.5572454"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="Layer_1"
      fit-margin-top="2"
@@ -77,34 +77,21 @@
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:30.6667px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#c92434;fill-opacity:1;stroke:none"
-     x="-1.9251175"
+     x="-1.9915386"
      y="22.700546"
      id="text954"><tspan
        sodipodi:role="line"
        id="tspan952"
-       x="-1.9251175"
+       x="-1.9915386"
        y="22.700546"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:30.6667px;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI Bold';fill:#c92434;fill-opacity:1"><tspan
    style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:30.6667px;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI Bold';fill:#000000;fill-opacity:1"
    id="tspan2669">py</tspan>tree<tspan
    style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:30.6667px;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI Bold';fill:#000000;fill-opacity:1"
    id="tspan2675">dl</tspan></tspan></text>
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#8f8f8f;fill-opacity:1;stroke:none;stroke-width:1"
-     x="-0.59999847"
-     y="42.060432"
-     id="text2454"><tspan
-       sodipodi:role="line"
-       id="tspan2452"
-       x="-0.59999847"
-       y="42.060432"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;font-family:'Trade Gothic LT Std';-inkscape-font-specification:'Trade Gothic LT Std, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#8f8f8f;fill-opacity:1;stroke-width:1">3DGEO <tspan
-   style="fill:#000000;fill-opacity:1;stroke-width:1"
-   id="tspan895">HEIDELBERG</tspan></tspan></text>
   <g
      id="g2707"
-     transform="matrix(1.062293,-0.33425739,0.33425739,1.062293,-18.645768,79.078397)">
+     transform="matrix(1.062293,-0.33425739,0.33425739,1.062293,-18.712189,79.078397)">
     <path
        class="cls-3"
        d="m 131.46616,-12.922836 a 6.9303824,6.9303824 0 1 0 3.62265,-11.238992 l -0.15736,0.04835"
@@ -215,11 +202,11 @@
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-     x="48.417698"
+     x="48.351276"
      y="-33.575443"
      id="text7225"><tspan
        sodipodi:role="line"
        id="tspan7223"
-       x="48.417698"
+       x="48.351276"
        y="-33.575443" /></text>
 </svg>

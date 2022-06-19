@@ -5,9 +5,11 @@ Write some info screen
 
 from __future__ import absolute_import
 
-__version__ = '0.1.3a'
+__version__ = "0.1.3a"
 
-import pytreedb.db, pytreedb.db_conf, pytreedb.db_utils
+import pytreedb.db
+import pytreedb.db_conf
+import pytreedb.db_utils
 
 __bibtex__ = r"""@Article{Hoefle:2022,
   Author    = {H\"ofle, B},

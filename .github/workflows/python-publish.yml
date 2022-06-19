@@ -40,11 +40,11 @@ jobs:
             CONN_URI: "mongodb://127.0.0.1:27017/"
             CONN_DB: "pytreedb"
             CONN_COL: "test"
-            run: |
-              conda activate pytreedb
-              conda install -y pytest
-              python -m pip install pytest-cov
-              python -m pytest --cov pytreedb
+          run: |
+            conda activate pytreedb
+            conda install -y pytest
+            python -m pip install pytest-cov
+            python -m pytest --cov pytreedb
         - name: Test pytreedb-server with pytest
           env:
             CONN_URI: "mongodb://127.0.0.1:27017/"

@@ -31,17 +31,32 @@ jobs:
             # run flake8nb
             python -m pip install flake8-nb
             python -m flake8_nb . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-        - name: Test with pytest
+        - name: MongoDB in GitHub Actions
+          uses: supercharge/mongodb-github-action@1.7.0
+          with:
+            mongodb-version: ${{ matrix.mongodb-version }}
+        - name: Test pytreedb with pytest
           env:
-            CONN_URI: ${{ secrets.CONN_URI }}
-            CONN_DB: ${{ secrets.CONN_DB }}
-            CONN_COL: ${{ secrets.CONN_COL }}
+            CONN_URI: "mongodb://127.0.0.1:27017/"
+            CONN_DB: "pytreedb"
+            CONN_COL: "test"
+            run: |
+              conda activate pytreedb
+              conda install -y pytest
+              python -m pip install pytest-cov
+              python -m pytest --cov pytreedb
+        - name: Test pytreedb-server with pytest
+          env:
+            CONN_URI: "mongodb://127.0.0.1:27017/"
+            CONN_DB: "pytreedb"
+            CONN_COL: "test_server"
+            FLASK_RUN: "1"
+            FLASK_RUN_HOST: "127.0.0.1"
+            FLASK_RUN_PORT: "12789"
+            PYTREEDB_FILENAME: "pytree.db"
+            PYTREEDB_DOWNLOAD: "https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip"
           run: |
-            conda activate pytreedb
-            conda install -y pytest
-            python -m pip install pytest-cov
-            python -m pytest --cov pytreedb
-      
+            python -m pytest webserver/pytreedb_server
         - name: Install dependencies (PyPi build)
           run: |
             conda activate pytreedb

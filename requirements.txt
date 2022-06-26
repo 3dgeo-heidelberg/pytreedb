@@ -1,15 +1,5 @@
-jupyter
 numpy
-pytest
 flask
-requests
 python-dotenv
-sphinx
-myst-parser
-sphinxcontrib-napoleon
-pre-commit
 pymongo[srv]
-flake8
-flake8-nb
-black[jupyter]
-black_nbconvert
+notebook

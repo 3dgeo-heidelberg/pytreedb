@@ -1,0 +1,6 @@
+pytest
+sphinx
+myst-parser
+sphinxcontrib-napoleon
+pre-commit
+requests

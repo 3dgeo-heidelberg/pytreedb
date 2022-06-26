@@ -204,7 +204,7 @@ class PyTreeDB:
             if not Path(data_dir).exists():
                 raise FileNotFoundError(f"Directory <{data_dir}> does not exist.")
         cnt = 0
-        for f in Path(data_dir).rglob("*.*json"):
+        for f in sorted(Path(data_dir).rglob("*.*json")):
             try:
                 self.add_tree_file(f)
                 cnt += 1

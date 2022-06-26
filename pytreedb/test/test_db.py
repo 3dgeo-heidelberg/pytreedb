@@ -261,7 +261,7 @@ def test_convert_to_csv_metrics(mydb, tmp_path, i, trees):
 
     mydb.import_data(input_data, overwrite=True)
 
-    all_jsons = list(Path(input_data).glob("*.*json"))
+    all_jsons = sorted(list(Path(input_data).glob("*.*json")))
     csv_metrics = tmp_path / "result_metrics.csv"
 
     if trees:

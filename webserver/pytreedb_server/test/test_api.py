@@ -32,7 +32,6 @@ if not host.startswith("http"):  # could be http or https
     host = "http://" + host
 port = os.environ.get("FLASK_RUN_PORT")
 
-
 root_path = str(Path(__file__).parent.parent.parent)
 
 
@@ -119,7 +118,11 @@ def test_get_uls_only(myserver, session):
 
 def test_get_complex1_and(myserver, session):
     query = {
-        "query": '{"$and":[{"properties.measurements.DBH_cm":{"$lt":14,"$gt":1}},{"properties.measurements.source":"FI"},{"properties.data.mode":"ALS"}]}',
+        "query": '{"$and":['
+        '{"properties.measurements.DBH_cm":{"$lt":14,"$gt":1}},'
+        '{"properties.measurements.source":"FI"},'
+        '{"properties.data.mode":"ALS"}'
+        "]}",
         "limit": "3",
         "nthEntrySet": "0",
         "getCoords": "true",
@@ -132,7 +135,16 @@ def test_get_complex1_and(myserver, session):
 
 def test_get_complex2_and_or(myserver, session):
     query = {
-        "query": '{"$or":[{"$and":[{"$and":[{"properties.data.quality":1},{"properties.data.quality":2}]},{"properties.data.canopy_condition":"leaf-on"}]},{"properties.species":"Acer campestre"}]}',
+        "query": '{"$or":['
+        '{"$and":['
+        '{"$and":['
+        '{"properties.data.quality":1},'
+        '{"properties.data.quality":2}'
+        "]},"
+        '{"properties.data.canopy_condition":"leaf-on"}'
+        "]},"
+        '{"properties.species":"Acer campestre"}'
+        "]}",
         "limit": "3",
         "nthEntrySet": "0",
         "getCoords": "true",
@@ -145,7 +157,16 @@ def test_get_complex2_and_or(myserver, session):
 
 def test_get_exportcsv(myserver, session):
     query = {
-        "data": '{"$or":[{"$and":[{"$and":[{"properties.data.quality":1},{"properties.data.quality":2}]},{"properties.data.canopy_condition":"leaf-on"}]},{"properties.species":"Acer campestre"}]}'
+        "data": '{"$or":['
+        '{"$and":['
+        '{"$and":['
+        '{"properties.data.quality":1},'
+        '{"properties.data.quality":2}'
+        "]},"
+        '{"properties.data.canopy_condition":"leaf-on"}'
+        "]},"
+        '{"properties.species":"Acer campestre"}'
+        "]}"
     }
     response = get_query(
         session,
@@ -162,7 +183,16 @@ def test_get_exportcsv(myserver, session):
 
 def test_get_exportcollection(myserver, session):
     query = {
-        "data": '{"$or":[{"$and":[{"$and":[{"properties.data.quality":1},{"properties.data.quality":2}]},{"properties.data.canopy_condition":"leaf-on"}]},{"properties.species":"Acer campestre"}]}'
+        "data": '{"$or":['
+        '{"$and":['
+        '{"$and":['
+        '{"properties.data.quality":1},'
+        '{"properties.data.quality":2}'
+        "]},"
+        '{"properties.data.canopy_condition":"leaf-on"}'
+        "]},"
+        '{"properties.species":"Acer campestre"}'
+        "]}"
     }
     response = get_query(
         session,
@@ -188,4 +218,4 @@ def test_get_lazlinks_single_tree(myserver, session):
     response = get_query(session, f"{host}:{port}/download/lazlinks/tree/42")
     assert response.status_code == 200
     values = json.loads(response.content.decode())
-    assert len(values["links"]) == 4
+    assert len(values["links"]) == 3

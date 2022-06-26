@@ -211,7 +211,7 @@ def test_convert_to_csv_general(mydb, tmp_path, dir_name, i, trees, ncols_expect
 
     mydb.import_data(input_data, overwrite=True)
 
-    all_jsons = list(Path(input_data).glob("*.*json"))
+    all_jsons = sorted(list(Path(input_data).glob("*.*json")))
     one_json = all_jsons[i]
     csv_general = tmp_path / "result_general.csv"
 

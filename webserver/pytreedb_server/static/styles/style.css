@@ -89,7 +89,6 @@ a.inPLink {
 
 .dropdown-menu {
     min-width: 3rem;
-    z-index: 99999;
 }
 
 #showSpecies {
@@ -283,8 +282,6 @@ input.warning, input.warning:hover, a.warning, a.warning:hover {
 .fieldValue {
     width: 65%;
     background-color: #fff;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .addFilterBtn::after {
@@ -480,14 +477,6 @@ input.form-check-input {
 #map {
     height: 500px;
     width: 80%;
-}
-
-.modal-body p {
-    font-size: small;
-}
-.modal-body a {
-    text-decoration: underline;
-    color: blue;
 }
 
 /* lg */

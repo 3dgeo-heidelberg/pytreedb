@@ -120,19 +120,20 @@ searchDB = () => {
     previewLimit = Math.min($('#numPreviewTrees').val(), maxPreviewLimit);
     nthEntrySet = 0;
     let renderMarkers = $('#markerRenderCheckbox')[0].checked;
+    let elemMatch = $('#elemMatchCheckbox')[0].checked;
     let qfilters = currReq.qfilters, operands = currReq.operands, brackets = currReq.brackets;
-    currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets);
+    currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets, elemMatch);
     if (!currReq.backendQ) {currReq.backendQ = {};}
 
     // Send POST request to API endpoint specifically for webserver search request
     // where only a (user-defined) limited number of the first full-json documents are returned
     // along with coordinates of all resulting trees for rendering in the map if demanded
-    queryBackend(previewLimit, nthEntrySet, renderMarkers, false);
+    queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, false);
     $('#jsonSnippetSection').show();
     $('#jsonViewerContainer').css('padding-bottom', '85px');
     $('html,body').animate({scrollTop: $('#jsonSnippetSection').offset().top - 62}, 'slow');
 }
-processAND = (start, end, ft, op, bk) => {
+processAND = (start, end, ft, op, bk, elemMatch) => {
     let filters = ft.slice(start, end + 1); 
     let operands = op.slice(start, end + 1);
     let brackets = bk.slice(start, end + 1);
@@ -163,13 +164,73 @@ processAND = (start, end, ft, op, bk) => {
     } else {
         // Process AND in this slice
         let prevIsAnd = false;
+        console.log(filters);
         for (let i = filters.length - 1; i > 0; i--) {
             if (operands[i] == "AND" && !prevIsAnd) {
-                filters.splice(i - 1, 2, {'$and': [filters[i-1], filters[i]]});
+                let key1 = Object.keys(filters[i-1])[0], 
+                    key2 = Object.keys(filters[i])[0];
+                let obj1 = {}, obj2 = {};
+                if (elemMatch && key1.startsWith('properties.data') && key2.startsWith('properties.data')) {
+                    obj1[key1.split('.')[2]] = filters[i-1][key1];
+                    obj2[key2.split('.')[2]] = filters[i][key2];
+                    filters.splice(i - 1, 2, {"properties.data": {"$elemMatch": {"$and":[obj1, obj2]}}});
+                } else if (elemMatch && key1.startsWith('properties.measurements') && key2.startsWith('properties.measurements')) {
+                    obj1[key1.split('.')[2]] = filters[i-1][key1];
+                    obj2[key2.split('.')[2]] = filters[i][key2];
+                    filters.splice(i - 1, 2, {"properties.measurements": {"$elemMatch": {"$and":[obj1, obj2]}}});
+                }  else {
+                    filters.splice(i - 1, 2, {'$and': [filters[i-1], filters[i]]});
+                }
                 prevIsAnd = true;
             } else if (operands[i] == "AND" && prevIsAnd) {
-                filters[i]['$and'].push(filters[i-1]);
-                filters.splice(i - 1, 1);
+                let key1 = Object.keys(filters[i-1])[0], 
+                    key2 = Object.keys(filters[i])[0];
+                let obj = {};
+                if (elemMatch && key1.startsWith('properties.data') && key2.startsWith('properties.data')) {
+                    obj[key1.split('.')[2]] = filters[i-1][key1];
+                    filters[i]['properties.data']['$elemMatch']['$and'].push(obj);
+                    filters.splice(i - 1, 1);
+                } else if (elemMatch && key1.startsWith('properties.measurements') && key2.startsWith('properties.measurements')) {
+                    obj[key1.split('.')[2]] = filters[i-1][key1];
+                    filters[i]['properties.data']['$elemMatch']['$and'].push(obj);
+                    filters.splice(i - 1, 1);
+                } else if (filters[i]['$and']){
+                    let andArr = filters[i]['$and'];
+                    let nomatch = true;
+                    if (elemMatch && (key1.startsWith('properties.data') || key1.startsWith('properties.measurements'))) {
+                        for (let j = 0; j < andArr.length; j++) {
+                            let object = andArr[j];
+                            if (Object.keys(object)[0].startsWith('properties.data') && key1.startsWith('properties.data')) {
+                                let obj1 = {}, obj2 = {};
+                                obj1[key1.split('.')[2]] = filters[i-1][key1];
+                                if (object['properties.data'] && object['properties.data']['$elemMatch']) {
+                                    object['properties.data']['$elemMatch']['$and'].push(obj1);
+                                } else {
+                                    obj2[Object.keys(object)[0].split('.')[2]] = Object.values(object)[0];
+                                    andArr.splice(j, 1, {"properties.data": {'$elemMatch': {'$and':[obj1, obj2]}}});
+                                }
+                                nomatch = false;
+                            } else if (Object.keys(object)[0].startsWith('properties.measurements') 
+                            && key1.startsWith('properties.measurements')) {
+                                let obj1 = {}, obj2 = {};
+                                obj1[key1.split('.')[2]] = filters[i-1][key1];
+                                if (object['properties.measurements'] && object['properties.measurements']['$elemMatch']) {
+                                    object['properties.measurements']['$elemMatch']['$and'].push(obj1);
+                                } else {
+                                    obj2[Object.keys(object)[0].split('.')[2]] = Object.values(object)[0];
+                                    andArr.splice(j, 1, {'properties.measurements': {'$elemMatch': {'$and':[obj1, obj2]}}});
+                                }
+                                nomatch = false;
+                            }
+                        }
+                        if (nomatch) {andArr.push(filters[i-1]);}
+                    } else {
+                        andArr.push(filters[i-1]);
+                    }
+                    filters.splice(i - 1, 1);
+                } else {
+                    filters.splice(i - 1, 2, {'$and': [filters[i-1], filters[i]]});
+                }
             } else {
                 prevIsAnd = false;
             }
@@ -211,8 +272,8 @@ collectFilterParams = () => {
         }
         // Read ranged values correctly
         if (['dbh', 'height', 'crowndia.'].includes(label)) {
-            let lb = $(e).find('.rangeInput')[0].value,
-                gb = $(e).find('.rangeInput')[1].value;
+            let lb = $(e).find('.rangeInput')[0].value == '' ? 0 : $(e).find('.rangeInput')[0].value,
+                gb = $(e).find('.rangeInput')[1].value == '' ? 10000 : $(e).find('.rangeInput')[1].value;
             value = lb + '-' + gb;
             qvalue = {'$lt': parseFloat(gb), '$gt': parseFloat(lb)};
         }
@@ -255,8 +316,8 @@ updateQueryPreview = () => {
     return currReq.stringFormat;
 }
 // Post request for querying
-queryBackend = (previewLimit, nthEntrySet, renderMarkers, turnPage, bounds = null) => {
-    $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "limit": previewLimit, 
+queryBackend = (elemMatch, previewLimit, nthEntrySet, renderMarkers, turnPage, bounds = null) => {
+    $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "elemMatch": elemMatch, "limit": previewLimit, 
         "nthEntrySet": nthEntrySet, "getCoords": renderMarkers})
         .done(data => {
             var trees = data['res_preview'];

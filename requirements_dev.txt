@@ -3,4 +3,6 @@ sphinx
 myst-parser
 sphinxcontrib-napoleon
 pre-commit
+flake8
+flake8_nb
 requests

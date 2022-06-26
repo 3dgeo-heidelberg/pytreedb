@@ -3,5 +3,3 @@ flask
 python-dotenv
 pymongo[srv]
 notebook
-flake8
-flake8_nb

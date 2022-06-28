@@ -51,7 +51,6 @@ jobs:
         os:
           - ubuntu-20.04
           - windows-2022
-          - macos-11
         mongodb-version: ['4.2', '4.4', '5.0']
 
     steps:
@@ -110,7 +109,6 @@ jobs:
         os:
           - ubuntu-20.04
           - windows-2022
-          - macos-11
         mongodb-version: ['4.2', '4.4', '5.0']
 
     steps:

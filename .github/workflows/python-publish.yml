@@ -60,7 +60,7 @@ jobs:
 
 
   test-pytreedb:
-    name: Test source distribution on ${{ matrix.os }}
+    name: Test source distribution (pytreedb) on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     needs: [build]
     strategy:
@@ -88,7 +88,7 @@ jobs:
 
       - name: Install test requirements
         run:
-          python -m pip install -r requirements_dev.txt
+          python -m pip install pytest
 
       - name: MongoDB in GitHub Actions
         uses: supercharge/mongodb-github-action@1.7.0
@@ -105,7 +105,7 @@ jobs:
 
 
   test-webserver:
-    name: Test source distribution on ${{ matrix.os }}
+    name: Test source distribution (webserver) on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     needs: [build]
     strategy:
@@ -133,7 +133,8 @@ jobs:
 
       - name: Install test requirements
         run:
-          python -m pip install -r requirements_dev.txt
+          python -m pip install pytest
+          python -m pip install requests
 
       - name: MongoDB in GitHub Actions
         uses: supercharge/mongodb-github-action@1.7.0

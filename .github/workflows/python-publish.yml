@@ -69,6 +69,7 @@ jobs:
           - ubuntu-20.04
           - windows-2022
           - macos-11
+        mongodb-version: ['4.2', '4.4', '5.0']
 
     steps:
       - uses: actions/setup-python@v2

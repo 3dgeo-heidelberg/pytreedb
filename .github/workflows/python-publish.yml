@@ -189,7 +189,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: artifact
-          path: .webserver/dist
+          path: ./webserver/dist
 
       - name: Publish package (webserver)
         uses: pypa/gh-action-pypi-publish@master
@@ -220,7 +220,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: artifact
-          path: .webserver/dist
+          path: ./webserver/dist
 
       - name: Publish package (webserver)
         uses: pypa/gh-action-pypi-publish@master

@@ -183,7 +183,7 @@ jobs:
         if: github.event.inputs.deploy_to_testpypi == 'true'
         with:
           user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          password: ${{ secrets.TESTPYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
 
       - uses: actions/download-artifact@v2
@@ -197,7 +197,7 @@ jobs:
         with:
           packages_dir: ./webserver/dist
           user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          password: ${{ secrets.TESTPYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
 
   upload_pypi:

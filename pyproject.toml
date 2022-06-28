@@ -9,6 +9,9 @@ markers = [
     "query: mark tests for querying data",
 ]
 
+test-requires = ["pytest", "pytest-git"]
+test-command = "pytest {package}/test"
+
 [tool.black]
 line-length = 120
 exclude = '''

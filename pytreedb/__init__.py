@@ -20,7 +20,7 @@ MongoDB is used as database backend via the PyMongo driver. This enables scaling
 
 from __future__ import absolute_import
 
-__version__ = "0.1.3a"
+__version__ = "0.1.3b"
 name = "pytreedb"
 
 import pytreedb.db

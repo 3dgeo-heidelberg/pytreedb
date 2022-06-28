@@ -24,24 +24,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install dependencies (PyPi build)
-        run: |
-          pip install .
-          pip install build
-
-      - name: Build package (pytreedb)
-        run:
-          python -m build
+      - name: Build SDist (pytreedb)
+        run: pipx run build --sdist
 
       - uses: actions/upload-artifact@v2
         with:
           name: artifact
           path: dist/*.tar.gz
 
-      - name: Build package (pytreedb-server)
-        working-directory: ./webserver
-        run:
-          python -m build
+      - name: Build SDist (webserver)
+        run: pipx run build --sdist
 
       - uses: actions/upload-artifact@v2
         with:

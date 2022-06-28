@@ -14,7 +14,7 @@ markers = [
 build-verbosity = 3
 
 # We restrict ourselves to CPython 3.9
-build = "cp38-*"
+build = "cp39-*"
 
 # Testing commands for our wheels
 test-requires = ["pytest"]

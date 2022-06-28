@@ -9,8 +9,8 @@ markers = [
     "query: mark tests for querying data",
 ]
 
-test-requires = ["pytest", "pytest-git"]
-test-command = "pytest {package}/test"
+test-requires = ["pytest"]
+test-command = "pytest {package}/pytreedb/test"
 
 [tool.black]
 line-length = 120

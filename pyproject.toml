@@ -9,6 +9,14 @@ markers = [
     "query: mark tests for querying data",
 ]
 
+[tool.cibuildwheel]
+# Super-verbose output for debugging purpose
+build-verbosity = 3
+
+# We restrict ourselves to CPython 3.9
+build = "cp38-*"
+
+# Testing commands for our wheels
 test-requires = ["pytest"]
 test-command = "pytest {package}/pytreedb/test"
 

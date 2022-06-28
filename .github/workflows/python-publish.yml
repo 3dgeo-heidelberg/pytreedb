@@ -113,7 +113,6 @@ jobs:
         os:
           - ubuntu-20.04
           - windows-2022
-          - macos-11
 
     steps:
       - uses: actions/setup-python@v2

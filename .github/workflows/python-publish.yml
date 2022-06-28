@@ -33,6 +33,7 @@ jobs:
           path: dist/*.tar.gz
 
       - name: Build SDist (webserver)
+        working-directory: ./webserver
         run: pipx run build --sdist
 
       - uses: actions/upload-artifact@v2

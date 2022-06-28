@@ -85,7 +85,7 @@ jobs:
           CONN_DB: "pytreedb"
           CONN_COL: "test"
         run: |
-          python -m pytest
+          python -m pytest pytreedb
 
 
   test-webserver:
@@ -100,6 +100,8 @@ jobs:
         mongodb-version: ['4.2', '4.4', '5.0']
 
     steps:
+      - uses: actions/checkout@v2
+      
       - uses: actions/setup-python@v2
         name: Install Python
         with:
@@ -136,7 +138,7 @@ jobs:
           PYTREEDB_FILENAME: "pytree.db"
           PYTREEDB_DOWNLOAD: "https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip"
         run: |
-          python -m pytest
+          python -m pytest webserver/pytreedb_server
       - name: Test pytreedb-server ON CLOUD with pytest
         continue-on-error: true
         env:

@@ -61,6 +61,8 @@ jobs:
         mongodb-version: ['4.2', '4.4', '5.0']
 
     steps:
+      - uses: actions/checkout@v2
+
       - uses: actions/setup-python@v2
         name: Install Python
         with:

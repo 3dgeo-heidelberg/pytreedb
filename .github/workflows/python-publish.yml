@@ -211,7 +211,7 @@ jobs:
           path: dist
 
       - name: Publish package (pytreedb)
-        uses: pypa/gh-action-pypi-publish@main
+        uses: pypa/gh-action-pypi-publish@master
         if: github.event.inputs.deploy_to_pypi == 'true'
         with:
           user: __token__
@@ -223,7 +223,7 @@ jobs:
           path: .webserver/dist
 
       - name: Publish package (webserver)
-        uses: pypa/gh-action-pypi-publish@main
+        uses: pypa/gh-action-pypi-publish@master
         if: github.event.inputs.deploy_to_pypi == 'true'
         with:
           packages_dir: ./webserver/dist

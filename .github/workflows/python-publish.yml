@@ -50,6 +50,8 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
+          - windows-2022
+          - macos-11
         mongodb-version: ['4.2', '4.4', '5.0']
 
     steps:
@@ -75,17 +77,28 @@ jobs:
           python -m pip install pytest
 
       - name: MongoDB in GitHub Actions
+        if: runner.os == 'Linux'
         uses: supercharge/mongodb-github-action@1.7.0
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
 
       - name: Test pytreedb with pytest
+        if: runner.os == 'Linux'
         env:
           CONN_URI: "mongodb://127.0.0.1:27017/"
           CONN_DB: "pytreedb"
           CONN_COL: "test"
-        run: |
+        run:
           python -m pytest pytreedb
+      
+      - name: Test pytreedb with pytest (windows)
+        if: runner.os != 'Linux'
+        env:
+            CONN_URI: ${{ secrets.CONN_URI }}
+            CONN_DB: ${{ secrets.CONN_DB }}
+            CONN_COL: ${{ secrets.CONN_COL }}
+        run:
+          python -m pytest
 
 
   test-webserver:
@@ -96,6 +109,8 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
+          - windows-2022
+          - macos-11
         mongodb-version: ['4.2', '4.4', '5.0']
 
     steps:
@@ -122,11 +137,13 @@ jobs:
           python -m pip install requests
 
       - name: MongoDB in GitHub Actions
+        if: runner.os == 'Linux'
         uses: supercharge/mongodb-github-action@1.7.0
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
 
       - name: Test pytreedb-server with pytest
+        if: runner.os == 'Linux'
         env:
           CONN_URI: "mongodb://127.0.0.1:27017/"
           CONN_DB: "pytreedb"

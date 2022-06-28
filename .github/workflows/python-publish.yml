@@ -6,11 +6,11 @@ on:
       deploy_to_testpypi:
         description: "Whether the build should be deployed to test.pypi.org"
         required: true
-        default: "false"
+        default: "true"
       deploy_to_pypi:
         description: "Whether the build should be deployed to pypi.org"
         required: true
-        default: "true"
+        default: "false"
 
 
 jobs:

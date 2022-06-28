@@ -50,7 +50,6 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
-          - windows-2022
         mongodb-version: ['4.2', '4.4', '5.0']
 
     steps:
@@ -97,7 +96,6 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
-          - windows-2022
         mongodb-version: ['4.2', '4.4', '5.0']
 
     steps:

@@ -47,7 +47,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: [build]
     strategy:
-      fail-fast: true
       max-parallel: 1
       matrix:
         os:
@@ -107,6 +106,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: [build]
     strategy:
+      max-parallel: 1
       matrix:
         os:
           - ubuntu-20.04

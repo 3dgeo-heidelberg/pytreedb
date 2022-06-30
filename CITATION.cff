@@ -20,7 +20,7 @@ authors:
   - family-names: Fassnacht
     given-names: Fabian E.
     orcid: "https://orcid.org/0000-0003-1284-9573"
-title: pytreedb: library for point clouds of tree vegetation objects.
+title: pytreedb - library for point clouds of tree vegetation objects.
 version: 1.0.0
 date-released: 2022-07-11
 identifiers:

@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Höfle
+    given-names: Bernhard
+    orcid: "https://orcid.org/0000-0001-5849-1461"
+  - family-names: Qu
+    given-names: Jiani
+  - family-names: Winiwarter
+    given-names: Lukas
+    orcid: "https://orcid.org/0000-0001-8229-1160"
+  - family-names: Weiser
+    given-names: Hannah
+    orcid: "https://orcid.org/0000-0003-3256-7311"
+  - family-names: Zahs
+    given-names: Vivien
+    orcid: "https://orcid.org/0000-0001-8200-1661"
+  - family-names: Schäfer
+    given-names: Jannika
+  - family-names: Fassnacht
+    given-names: Fabian E.
+    orcid: "https://orcid.org/0000-0003-1284-9573"
+title: pytreedb: library for point clouds of tree vegetation objects.
+version: 1.0.0
+date-released: 2022-07-DD
+identifiers:
+  - description: This is the collection of archived snapshots of all versions of pytreedb
+    type: doi
+    value: ""
+license: ["GPL-3.0-or-later", "LGPL-3.0-or-later"]
+repository-code: "https://github.com/3dgeo-heidelberg/pytreedb"

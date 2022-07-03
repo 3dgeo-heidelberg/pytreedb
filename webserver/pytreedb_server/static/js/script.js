@@ -707,6 +707,7 @@ updateAvailableVals = (newFilterID, field) => {
 
     switch (field) {
         case "Species":
+            $(availableValuesEl).append('<li><input type="text" placeholder="Search.." id="filterSearchInput" onkeyup="filterSearch(this)"></li>');
             speciesList.forEach(specie => {
                 $(availableValuesEl).append(
                     '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + specie + '</a></li>'
@@ -785,7 +786,21 @@ moveRight = e => {
         classList.add('bracket-3');
     }
 }
-
+// Search inside a filter (e.g. species that corresponds to input)
+// Source: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown_filter
+filterSearch = input => {
+    var text = input.value.toUpperCase();
+    var ul = input.parentElement.parentElement
+    var a = ul.getElementsByTagName("a");
+    for (i = 0; i < a.length; i++) {
+        txtValue = a[i].textContent || a[i].innerText;
+        if (txtValue.toUpperCase().indexOf(text) > -1) {
+        a[i].style.display = "";
+        } else {
+        a[i].style.display = "none";
+        }
+    }
+}
 
 // Toggle shown (active) tree data
 toggleTab = e => {

@@ -479,6 +479,16 @@ input.form-check-input {
     width: 80%;
 }
 
+#filterSearchInput {
+	box-sizing: border-box;
+	padding: .25rem 1rem;
+	width: 100%;
+	border: none;
+	border-bottom: 1px solid #ddd;
+    border-radius: 0;
+}
+
+
 /* lg */
 
 @media (min-width: 992px) {

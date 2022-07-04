@@ -180,6 +180,7 @@ jobs:
         run: |
           python -m pytest webserver/main/webserver/pytreedb_server
       - name: Test pytreedb-server on pytreedb.geog.uni-heidelberg.de with pytest (not using SSL)
+        continue-on-error: true
         env:
           FLASK_RUN: "0"
           FLASK_RUN_HOST: "http://pytreedb.geog.uni-heidelberg.de"

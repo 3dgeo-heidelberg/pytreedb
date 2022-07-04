@@ -55,7 +55,6 @@ jobs:
         mongodb-version: ['4.2', '4.4', '5.0']
 
     steps:
-      - uses: actions/checkout@v2
 
       - uses: actions/setup-python@v2
         name: Install Python
@@ -89,7 +88,7 @@ jobs:
           CONN_DB: "pytreedb"
           CONN_COL: "test"
         run:
-          python -m pytest pytreedb
+          python -m pytest $(python -c "import pytreedb; print(pytreedb.__file__)")
       
       - name: Test pytreedb with pytest 
         if: runner.os != 'Linux'

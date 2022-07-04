@@ -91,7 +91,7 @@ jobs:
           CONN_DB: "pytreedb"
           CONN_COL: "test"
         run:
-          python -m pytest pytreedb
+          python -m pytest main/pytreedb
       
       - name: Test pytreedb with pytest 
         if: runner.os != 'Linux'

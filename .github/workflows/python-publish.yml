@@ -100,7 +100,7 @@ jobs:
             CONN_DB: ${{ secrets.CONN_DB }}
             CONN_COL: ${{ secrets.CONN_COL }}
         run:
-          python -m pytest pytreedb
+          python -m pytest main/pytreedb
 
 
   test-webserver:
@@ -158,7 +158,7 @@ jobs:
           PYTREEDB_FILENAME: "pytree.db"
           PYTREEDB_DOWNLOAD: "https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip"
         run: |
-          python -m pytest webserver/pytreedb_server
+          python -m pytest webserver/main/webserver/pytreedb_server
       - name: Test pytreedb-server ON CLOUD with pytest
         continue-on-error: true
         env:
@@ -171,22 +171,22 @@ jobs:
           PYTREEDB_FILENAME: "pytree.db"
           PYTREEDB_DOWNLOAD: "https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip"
         run: |
-          python -m pytest webserver/pytreedb_server
+          python -m pytest webserver/main/webserver/pytreedb_server
       - name: Test pytreedb-server on pytreedb.geog.uni-heidelberg.de with pytest (using SSL)
         env:
           FLASK_RUN: "0"
           FLASK_RUN_HOST: "https://pytreedb.geog.uni-heidelberg.de"
           FLASK_RUN_PORT: "443"
         run: |
-          python -m pytest webserver/pytreedb_server
+          python -m pytest webserver/main/webserver/pytreedb_server
       - name: Test pytreedb-server on pytreedb.geog.uni-heidelberg.de with pytest (not using SSL)
         env:
           FLASK_RUN: "0"
           FLASK_RUN_HOST: "http://pytreedb.geog.uni-heidelberg.de"
           FLASK_RUN_PORT: "80"
         run: |
-          python -m pytest webserver/pytreedb_server
-
+          python -m pytest webserver/main/webserver/pytreedb_server
+          
   upload_testpypi:
     needs: [build, test-pytreedb, test-webserver]
     runs-on: ubuntu-20.04

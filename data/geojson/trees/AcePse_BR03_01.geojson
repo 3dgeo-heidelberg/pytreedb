@@ -72,7 +72,7 @@
                 "mode": "ALS",
                 "date": "2019-07-05",
                 "canopy_condition": "leaf-on",
-                "sensor": "RIEGL LMS-VQ780i",
+                "sensor": "RIEGL VQ-780i",
                 "point_count": 5610,
                 "crs": "epsg:25832",
                 "file": "https://3dweb.geog.uni-heidelberg.de/treedb/AcePse_BR03_01_2019-07-05_q2_ALS-on.laz",

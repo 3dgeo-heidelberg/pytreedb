@@ -46,7 +46,7 @@
                 "mode": "ALS",
                 "date": "2019-07-05",
                 "canopy_condition": "leaf-on",
-                "sensor": "RIEGL LMS-VQ780i",
+                "sensor": "RIEGL VQ-780i",
                 "point_count": 5538,
                 "crs": "epsg:25832",
                 "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PinSyl_KA09_Tree132_2019-07-05_q3_ALS-on.laz",

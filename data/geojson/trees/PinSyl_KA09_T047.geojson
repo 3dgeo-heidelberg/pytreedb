@@ -63,7 +63,9 @@
             }
         ],
         "measurements_metadata": [
-            {}
+            {
+                "reference-url": "https://doi.org/10.5194/essd-2022-39"
+            }
         ],
         "data": [
             {
@@ -75,7 +77,7 @@
                 "point_count": 4223,
                 "crs": "epsg:25832",
                 "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PinSyl_KA09_T047_2019-07-05_q4_ALS-on.laz",
-                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "metadata-url": "https://doi.org/10.5194/essd-2022-39",
                 "quality": 4
             },
             {
@@ -87,7 +89,7 @@
                 "point_count": 2980800,
                 "crs": "epsg:25832",
                 "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PinSyl_KA09_T047_2019-08-20_q2_TLS-on.laz",
-                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "metadata-url": "https://doi.org/10.5194/essd-2022-39",
                 "quality": 2
             },
             {
@@ -99,7 +101,7 @@
                 "point_count": 78746,
                 "crs": "epsg:25832",
                 "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PinSyl_KA09_T047_2019-09-13_q3_ULS-on.laz",
-                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "metadata-url": "https://doi.org/10.5194/essd-2022-39",
                 "quality": 3
             },
             {
@@ -111,7 +113,7 @@
                 "point_count": 84381,
                 "crs": "epsg:25832",
                 "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PinSyl_KA09_T047_2019-12-10_q1_ULS-off.laz",
-                "metadata-url": "https://doi.org/10.1594/PANGAEA.933426",
+                "metadata-url": "https://doi.org/10.5194/essd-2022-39",
                 "quality": 1
             }
         ]

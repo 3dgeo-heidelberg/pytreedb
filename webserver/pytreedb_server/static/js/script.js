@@ -927,22 +927,24 @@ drawMap = (trees, bounds = null) => {
     
     map.invalidateSize();  // Make sure tiles render correctly
     markers.clearLayers();
+    // Initialize the supercluster index.
+    index = new Supercluster({
+        radius: 60,
+        extent: 256,
+        maxZoom: 18
+    }).load(trees); // Load geojson features
+    ready = true;
+    update();
     setTimeout(() => {
-        // Initialize the supercluster index.
-        index = new Supercluster({
-            radius: 60,
-            extent: 256,
-            maxZoom: 18
-        }).load(trees); // Load geojson features
-        ready = true;
-        update();
-
-        if (bounds) {
-            map.fitBounds(bounds); // Fit to previous geo bound            
-        } else {
-            map.setView([0, 0], 0); // World view
-        }
+        let center = markers.getLayers()[0]._latlng;
+        map.flyTo(center, 3, {duration: 0.01});
     }, 100);
+
+    if (bounds) {
+        map.fitBounds(bounds); // Fit to previous geo bound            
+    } else {
+        map.setView([0, 0], 0); // World view
+    }
 
 }
 

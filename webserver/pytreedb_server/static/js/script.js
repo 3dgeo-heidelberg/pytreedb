@@ -164,7 +164,6 @@ processAND = (start, end, ft, op, bk, elemMatch) => {
     } else {
         // Process AND in this slice
         let prevIsAnd = false;
-        console.log(filters);
         for (let i = filters.length - 1; i > 0; i--) {
             if (operands[i] == "AND" && !prevIsAnd) {
                 let key1 = Object.keys(filters[i-1])[0], 
@@ -368,6 +367,7 @@ queryBackend = (elemMatch, previewLimit, nthEntrySet, renderMarkers, turnPage, b
                     drawMap(coords, bounds);
                 } else if (!renderMarkers && !turnPage) {
                     cleanMap();
+                    ready = false;
                 }
             }
             // If no trees satisfy the query, clear prev results
@@ -927,6 +927,11 @@ drawMap = (trees, bounds = null) => {
     
     map.invalidateSize();  // Make sure tiles render correctly
     markers.clearLayers();
+    if (bounds) {
+        map.fitBounds(bounds); // Fit to previous geo bound            
+    } else {
+        map.setView([0, 0], 0); // World view
+    }
     // Initialize the supercluster index.
     index = new Supercluster({
         radius: 60,
@@ -938,13 +943,7 @@ drawMap = (trees, bounds = null) => {
     setTimeout(() => {
         let center = markers.getLayers()[0]._latlng;
         map.flyTo(center, 3, {duration: 0.01});
-    }, 100);
-
-    if (bounds) {
-        map.fitBounds(bounds); // Fit to previous geo bound            
-    } else {
-        map.setView([0, 0], 0); // World view
-    }
+    }, 300);
 
 }
 

@@ -152,10 +152,16 @@
                                 <label class="settingsLabel"> Preview data of the first
                                     <input type="text" id="numPreviewTrees" style="width: 30px;" placeholder="3" value="3"> trees (1-10) </input>
                                 </label>
-                            </div><br>
+                            </div>
+                            <br>
                             <div class="form-check form-check-inline settings">
                                 <input checked="1" type="checkbox" id="markerRenderCheckbox" class="form-check-input">
                                 <label class="form-check-label settingsLabel" for="markerRenderCheckbox">Show all resulting trees on map</label>
+                            </div>
+                            <br>
+                            <div class="form-check form-check-inline settings">
+                                <input type="checkbox" id="elemMatchCheckbox" class="form-check-input">
+                                <label class="form-check-label settingsLabel" for="elemMatchCheckbox">All search criteria should be fulfilled by a single data source</label>
                             </div>
                         </div>
                     </div>
@@ -200,7 +206,7 @@
                     style="padding: 50px;color: #fff; border-top-width: medium; border-right-width: medium; border-bottom-width: medium; border-left-width: medium;">
                     <div style="border: dotted #fff; border-width: 0 1px 0 0;" class="col-8">
                         <div id="pytreedbLogo" style="font-size: xx-large; padding: 50px 0 50px 0; color: #fff;">
-                            <img src="{{ url_for('static', filename='img/pytreedb_logo_w.svg') }}" height="100px" alt="PyTreeDB"/>
+                            <img src="{{ url_for('static', filename='img/pytreedb_logo_low_w.png') }}" height="100px" alt="PyTreeDB"/>
                         </div>
                         <div style="font-size: small; padding-bottom: 50px; padding-right: 50px; color: #ddd;">
                             Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) in the frame of the

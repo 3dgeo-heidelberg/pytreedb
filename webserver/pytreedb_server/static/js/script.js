@@ -1,7 +1,7 @@
 // Global variables
 var speciesList, n_trees, jsonOutput, previewTrees = [], getEverySec, pcUrls = []; 
 var numFilters = 0;
-var nthEntrySet = 0, maxPreviewLimit = 10, previewLimit = 3;
+var nthEntrySet = 0, elemMatch = false, maxPreviewLimit = 10, previewLimit = 3;
 var lazDlLimit = 1000;
 var currReq = {
     "url": '',
@@ -119,8 +119,8 @@ searchDB = () => {
     updateQueryPreview();
     previewLimit = Math.min($('#numPreviewTrees').val(), maxPreviewLimit);
     nthEntrySet = 0;
+    elemMatch = $('#elemMatchCheckbox')[0].checked;
     let renderMarkers = $('#markerRenderCheckbox')[0].checked;
-    let elemMatch = $('#elemMatchCheckbox')[0].checked;
     let qfilters = currReq.qfilters, operands = currReq.operands, brackets = currReq.brackets;
     currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets, elemMatch);
     if (!currReq.backendQ) {currReq.backendQ = {};}
@@ -394,14 +394,14 @@ nextPageSet = () => {
     var renderMarkers = $('#markerRenderCheckbox')[0].checked;
     var bounds = map.getBounds();
     nthEntrySet += 1;
-    queryBackend(previewLimit, nthEntrySet, renderMarkers, true, bounds);
+    queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, true, bounds);
 }
 // Previous set of trees for pagination
 prevPageSet = () => {
     var renderMarkers = $('#markerRenderCheckbox')[0].checked;
     var bounds = map.getBounds();
     nthEntrySet -= 1;
-    queryBackend(previewLimit, nthEntrySet, renderMarkers, true, bounds);
+    queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, true, bounds);
 }
 // Apply geometric bounding box restriction to the existing results
 geoSearch = () => {
@@ -421,8 +421,10 @@ geoSearch = () => {
                 };
     currReq.backendQ["geometry"] = {"$geoWithin": {"$geometry": geom}};
     let renderMarkers = $('#markerRenderCheckbox')[0].checked;
-    queryBackend(previewLimit, nthEntrySet, renderMarkers, false, bounds);
-    map.fitBounds(bounds);
+    queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, false, bounds);
+    setTimeout(() => {
+        map.fitBounds(bounds);
+    }, 500);
 }
 
 // Copy the query in preview to clipboard

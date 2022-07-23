@@ -390,7 +390,7 @@ queryBackend = (elemMatch, previewLimit, nthEntrySet, renderMarkers, turnPage, b
         });
 }
 // Next set of trees for pagination
-nextPageSet = () => {
+nextPageSet = () => { 
     var renderMarkers = $('#markerRenderCheckbox')[0].checked;
     var bounds = map.getBounds();
     nthEntrySet += 1;
@@ -422,9 +422,6 @@ geoSearch = () => {
     currReq.backendQ["geometry"] = {"$geoWithin": {"$geometry": geom}};
     let renderMarkers = $('#markerRenderCheckbox')[0].checked;
     queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, false, bounds);
-    setTimeout(() => {
-        map.fitBounds(bounds);
-    }, 500);
 }
 
 // Copy the query in preview to clipboard
@@ -933,6 +930,10 @@ drawMap = (trees, bounds = null) => {
         map.fitBounds(bounds); // Fit to previous geo bound            
     } else {
         map.setView([0, 0], 0); // World view
+        setTimeout(() => {
+            let center = markers.getLayers()[0]._latlng;
+            map.flyTo(center, 3, {duration: 0.01});
+        }, 300);
     }
     // Initialize the supercluster index.
     index = new Supercluster({
@@ -942,10 +943,6 @@ drawMap = (trees, bounds = null) => {
     }).load(trees); // Load geojson features
     ready = true;
     update();
-    setTimeout(() => {
-        let center = markers.getLayers()[0]._latlng;
-        map.flyTo(center, 3, {duration: 0.01});
-    }, 300);
 
 }
 

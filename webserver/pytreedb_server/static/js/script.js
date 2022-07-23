@@ -49,12 +49,12 @@ window.onload = () => {
         // Instantiate file reader
         const reader = new FileReader();
         var query = {};
+        // Read file
+        reader.readAsText($('#queryUpload')[0].files[0]);
         reader.onload = e => {
             query = JSON.parse(reader.result);  // Parse file
             replicateQuery(query);  // Replicate the query on page, so that users can further manipulate the query
         }
-        // Read file
-        reader.readAsText($('#queryUpload')[0].files[0]);
     })
 
     // Init tooltips
@@ -63,7 +63,6 @@ window.onload = () => {
     setTimeout(() => {
         if (typeof query !== 'undefined') {
             replicateQuery(query);
-            searchDB();
         }
     }, 600);
 }
@@ -476,7 +475,7 @@ exportQuery = () => {
     updateQueryPreview();
     if (currReq.backendQ == '') {
         let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
-        currReq.backendQ = processAND(0, currReq.filters.length - 1, filters, operands, brackets);
+        currReq.backendQ = processAND(0, currReq.filters.length - 1, filters, operands, brackets, elemMatch);
     };
     
     var queryJsonExp = constrQueryExp();
@@ -527,8 +526,12 @@ replicateQuery = query => {
         }
     }
     // Update query preview
-    // $('#queryPreviewArea').text(query.queryString); 
-}
+    $('#queryPreviewArea').text(query.previewString); 
+    // Update checkboxes etc.
+    $('#elemMatchCheckbox').prop('checked', query.elemMatch);
+    $('#markerRenderCheckbox').prop('checked', query.renderMarkers);
+    $('#numPreviewTrees').val(query.previewLimit);
+}   
 // Clean search
 cleanSearchBar = () => {
     $('.paramPair').remove();
@@ -536,12 +539,17 @@ cleanSearchBar = () => {
 }
 // Construct current query in object format for exportation
 constrQueryExp = () => {
-    return queryExp = {
+    queryExp = {
         "backendQuery": currReq.backendQ,
         "filters": currReq.filters,
         "operands": currReq.operands,
-        "brackets": currReq.brackets
+        "brackets": currReq.brackets,
+        "previewString": currReq.stringFormat,
+        "elemMatch": $('#elemMatchCheckbox')[0].checked,
+        "previewLimit": Math.min($('#numPreviewTrees').val(), maxPreviewLimit),
+        "renderMarkers": $('#markerRenderCheckbox')[0].checked,
     };
+    return queryExp;
 }
 
 // Utility function: generate a download link according to the current query and get requested info from backend

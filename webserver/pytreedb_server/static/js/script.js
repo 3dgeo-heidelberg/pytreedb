@@ -57,11 +57,14 @@ window.onload = () => {
         reader.readAsText($('#queryUpload')[0].files[0]);
     })
 
+    // Init tooltips
+    $(() => { $('[data-toggle="tooltip"]').tooltip() });
+
     setTimeout(() => {
         if (typeof query !== 'undefined') {
+        }
             replicateQuery(query);
             searchDB();
-        }
     }, 600);
 }
 

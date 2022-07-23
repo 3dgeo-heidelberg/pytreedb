@@ -80,7 +80,7 @@
                             <div style="position: absolute;left: 50%;transform: translateX(-50%);margin-top: 3rem;">
                                 <button type="button" class="btn btn-success ms-2" style="float: none; display: block; margin-top: .5rem;">
                                     <a href="https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1" style="color: #fff;" download>
-                                        Download all data
+                                        Download all data (GeoJSON)
                                     </a>
                                 </button>        
                             </div>
@@ -180,16 +180,16 @@
                 </p>
                 <ul id="treeTabs" class="pagination pagination-sm nav nav-tabs" style="width: calc(100% - 150px);"></ul>
                 <div id="dlButtons" style="float: right; padding-left: 3rem; margin-left: -3rem; width: 210px; white-space: nowrap;">
-                    <button id="saveJsonButton" type="button" class="btn btn-success ms-2" onclick="saveJsonOutput()" style="float: none; display: block;">
+                    <button id="saveJsonButton" type="button" class="btn btn-success ms-2" data-toggle="tooltip" data-placement="top" title="Download the current JSON in the preview window" onclick="saveJsonOutput()" style="float: none; display: block;">
                         Save JSON
                     </button>
-                    <button id="saveAllButton" type="button" class="btn btn-outline-success ms-2" onclick="saveAllJsons()" style="float: none; display: block; margin-top: .5rem;">
+                    <button id="saveAllButton" type="button" class="btn btn-outline-success ms-2" data-toggle="tooltip" data-placement="top" title="Save selected trees to JSON" onclick="saveAllJsons()" style="float: none; display: block; margin-top: .5rem;">
                         Save all JSON
                     </button>
-                    <button id="saveCSVButton" type="button" class="btn btn-outline-success ms-2" onclick="saveCSV()" style="float: none; display: block; margin-top: .5rem;">
+                    <button id="saveCSVButton" type="button" class="btn btn-outline-success ms-2" data-toggle="tooltip" data-placement="top" title="Export selected trees to CSV" onclick="saveCSV()" style="float: none; display: block; margin-top: .5rem;">
                         Export to CSV
                     </button>
-                    <button id="savePointCButton" type="button" class="btn btn-outline-success ms-2" onclick="savePointClouds()" style="float: none; display: block; margin-top: .5rem;">
+                    <button id="savePointCButton" type="button" class="btn btn-outline-success ms-2" data-toggle="tooltip" data-placement="top" title="Save selected to point clouds" onclick="savePointClouds()" style="float: none; display: block; margin-top: .5rem;">
                         Point Clouds
                     </button>
                 </div>

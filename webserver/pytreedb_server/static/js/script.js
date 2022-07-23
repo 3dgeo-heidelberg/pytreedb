@@ -2,6 +2,7 @@
 var speciesList, n_trees, jsonOutput, previewTrees = [], getEverySec, pcUrls = []; 
 var numFilters = 0;
 var nthEntrySet = 0, elemMatch = false, maxPreviewLimit = 10, previewLimit = 3;
+var currNumRes, prevNumRes;
 var lazDlLimit = 1000;
 var currReq = {
     "url": '',
@@ -98,6 +99,7 @@ getItem = () => {
             // Draw map
             drawMap([jsonObj]);
         });
+        prevNumRes = null;
         $('#numResContainer').hide();
         $('#treeTabs').hide();
         $('#dlButtons').show();
@@ -128,10 +130,14 @@ searchDB = () => {
     // Send POST request to API endpoint specifically for webserver search request
     // where only a (user-defined) limited number of the first full-json documents are returned
     // along with coordinates of all resulting trees for rendering in the map if demanded
-    queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, false);
+    $.when(queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, false))
+        .then(numRes => prevNumRes = numRes);
     $('#jsonSnippetSection').show();
     $('#jsonViewerContainer').css('padding-bottom', '85px');
     $('html,body').animate({scrollTop: $('#jsonSnippetSection').offset().top - 62}, 'slow');
+    // Update interface to show the number of results correctly
+    $('.geoRes').hide();
+    $('.normRes').show();
 }
 processAND = (start, end, ft, op, bk, elemMatch) => {
     let filters = ft.slice(start, end + 1); 
@@ -316,6 +322,7 @@ updateQueryPreview = () => {
 }
 // Post request for querying
 queryBackend = (elemMatch, previewLimit, nthEntrySet, renderMarkers, turnPage, bounds = null) => {
+    var deferred = new $.Deferred();
     $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "elemMatch": elemMatch, "limit": previewLimit, 
         "nthEntrySet": nthEntrySet, "getCoords": renderMarkers})
         .done(data => {
@@ -329,6 +336,7 @@ queryBackend = (elemMatch, previewLimit, nthEntrySet, renderMarkers, turnPage, b
             // Show number of results
             $('#numRes').html(numRes);
             $('#numResContainer').show();
+            currNumRes = numRes;
             // Show json code snippets if trees found
             if (numRes != 0) {
                 $('#dlButtons').show();
@@ -382,12 +390,15 @@ queryBackend = (elemMatch, previewLimit, nthEntrySet, renderMarkers, turnPage, b
             if (renderMarkers && !coords) {
                 alert("There are too many results. The markers won't be displayed now for performance reasons.");
             }
+            
+            deferred.resolve(numRes);
         })
         .fail((xhr, status, error) => {
             console.log(xhr);
             console.log(status);
             console.log(error);
         });
+    return deferred.promise();
 }
 // Next set of trees for pagination
 nextPageSet = () => { 
@@ -422,6 +433,10 @@ geoSearch = () => {
     currReq.backendQ["geometry"] = {"$geoWithin": {"$geometry": geom}};
     let renderMarkers = $('#markerRenderCheckbox')[0].checked;
     queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, false, bounds);
+    // Update interface to show the number of results correctly
+    $('.normRes').hide();
+    $('.geoRes').show();
+    $('#prevNumRes').html(prevNumRes);
 }
 
 // Copy the query in preview to clipboard

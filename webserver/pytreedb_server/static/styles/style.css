@@ -488,6 +488,9 @@ input.form-check-input {
     border-radius: 0;
 }
 
+span.geoRes {
+    display: none;
+}
 
 /* lg */
 

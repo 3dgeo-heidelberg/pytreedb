@@ -62,9 +62,9 @@ window.onload = () => {
 
     setTimeout(() => {
         if (typeof query !== 'undefined') {
-        }
             replicateQuery(query);
             searchDB();
+        }
     }, 600);
 }
 
@@ -440,6 +440,17 @@ geoSearch = () => {
     $('.normRes').hide();
     $('.geoRes').show();
     $('#prevNumRes').html(prevNumRes);
+}
+// Clear geometric selection (display the full search results again)
+clearGeoSelection = () => {
+    let renderMarkers = $('#markerRenderCheckbox')[0].checked;
+    var bounds = map.getBounds();
+    delete currReq.backendQ["geometry"];
+    queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, false, bounds);
+    // Update interface to show the number of results correctly
+    $('.geoRes').hide();
+    $('.normRes').show();
+    prevNumRes = null;
 }
 
 // Copy the query in preview to clipboard

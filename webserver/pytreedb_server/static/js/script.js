@@ -63,6 +63,7 @@ window.onload = () => {
     setTimeout(() => {
         if (typeof query !== 'undefined') {
             replicateQuery(query);
+            searchDB();
         }
     }, 600);
 }
@@ -458,7 +459,6 @@ genPermalink = () => {
     collectFilterParams();
     let query = btoa(JSON.stringify(constrQueryExp()));
     let targetText = window.location.protocol + '//' + window.location.host + '/query/' + query;
-    console.log(targetText);
     if (!navigator.clipboard){ // use old commandExec() way
         var $temp = $("<input>");
         $("body").append($temp);
@@ -591,9 +591,7 @@ savePointClouds = () => {
     } else {
         getReqUrl = '/download/lazlinks/' + btoa(JSON.stringify(currReq.backendQ));
     }
-    console.log(getReqUrl);
     $.get(getReqUrl, data => {
-        console.log(data);
         pcUrls = data['links'];
         // If the response exceed threshold, enable bulk-download instead of zipping point clouds
         if (pcUrls.length >= lazDlLimit) {

@@ -492,6 +492,10 @@ span.geoRes {
     display: none;
 }
 
+.tooltip {
+    font-size: 0.7rem;
+}
+
 /* lg */
 
 @media (min-width: 992px) {

@@ -9,7 +9,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
         <link href="{{ url_for('static', filename='styles/style.css') }}" rel= "stylesheet">
         <link href="{{ url_for('static', filename='styles/jquery.json-viewer.css') }}" rel= "stylesheet">
-        <title>PyTreeDB-About</title>
+        <title>pytreedb-About</title>
     </head>
     <body>
         <nav id="navbar" class="navbar navbar-expand-lg navbar-light justify-content-end fixed-top">
@@ -22,7 +22,7 @@
                         <img src="{{ url_for('static', filename='img/IFGG_short_fat3.png') }}" alt="IFGG" height="30" class="d-inline-block align-text-middle"/>
                     </a>
                     <a href="/">
-                        <img src="{{ url_for('static', filename='img/pytreedb_logo_low.png') }}" alt="PyTreeDB" height="30" class="d-inline-block align-text-middle"/>
+                        <img src="{{ url_for('static', filename='img/pytreedb_logo_low.png') }}" alt="pytreedb" height="30" class="d-inline-block align-text-middle"/>
                     </a>
                 </div>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#hamburgerContent" aria-controls="hamburgerContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,7 @@
                         <a class="nav-item nav-link" href="/" >HOME</a>
                         <a class="nav-item nav-link" aria-current="page" href="#">ABOUT</a>
                         <a class="nav-item nav-link" href="/contact">CONTACT</a>
-                        <div class="nav-item dropdown">
+                        <!-- <div class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 EN
                             </a>
@@ -41,31 +41,31 @@
                                 <li><a class="dropdown-item" href="#">Deutsch</a></li>
                                 <li><a class="dropdown-item" href="#">English</a></li>
                             </ul>
-                        </div>
+                        </div> -->
                     </div>
                 </div>  
             </div>
         </nav>
-
+        
         <section>
             <div class="container">
                 <div style="width: 80%;margin: 0 auto;">
-                    <h1 class="pageTitle">About PyTreeDB</h2>
+                    <h1 class="pageTitle">About pytreedb</h2>
                     <p>Laser scanning data is gaining increasing importance in forest research and management. Improved tree detection and segmentation algorithms allow for analysing the properties of single trees and reconstructing their 3D structure. This creates the need for laser scanning tree databases to manage this data and make it openly accessible for others. </p>
-                    <p>PyTreeDB is a file- and object-based database for managing laser scanning and inventory data of single trees.</p>
-                    <p>Trees are imported from GeoJSON files which contain information on tree location, species, and tree properties, and link to one or multiple datasets (e.g., point clouds, QSMs). These single tree 3D datasets may be extracted from airborne, UAV-borne or terrestrial static or mobile laser scanning data.</p>
-                    <p>All trees submitted to PyTreeDB must adhere to the following format. Individual additions depending on the available data are possible (e.g., adding an additional column for all entries in “data”) because of the object-based, NOSQL format.</p>
+                    <p>pytreedb is a file- and object-based database for managing laser scanning and inventory data of single trees.</p>
+                    <p>Trees are imported from GeoJSON files which contain information on tree location, species, and tree properties, and link to one or multiple point clouds. These single tree 3D datasets may be extracted from airborne, UAV-borne or terrestrial laser scanning data.</p>
+                    <p>All trees submitted to pytreedbmust adhere to the following format. Individual additions depending on the available data are possible because of the object-based, NOSQL format.</p>
                     <br>
-                    <img src="{{ url_for('static', filename='img/geojson-template.png') }}" alt="GeoJSON template">
+                    <iframe id="geojson-template" src="{{ url_for('static', filename='PicAbi_KA09_P2T2_indent2.json.html') }}" style="width: 100%; height: 800px;"></iframe>
                     <br>
-                    <p>While there are some mandatory fields (id, tree species, tree position), custom tree properties can be defined according to the dataset and the use case.</p>
-                    <p>PyTreeDB allows filtering the data, e.g., by location, tree properties, linked data types or acquisition dates. Selected data can be viewed on a map and in a 3D viewer (PoTree?), and exported. Export options are tables of tree properties and metadata, linked data files (e.g., point cloud or Wavefront OBJ files) or a combination of these in a zip archive.</p>
-                    <p>The database may be used to populate synthetic forest stands of given species composition and stand density for laser scanning simulations or radiative transfer models. Similarly, the database may be used to select trees to insert to a 3D city model for analyses of solar potential or urban heat. </p>
-                    <p>As a sample use-case, PyTreeDB allows the generation of a virtual scene that can be used for LiDAR simulation with HELIOS++, 3DGeo’s general purpose LiDAR simulator. To test it, select the trees you wish to include in your simulation, download the point clouds, the survey-, and the scene files and run HELIOS++. For more information on the LiDAR simulation, please visit <a class="inPLink" href="https://uni-heidelberg.de/helios">https://uni-heidelberg.de/helios</a>.</p>
-                    <p>PyTreeDB was developed by the 3D Geospatial Data Processing (3DGeo) Group of Heidelberg University and the Institute of Geography and Geoecology (IFGG) of Karlsruhe Institute of Technology (KIT). </p>
+                    <p>While there are some mandatory fields (id, tree species, tree position), custom tree properties can be defined according to the dataset and the use case and an arbitrary number of measurements and data entries can be added.</p>
+                    <p>pytreedb allows filtering the data, e.g., by location, tree properties, linked data types or acquisition dates. Selected data can be viewed on a map and exported in different formats: GeoJSON files ("Save JSON”), CSV files of tree properties and metadata ("Export to CSV”), and LAS point cloud files ("Point Clouds”).</p>
+                    <p>The database may be used to populate synthetic forest stands of given species composition and stand density for laser scanning simulations or radiative transfer models. For example, tree point clouds can be loaded as voxel models in HELIOS++, 3DGeo’s general purpose LiDAR simulator, with the “xyzloader” and virtually scanned in a simulation. For more information on the LiDAR simulator, please visit <a class="inPLink" href="https://uni-heidelberg.de/helios">https://uni-heidelberg.de/helios</a>. </p>
+                    <p>In another application, the database may be used to select trees to insert to a 3D city model for analyses of solar potential or urban heat. </p>
+                    <p>pytreedb was developed in the SYSSIFOSS project by the 3DGeo Research Group of Heidelberg University and the Institute of Geography and Geoecology (IFGG) of Karlsruhe Institute of Technology (KIT). The project is funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - 411263134 / 2019-2022).</p>
 
                     <h2 class="secondaryTitle">Adding Your Data</h2>
-                    <p>If you are in possession of laser scanning data of trees, and are able to fulfill the minimal requirements of the GeoJSON shown above, we welcome you to contribute your data to the database. We do not provide a hosting service, but allow integration of your metadata into the database, so that query results may come from multiple sources. This way, you have full control over the data at all times.</p>
+                    <p>If you are in possession of laser scanning data of trees and are able to fulfil the minimal requirements of the GeoJSON shown above, we welcome you to contribute your data to the database. We do not provide a hosting service, but allow integration of your metadata into the database, so that query results may come from multiple sources. This way, you have full control over the data at all times. You can also use this website as template to implement your own web frontend for your own dataset. Check out pytreedb on GitHub and learn how to deploy your webserver.</p>
                     <p>If you want to contribute or know more about the concept, please contact us: </p>
                     <p>Prof. Dr. Bernhard Höfle <a class="inPLink" href="mailto: hoefle@uni-heidelberg.de">hoefle@uni-heidelberg.de</a></p>
                 </div>
@@ -78,7 +78,7 @@
                     style="padding: 50px;color: #fff; border-top-width: medium; border-right-width: medium; border-bottom-width: medium; border-left-width: medium;">
                     <div style="border: dotted #fff; border-width: 0 1px 0 0;" class="col-8">
                         <div id="pytreedbLogo" style="font-size: xx-large; padding: 50px 0 50px 0; color: #fff;">
-                            <img src="{{ url_for('static', filename='img/pytreedb_logo_low_w.png') }}" height="100px" alt="PyTreeDB"/>
+                            <img src="{{ url_for('static', filename='img/pytreedb_logo_low_w.png') }}" height="100px" alt="pytreedb"/>
                         </div>
                         <div style="font-size: small; padding-bottom: 50px; padding-right: 50px; color: #ddd;">
                             Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) in the frame of the

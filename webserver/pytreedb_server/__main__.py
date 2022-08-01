@@ -152,7 +152,7 @@ def decodeB64Query(query):
 def exportFC(query):
     query = decodeB64Query(query)
     res = mydb.query(query, {"_id": False})
-    collection = json.dumps({"type": "FeatureCollection", "features": res})
+    collection = json.dumps({"type": "FeatureCollection", "features": res}, indent=2)
     return Response(
         collection,
         mimetype="application/json",

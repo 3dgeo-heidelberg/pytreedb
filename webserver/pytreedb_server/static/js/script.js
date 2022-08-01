@@ -1,7 +1,8 @@
 // Global variables
 var speciesList, n_trees, jsonOutput, previewTrees = [], getEverySec, pcUrls = []; 
 var numFilters = 0;
-var nthEntrySet = 0, maxPreviewLimit = 10, previewLimit = 3;
+var nthEntrySet = 0, elemMatch = false, maxPreviewLimit = 10, previewLimit = 3;
+var currNumRes, prevNumRes;
 var lazDlLimit = 1000;
 var currReq = {
     "url": '',
@@ -48,13 +49,16 @@ window.onload = () => {
         // Instantiate file reader
         const reader = new FileReader();
         var query = {};
+        // Read file
+        reader.readAsText($('#queryUpload')[0].files[0]);
         reader.onload = e => {
             query = JSON.parse(reader.result);  // Parse file
             replicateQuery(query);  // Replicate the query on page, so that users can further manipulate the query
         }
-        // Read file
-        reader.readAsText($('#queryUpload')[0].files[0]);
     })
+
+    // Init tooltips
+    $(() => { $('[data-toggle="tooltip"]').tooltip() });
 
     setTimeout(() => {
         if (typeof query !== 'undefined') {
@@ -98,6 +102,7 @@ getItem = () => {
             // Draw map
             drawMap([jsonObj]);
         });
+        prevNumRes = null;
         $('#numResContainer').hide();
         $('#treeTabs').hide();
         $('#dlButtons').show();
@@ -119,8 +124,8 @@ searchDB = () => {
     updateQueryPreview();
     previewLimit = Math.min($('#numPreviewTrees').val(), maxPreviewLimit);
     nthEntrySet = 0;
+    elemMatch = $('#elemMatchCheckbox')[0].checked;
     let renderMarkers = $('#markerRenderCheckbox')[0].checked;
-    let elemMatch = $('#elemMatchCheckbox')[0].checked;
     let qfilters = currReq.qfilters, operands = currReq.operands, brackets = currReq.brackets;
     currReq.backendQ = processAND(0, currReq.qfilters.length - 1, qfilters, operands, brackets, elemMatch);
     if (!currReq.backendQ) {currReq.backendQ = {};}
@@ -128,10 +133,14 @@ searchDB = () => {
     // Send POST request to API endpoint specifically for webserver search request
     // where only a (user-defined) limited number of the first full-json documents are returned
     // along with coordinates of all resulting trees for rendering in the map if demanded
-    queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, false);
+    $.when(queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, false))
+        .then(numRes => prevNumRes = numRes);
     $('#jsonSnippetSection').show();
     $('#jsonViewerContainer').css('padding-bottom', '85px');
     $('html,body').animate({scrollTop: $('#jsonSnippetSection').offset().top - 62}, 'slow');
+    // Update interface to show the number of results correctly
+    $('.geoRes').hide();
+    $('.normRes').show();
 }
 processAND = (start, end, ft, op, bk, elemMatch) => {
     let filters = ft.slice(start, end + 1); 
@@ -164,7 +173,6 @@ processAND = (start, end, ft, op, bk, elemMatch) => {
     } else {
         // Process AND in this slice
         let prevIsAnd = false;
-        console.log(filters);
         for (let i = filters.length - 1; i > 0; i--) {
             if (operands[i] == "AND" && !prevIsAnd) {
                 let key1 = Object.keys(filters[i-1])[0], 
@@ -317,6 +325,7 @@ updateQueryPreview = () => {
 }
 // Post request for querying
 queryBackend = (elemMatch, previewLimit, nthEntrySet, renderMarkers, turnPage, bounds = null) => {
+    var deferred = new $.Deferred();
     $.post('/search/wssearch', {"query": JSON.stringify(currReq.backendQ), "elemMatch": elemMatch, "limit": previewLimit, 
         "nthEntrySet": nthEntrySet, "getCoords": renderMarkers})
         .done(data => {
@@ -330,6 +339,7 @@ queryBackend = (elemMatch, previewLimit, nthEntrySet, renderMarkers, turnPage, b
             // Show number of results
             $('#numRes').html(numRes);
             $('#numResContainer').show();
+            currNumRes = numRes;
             // Show json code snippets if trees found
             if (numRes != 0) {
                 $('#dlButtons').show();
@@ -368,6 +378,7 @@ queryBackend = (elemMatch, previewLimit, nthEntrySet, renderMarkers, turnPage, b
                     drawMap(coords, bounds);
                 } else if (!renderMarkers && !turnPage) {
                     cleanMap();
+                    ready = false;
                 }
             }
             // If no trees satisfy the query, clear prev results
@@ -382,26 +393,29 @@ queryBackend = (elemMatch, previewLimit, nthEntrySet, renderMarkers, turnPage, b
             if (renderMarkers && !coords) {
                 alert("There are too many results. The markers won't be displayed now for performance reasons.");
             }
+            
+            deferred.resolve(numRes);
         })
         .fail((xhr, status, error) => {
             console.log(xhr);
             console.log(status);
             console.log(error);
         });
+    return deferred.promise();
 }
 // Next set of trees for pagination
-nextPageSet = () => {
+nextPageSet = () => { 
     var renderMarkers = $('#markerRenderCheckbox')[0].checked;
     var bounds = map.getBounds();
     nthEntrySet += 1;
-    queryBackend(previewLimit, nthEntrySet, renderMarkers, true, bounds);
+    queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, true, bounds);
 }
 // Previous set of trees for pagination
 prevPageSet = () => {
     var renderMarkers = $('#markerRenderCheckbox')[0].checked;
     var bounds = map.getBounds();
     nthEntrySet -= 1;
-    queryBackend(previewLimit, nthEntrySet, renderMarkers, true, bounds);
+    queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, true, bounds);
 }
 // Apply geometric bounding box restriction to the existing results
 geoSearch = () => {
@@ -421,8 +435,22 @@ geoSearch = () => {
                 };
     currReq.backendQ["geometry"] = {"$geoWithin": {"$geometry": geom}};
     let renderMarkers = $('#markerRenderCheckbox')[0].checked;
-    queryBackend(previewLimit, nthEntrySet, renderMarkers, false, bounds);
-    map.fitBounds(bounds);
+    queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, false, bounds);
+    // Update interface to show the number of results correctly
+    $('.normRes').hide();
+    $('.geoRes').show();
+    $('#prevNumRes').html(prevNumRes);
+}
+// Clear geometric selection (display the full search results again)
+clearGeoSelection = () => {
+    let renderMarkers = $('#markerRenderCheckbox')[0].checked;
+    var bounds = map.getBounds();
+    delete currReq.backendQ["geometry"];
+    queryBackend(elemMatch, previewLimit, nthEntrySet, renderMarkers, false, bounds);
+    // Update interface to show the number of results correctly
+    $('.geoRes').hide();
+    $('.normRes').show();
+    prevNumRes = null;
 }
 
 // Copy the query in preview to clipboard
@@ -431,7 +459,6 @@ genPermalink = () => {
     collectFilterParams();
     let query = btoa(JSON.stringify(constrQueryExp()));
     let targetText = window.location.protocol + '//' + window.location.host + '/query/' + query;
-    console.log(targetText);
     if (!navigator.clipboard){ // use old commandExec() way
         var $temp = $("<input>");
         $("body").append($temp);
@@ -448,7 +475,7 @@ exportQuery = () => {
     updateQueryPreview();
     if (currReq.backendQ == '') {
         let filters = currReq.filters, operands = currReq.operands, brackets = currReq.brackets;
-        currReq.backendQ = processAND(0, currReq.filters.length - 1, filters, operands, brackets);
+        currReq.backendQ = processAND(0, currReq.filters.length - 1, filters, operands, brackets, elemMatch);
     };
     
     var queryJsonExp = constrQueryExp();
@@ -499,8 +526,12 @@ replicateQuery = query => {
         }
     }
     // Update query preview
-    // $('#queryPreviewArea').text(query.queryString); 
-}
+    $('#queryPreviewArea').text(query.previewString); 
+    // Update checkboxes etc.
+    $('#elemMatchCheckbox').prop('checked', query.elemMatch);
+    $('#markerRenderCheckbox').prop('checked', query.renderMarkers);
+    $('#numPreviewTrees').val(query.previewLimit);
+}   
 // Clean search
 cleanSearchBar = () => {
     $('.paramPair').remove();
@@ -508,12 +539,17 @@ cleanSearchBar = () => {
 }
 // Construct current query in object format for exportation
 constrQueryExp = () => {
-    return queryExp = {
+    queryExp = {
         "backendQuery": currReq.backendQ,
         "filters": currReq.filters,
         "operands": currReq.operands,
-        "brackets": currReq.brackets
+        "brackets": currReq.brackets,
+        "previewString": currReq.stringFormat,
+        "elemMatch": $('#elemMatchCheckbox')[0].checked,
+        "previewLimit": Math.min($('#numPreviewTrees').val(), maxPreviewLimit),
+        "renderMarkers": $('#markerRenderCheckbox')[0].checked,
     };
+    return queryExp;
 }
 
 // Utility function: generate a download link according to the current query and get requested info from backend
@@ -555,9 +591,7 @@ savePointClouds = () => {
     } else {
         getReqUrl = '/download/lazlinks/' + btoa(JSON.stringify(currReq.backendQ));
     }
-    console.log(getReqUrl);
     $.get(getReqUrl, data => {
-        console.log(data);
         pcUrls = data['links'];
         // If the response exceed threshold, enable bulk-download instead of zipping point clouds
         if (pcUrls.length >= lazDlLimit) {
@@ -927,22 +961,23 @@ drawMap = (trees, bounds = null) => {
     
     map.invalidateSize();  // Make sure tiles render correctly
     markers.clearLayers();
-    setTimeout(() => {
-        // Initialize the supercluster index.
-        index = new Supercluster({
-            radius: 60,
-            extent: 256,
-            maxZoom: 18
-        }).load(trees); // Load geojson features
-        ready = true;
-        update();
-
-        if (bounds) {
-            map.fitBounds(bounds); // Fit to previous geo bound            
-        } else {
-            map.setView([0, 0], 0); // World view
-        }
-    }, 100);
+    if (bounds) {
+        map.fitBounds(bounds); // Fit to previous geo bound            
+    } else {
+        map.setView([0, 0], 0); // World view
+        setTimeout(() => {
+            let center = markers.getLayers()[0]._latlng;
+            map.flyTo(center, 3, {duration: 0.01});
+        }, 300);
+    }
+    // Initialize the supercluster index.
+    index = new Supercluster({
+        radius: 60,
+        extent: 256,
+        maxZoom: 18
+    }).load(trees); // Load geojson features
+    ready = true;
+    update();
 
 }
 

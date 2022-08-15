@@ -12,14 +12,16 @@ import shutil
 import tempfile
 import json
 import base64
-from pathlib import Path
 
+from pathlib import Path
 from zipfile import ZipFile
 
 from flask import Flask
 from flask import request
 from flask import Response
 from flask import render_template
+
+from .config import api_key
 
 from dotenv import load_dotenv
 
@@ -72,7 +74,7 @@ def isLocalRequest(req):  # check if the incoming request is local
 
 def isAuthorized(req):  # check if the request is authorized
     auth = req.headers.get("X-Api-Key")
-    return auth == 'asoidewfoef'
+    return auth == api_key
 
 @app.route("/")
 def index():

@@ -69,12 +69,14 @@ app = Flask(
     template_folder=os.path.join(os.path.dirname(__file__), "templates"),
 )
 
+
 def isLocalRequest(req):  # check if the incoming request is local
     return "127.0.0.1" in req.remote_addr
 
 def isAuthorized(req):  # check if the request is authorized
     auth = req.headers.get("X-Api-Key")
     return auth == api_key
+
 
 @app.route("/")
 def index():

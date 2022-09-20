@@ -12,14 +12,21 @@ import shutil
 import tempfile
 import json
 import base64
-from pathlib import Path
 
+from pathlib import Path
 from zipfile import ZipFile
 
 from flask import Flask
 from flask import request
 from flask import Response
 from flask import render_template
+
+try:
+    from .config import api_key
+except ModuleNotFoundError:
+    print("Warning: API key not set. Create a new file in the pytreedb server route")
+    print("         called 'config.py' and set api_key to a value.")
+    api_key = ''
 
 from dotenv import load_dotenv
 
@@ -68,6 +75,14 @@ app = Flask(
 )
 
 
+def isLocalRequest(req):  # check if the incoming request is local
+    return "127.0.0.1" in req.remote_addr
+
+def isAuthorized(req):  # check if the request is authorized
+    auth = req.headers.get("X-Api-Key")
+    return auth == api_key
+
+
 @app.route("/")
 def index():
     return render_template(r"index.html", server=request.remote_addr)
@@ -90,58 +105,75 @@ def showQuery(query=None):
 
 @app.route("/stats")
 def getStats():
-    return mydb.get_stats()
+    if isAuthorized(request) or isLocalRequest(request):
+        return mydb.get_stats()
+    else:
+        return Response("ERROR: Unauthorized", 401)
 
 
 @app.route("/listspecies")
 def getListSpecies():
-    return {"species": mydb.get_list_species()}
-
+    if isAuthorized(request) or isLocalRequest(request):
+        return {"species": mydb.get_list_species()}
+    else:
+        return Response("ERROR: Unauthorized", 401)
 
 @app.route("/sharedproperties")
 def getSharedProperties():
-    return {"properties": mydb.get_shared_properties()}
+    if isAuthorized(request) or isLocalRequest(request):
+        return {"properties": mydb.get_shared_properties()}
+    else:
+        return Response("ERROR: Unauthorized", 401)
 
 
 @app.route("/getitem/<index>")
 def getItem(index):
-    return {"item": mydb[int(index)]}
+    if isAuthorized(request) or isLocalRequest(request):
+        return {"item": mydb[int(index)]}
+    else:
+        return Response("ERROR: Unauthorized", 401)
 
 
 @app.route("/search", methods=["POST"])
 def query():
-    query = json.loads(request.form["query"])
-    res = mydb.query(query, {"_id": False})
-    print(query)
-    print(len(res))
-    return {"query_res": res}
+    if isAuthorized(request) or isLocalRequest(request):
+        query = json.loads(request.form["query"])
+        res = mydb.query(query, {"_id": False})
+        print(query)
+        print(len(res))
+        return {"query_res": res}
+    else:
+        return Response("ERROR: Unauthorized", 401)
 
 
 @app.route("/search/wssearch", methods=["POST"])
 def webserverQuery():
-    query = json.loads(request.form["query"])
-    if query == {}:
-        trees = mydb.db
+    if isAuthorized(request) or isLocalRequest(request):
+        query = json.loads(request.form["query"])
+        if query == {}:
+            trees = mydb.db
+        else:
+            trees = mydb.query(query, {"_id": False})
+        # return only full geojson file within the preview limit
+        limit = int(request.form["limit"])
+        entry_set = int(request.form["nthEntrySet"])
+        num_res = len(trees)
+        res_coords = None
+        if request.form["getCoords"] == "true":
+            # return all resulting tree coordinates to show on the map when the max number of markers is not exceeded
+            res_coords = mydb.query(
+                query,
+                {"_id": False, "_id_x": 1, "geometry": 1, "type": 1, "properties.id": 1},
+            )
+        print("User query: ", query)
+        print("Number of results: ", num_res)
+        return {
+            "res_preview": trees[limit * entry_set : limit * (entry_set + 1)],
+            "res_coords": res_coords,
+            "num_res": num_res,
+        }
     else:
-        trees = mydb.query(query, {"_id": False})
-    # return only full geojson file within the preview limit
-    limit = int(request.form["limit"])
-    entry_set = int(request.form["nthEntrySet"])
-    num_res = len(trees)
-    res_coords = None
-    if request.form["getCoords"] == "true":
-        # return all resulting tree coordinates to show on the map when the max number of markers is not exceeded
-        res_coords = mydb.query(
-            query,
-            {"_id": False, "_id_x": 1, "geometry": 1, "type": 1, "properties.id": 1},
-        )
-    print("User query: ", query)
-    print("Number of results: ", num_res)
-    return {
-        "res_preview": trees[limit * entry_set : limit * (entry_set + 1)],
-        "res_coords": res_coords,
-        "num_res": num_res,
-    }
+        return Response("ERROR: Unauthorized", 401)
 
 
 def decodeB64Query(query):
@@ -150,57 +182,69 @@ def decodeB64Query(query):
 
 @app.route("/download/exportcollection/<query>", methods=["GET"])
 def exportFC(query):
-    query = decodeB64Query(query)
-    res = mydb.query(query, {"_id": False})
-    collection = json.dumps({"type": "FeatureCollection", "features": res}, indent=2)
-    return Response(
-        collection,
-        mimetype="application/json",
-        headers={
-            "Content-Disposition": "attachment; filename=res_feature_collection.json"
-        },
-    )
+    if isAuthorized(request) or isLocalRequest(request):
+        query = decodeB64Query(query)
+        res = mydb.query(query, {"_id": False})
+        collection = json.dumps({"type": "FeatureCollection", "features": res}, indent=2)
+        return Response(
+            collection,
+            mimetype="application/json",
+            headers={
+                "Content-Disposition": "attachment; filename=res_feature_collection.json"
+            }
+        )
+    else:
+        return Response("ERROR: Unauthorized", 401)
 
 
 @app.route("/download/lazlinks/tree/<index>", methods=["GET"])
 def exportTreeLazLinks(index):
-    links = mydb.get_pointcloud_urls([mydb[int(index)]])
-    return {"links": links}
+    if isAuthorized(request) or isLocalRequest(request):
+        links = mydb.get_pointcloud_urls([mydb[int(index)]])
+        return {"links": links}
+    else:
+        return Response("ERROR: Unauthorized", 401)
 
 
 @app.route("/download/lazlinks/<query>", methods=["GET"])
 def exportQueryLazLinks(query):
-    query = decodeB64Query(query)
-    links = mydb.get_pointcloud_urls(
-        mydb.query(query, {"_id": False, "properties.data": 1})
-    )
-    return {"links": links}
+    if isAuthorized(request) or isLocalRequest(request):
+        query = decodeB64Query(query)
+        links = mydb.get_pointcloud_urls(
+            mydb.query(query, {"_id": False, "properties.data": 1})
+        )
+        return {"links": links}
+    else:
+        return Response("ERROR: Unauthorized", 401)
 
 
 @app.route("/download/exportcsv/<query>", methods=["GET"])
 def exportcsv(query):
-    query = decodeB64Query(query)
-    # get ids of resulting trees
-    trees_idx = [
-        tree["_id_x"] for tree in mydb.query(query, {"_id": False, "_id_x": 1})
-    ]
-    # convert trees to csv files, save to disk
-    outdir = tempfile.mkdtemp()
-    mydb.convert_to_csv(outdir, trees_idx)
-    # zip csv files
-    o = io.BytesIO()
-    with ZipFile(o, "w") as zf:
-        zf.write(outdir + "/result_general.csv", "result_general.csv")
-        zf.write(outdir + "/result_metrics.csv", "result_metrics.csv")
-    zf.close()
-    o.seek(0)
-    # remove local csv
-    shutil.rmtree(outdir)
-    os.mkdir(outdir)
+    if isAuthorized(request) or isLocalRequest(request):
+        query = decodeB64Query(query)
+        # get ids of resulting trees
+        trees_idx = [
+            tree["_id_x"] for tree in mydb.query(query, {"_id": False, "_id_x": 1})
+        ]
+        # convert trees to csv files, save to disk
+        outdir = tempfile.mkdtemp()
+        mydb.convert_to_csv(outdir, trees_idx)
+        # zip csv files
+        o = io.BytesIO()
+        with ZipFile(o, "w") as zf:
+            zf.write(outdir + "/result_general.csv", "result_general.csv")
+            zf.write(outdir + "/result_metrics.csv", "result_metrics.csv")
+        zf.close()
+        o.seek(0)
+        # remove local csv
+        shutil.rmtree(outdir)
+        os.mkdir(outdir)
 
-    return flask.send_file(
-        o, mimetype="application/zip", as_attachment=True, download_name="csv.zip"
-    )
+        return flask.send_file(
+            o, mimetype="application/zip", as_attachment=True, download_name="csv.zip"
+        )
+    else:
+        return Response("ERROR: Unauthorized", 401)
 
 
 mydb = db.PyTreeDB(

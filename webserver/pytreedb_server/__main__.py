@@ -21,7 +21,12 @@ from flask import request
 from flask import Response
 from flask import render_template
 
-from .config import api_key
+try:
+    from .config import api_key
+except ModuleNotFoundError:
+    print("Warning: API key not set. Create a new file in the pytreedb server route")
+    print("         called 'config.py' and set api_key to a value.")
+    api_key = ''
 
 from dotenv import load_dotenv
 

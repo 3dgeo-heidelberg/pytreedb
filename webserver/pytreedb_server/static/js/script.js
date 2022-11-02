@@ -276,7 +276,7 @@ collectFilterParams = () => {
                     qvalue.push({'properties.data.quality': parseInt(checkbox.value)});
                 }
             }
-            qvalue = {'$and': qvalue};
+            qvalue = {'$or': qvalue};
         }
         // Read ranged values correctly
         if (['dbh', 'height', 'crowndia.'].includes(label)) {

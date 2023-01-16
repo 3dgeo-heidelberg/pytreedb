@@ -32,16 +32,30 @@ The `Python` REST interface and all clients, such as the web frontend, simply us
 ## 💻 Download and Installation
 
 ### Installation
+
 Install and update using [pip](https://pypi.org/) for 1) core library and 2) server library using the core library:
 
 `$ pip install -U pytreedb`
 
 `$ pip install -U pytreedb-server`
 
-### Using Anaconda Environment
+### Alternative Installation
+
+#### a) Install the Development Version with pip
+
+To install the current unstable development version to your Python installation use:
+
+`pip install git+https://github.com/3dgeo-heidelberg/pytreedb@dev`
+
+
+#### b) Clone this Repo and Use Anaconda Environment
+
 Simply use the given `Anaconda` environment file [environment.yml](environment.yml) provided in this distribution, which contains all dependencies to run and build resources.
 
 `$ conda env create --file environment.yml --force`
+
+Then clone this repository with `git clone` and use it as your working directory. You may work in the stable `main` branch or the `dev` development branch.
+
 
 ### Connect to MongoDB (localhost / server / Atlas cloud)
 `pytreedb` requires a working connection to a `MongoDB` database. It does not matter where the MongoDB is running as connection is simply made via `pymongo` (see code in [examples](examples) and our [Jupyter notebooks](notebooks)). We successfully tested localhost, server and [MongoDB Atlas cloud](https://www.mongodb.com/basics/mongodb-atlas-tutorial) connections. For your own MongoDB installation, just follow the [official installation instructions](https://docs.mongodb.com/manual/installation/)).
@@ -65,7 +79,7 @@ CONN_URI = "mongodb+srv://<username>:<password>@<your_cluster_details>.mongodb.n
 
 All dependencies (i.e. required third-party Python packages) are listed in the Anaconda [environment.yml](environment.yml) definition and can be installed with [conda / pip](#using-anaconda-environment). When creating the conda environment from our definition file, all dependencies are resolved.
 
-## Documentation of software usage
+## Documentation of Software Usage
 
 ### `PyTreeDB` class :snake:
 As a starting point, please have a look to the [examples](examples) and [Jupyter Notebooks](notebooks) available in the repository. Further, each of the subfolders contains a readme.md with respective details on the repository section.

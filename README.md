@@ -43,7 +43,7 @@ Install and update using [pip](https://pypi.org/) for 1) core library and 2) ser
 
 #### a) Install the Development Version with pip
 
-To install the current unstable development version to your Python installation use:
+To install the current unstable development version from the `dev` branch to your Python installation use:
 
 `pip install git+https://github.com/3dgeo-heidelberg/pytreedb@dev`
 

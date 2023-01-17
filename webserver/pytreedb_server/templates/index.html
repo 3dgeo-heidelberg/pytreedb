@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
         <link href="{{ url_for('static', filename='styles/style.css') }}" rel= "stylesheet">
         <link href="{{ url_for('static', filename='styles/jquery.json-viewer.css') }}" rel= "stylesheet">
-        <title>PyTreeDB</title>
+        <title>pytreedb</title>
         {% if query %}
         <script type="text/javascript">
             var byte = '{{query}}';
@@ -34,7 +34,7 @@
                         <img src="{{ url_for('static', filename='img/IFGG_short_fat3.png') }}" alt="IFGG" height="30" class="d-inline-block align-text-middle"/>
                     </a>
                     <a href="/">
-                        <img src="{{ url_for('static', filename='img/pytreedb_logo_low.png') }}" alt="PyTreeDB" height="30" class="d-inline-block align-text-middle"/>
+                        <img src="{{ url_for('static', filename='img/pytreedb_logo_low.png') }}" alt="pytreedb" height="30" class="d-inline-block align-text-middle"/>
                     </a>
                 </div>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#hamburgerContent" aria-controls="hamburgerContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,7 @@
                         <a class="nav-item nav-link" aria-current="page" href="/" >HOME</a>
                         <a class="nav-item nav-link" href="/about">ABOUT</a>
                         <a class="nav-item nav-link" href="/contact">CONTACT</a>
-                        <div class="nav-item dropdown">
+                        <!-- <div class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 EN
                             </a>
@@ -53,7 +53,7 @@
                                 <li><a class="dropdown-item" href="#">Deutsch</a></li>
                                 <li><a class="dropdown-item" href="#">English</a></li>
                             </ul>
-                        </div>
+                        </div> -->
                     </div>
                 </div>  
             </div>
@@ -70,17 +70,17 @@
                 <div id="animAnchor" style="height: 100%;">
                     <div id="welcome" style="height: 100%;">
                         <div style="position: relative; ">
-                            <h1>Welcome to PyTreeDB</h1>
+                            <h1>Welcome to pytreedb</h1>
                             <p style="margin-top: 30px;"> Database of single tree laser scanning and forest inventory data </p>
                             <p style="margin-top: 20px;"> 
-                                Currently, PyTreeDB has <span id="numTrees"></span> trees of <span id="numSpecies"></span> species.</p>
+                                Currently, pytreedb has <span id="numTrees"></span> trees of <span id="numSpecies"></span> species.</p>
                             <div id="showSpecies" onclick="showSpecies()">
                                 <b style="margin-left: 2rem;">Show species</b>
                             </div>
                             <div style="position: absolute;left: 50%;transform: translateX(-50%);margin-top: 3rem;">
                                 <button type="button" class="btn btn-success ms-2" style="float: none; display: block; margin-top: .5rem;">
-                                    <a href="https://heibox.uni-heidelberg.de/f/05969694cbed4c41bcb8/?dl=1" style="color: #fff;" download>
-                                        Download all data
+                                    <a href="https://github.com/3dgeo-heidelberg/pytreedb/raw/main/data/test/geojsons.zip" style="color: #fff;" download>
+                                        Download all data (GeoJSON)
                                     </a>
                                 </button>        
                             </div>
@@ -172,20 +172,24 @@
         <section id="jsonSnippetSection" class="container" style="height: calc(100% - 62px); padding-top: 1.5rem; padding-bottom: 2rem; background-color: #fff;">
             <div style="height: 100%; width: 50%; display: inline-block;">
                 <p id="numResContainer" style="color: #198754;">
-                    <span id="numRes"></span> trees found 
+                    <span id="numRes"></span> 
+                    <span class="geoRes">of</span> 
+                    <span id="prevNumRes"  class="geoRes"></span> 
+                    trees 
+                    <span class="normRes">found</span> <span class="geoRes">selected</span> 
                 </p>
                 <ul id="treeTabs" class="pagination pagination-sm nav nav-tabs" style="width: calc(100% - 150px);"></ul>
                 <div id="dlButtons" style="float: right; padding-left: 3rem; margin-left: -3rem; width: 210px; white-space: nowrap;">
-                    <button id="saveJsonButton" type="button" class="btn btn-success ms-2" onclick="saveJsonOutput()" style="float: none; display: block;">
+                    <button id="saveJsonButton" type="button" class="btn btn-success ms-2" data-toggle="tooltip" data-placement="top" title="Download the current JSON in the preview window" onclick="saveJsonOutput()" style="float: none; display: block;">
                         Save JSON
                     </button>
-                    <button id="saveAllButton" type="button" class="btn btn-outline-success ms-2" onclick="saveAllJsons()" style="float: none; display: block; margin-top: .5rem;">
+                    <button id="saveAllButton" type="button" class="btn btn-outline-success ms-2" data-toggle="tooltip" data-placement="top" title="Save selected trees to JSON" onclick="saveAllJsons()" style="float: none; display: block; margin-top: .5rem;">
                         Save all JSON
                     </button>
-                    <button id="saveCSVButton" type="button" class="btn btn-outline-success ms-2" onclick="saveCSV()" style="float: none; display: block; margin-top: .5rem;">
+                    <button id="saveCSVButton" type="button" class="btn btn-outline-success ms-2" data-toggle="tooltip" data-placement="top" title="Export selected trees to CSV" onclick="saveCSV()" style="float: none; display: block; margin-top: .5rem;">
                         Export to CSV
                     </button>
-                    <button id="savePointCButton" type="button" class="btn btn-outline-success ms-2" onclick="savePointClouds()" style="float: none; display: block; margin-top: .5rem;">
+                    <button id="savePointCButton" type="button" class="btn btn-outline-success ms-2" data-toggle="tooltip" data-placement="top" title="Save selected trees to point clouds" onclick="savePointClouds()" style="float: none; display: block; margin-top: .5rem;">
                         Point Clouds
                     </button>
                 </div>
@@ -194,8 +198,11 @@
             <div style="height: 100%; width: 49%; vertical-align: top; display: inline-block;">
                 <div id="mapContainer" style="height: 90%;">
                 </div>
-                <button id="geoSelect" type="button" class="btn btn-outline-success" onclick="geoSearch()" style="float: none; display: block; margin-top: .5rem;">
+                <button id="geoSelect" type="button" class="btn btn-outline-success" onclick="geoSearch()" style="float: none; margin-top: .5rem;">
                     Select by map extent
+                </button>
+                <button id="clearGeoSelect" type="button" class="btn btn-outline-success" onclick="clearGeoSelection()" style="float: none; margin-top: .5rem;">
+                    Clear selection
                 </button>
             </div>
         </section>
@@ -206,11 +213,11 @@
                     style="padding: 50px;color: #fff; border-top-width: medium; border-right-width: medium; border-bottom-width: medium; border-left-width: medium;">
                     <div style="border: dotted #fff; border-width: 0 1px 0 0;" class="col-8">
                         <div id="pytreedbLogo" style="font-size: xx-large; padding: 50px 0 50px 0; color: #fff;">
-                            <img src="{{ url_for('static', filename='img/pytreedb_logo_low_w.png') }}" height="100px" alt="PyTreeDB"/>
+                            <img src="{{ url_for('static', filename='img/pytreedb_logo_low_w.png') }}" height="100px" alt="pytreedb"/>
                         </div>
                         <div style="font-size: small; padding-bottom: 50px; padding-right: 50px; color: #ddd;">
                             Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) in the frame of the
-                            project SYSSIFOSS – 411263134 / 2019-2022).
+                            project SYSSIFOSS – 411263134 / 2019-2022.
                         </div>
                     </div>
                     <div style="padding-left: 70px;" class="col-4">

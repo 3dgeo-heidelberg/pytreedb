@@ -35,7 +35,15 @@ The `Python` REST interface and all clients, such as the web frontend, simply us
 
 Install and update using [pip](https://pypi.org/) for 1) core library and 2) server library using the core library:
 
+**1) Core library**
+
 `$ pip install -U pytreedb`
+
+To install extra dependencies needed for the visualisation for some of the [notebooks](https://github.com/3dgeo-heidelberg/pytreedb/tree/dev/notebooks), use:
+
+`$ pip install -U pytreedb[nb_vis]`
+
+**2) Server library**
 
 `$ pip install -U pytreedb-server`
 

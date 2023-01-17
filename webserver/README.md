@@ -165,6 +165,21 @@ You can export your query as a Json file to save to local, and import such a que
 
 
 ## API
+
+You can access the API of our example server http://pytreedb.geog.uni-heidelberg.de/ with the following key presented in the QR code:
+
+<img src="pytreedb_server/static/img/QR.png"/>
+
+Scan the QR code and save the key. Set the X-Api-Key value with the key in your request header, otherwise your request would not be authorized. 
+
+If you are using curl:
+```
+curl -v -H "X-Api-Key:{api key here}" {URL here}
+```
+
+If you are using API platforms, for example Postman, select "API Key" from the authorization types, and set the key name to "X-Api-Key".
+
+
 GET methods:
 
 | Request  | Description |

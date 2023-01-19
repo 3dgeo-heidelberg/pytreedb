@@ -1,10 +1,5 @@
 # <img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/pytreedb_logo_low.png?raw=true" alt="logo" style="width:200px;"/>
 
-[![License](https://img.shields.io/badge/license-GPLv3%2C%20LGPLv3-blue)](https://github.com/3dgeo-heidelberg/pytreedb/blob/main/LICENSE.md)
-[![Documentation Status](https://readthedocs.org/projects/pytreedb/badge/)](https://pytreedb.readthedocs.io)
-[![GitHub Workflow Status](https://github.com/3dgeo-heidelberg/pytreedb/actions/workflows/python-app.yml/badge.svg)](https://github.com/3dgeo-heidelberg/pytreedb/actions)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7551310.svg)](https://doi.org/10.5281/zenodo.7551310)
-
 `pytreedb` is a `Python` software package providing an object-based library to provide a simple database interface and REST API of vegetation tree objects that were captured as 3D point clouds. The main objective is to provide a Python library for the storage and sharing of single tree-based point clouds and all relevant (forest inventory) tree measurements. The tree data include all tree related information, measurements, metadata, geoinformation and also links to the 3D point clouds linked in any file format (e.g. LAS/LAZ). `GeoJSON` including all tree-related information is used as data format  for data exchange and visualization with other software (e.g. direct import into most GIS). Thereby view and modification of the tree datasets (*.geojson) is straightforward.
 
 [MongoDB](https://www.mongodb.com/) is used as database backend via the [PyMongo](https://pypi.org/project/pymongo/) driver. This enables scaling to large global datasets, e.g. connecting to [MongoDB Atlas Cloud](https://www.mongodb.com/cloud/atlas) for big datasets. Working only locally using a local MongoDB installation is also possible, if the database is only needed during runtime of data processing and sharing on the Web is not required.

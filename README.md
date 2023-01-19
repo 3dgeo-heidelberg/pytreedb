@@ -126,7 +126,7 @@ The test data is provided in [`data`](data) as 1) single [GeoJSON files and as Z
 ## Citation
 Please cite the following publication when using pytreedb in your research and reference the appropriate release version. All releases of pytreedb are listed on Zenodo where you will find the citation information including DOI. 
 
-Höfle, Bernhard, Qu, Jiani, Winiwarter, Lukas, Weiser, Hannah, Zahs, Vivien, Schäfer, Jannika, & Fassnacht, Fabian E. (2023). pytreedb - library for point clouds of tree vegetation objects. (1.0.0). Zenodo. https://doi.org/10.5281/zenodo.7551310
+Höfle, B., Qu, J., Winiwarter, L., Weiser, H., Zahs, V., Schäfer, J. & Fassnacht, F. E. (2023). pytreedb - library for point clouds of tree vegetation objects (1.0.0). Zenodo. https://doi.org/10.5281/zenodo.7551310
 
 ```
 @software{hofle_bernhard_2023_7551310,

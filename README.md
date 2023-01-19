@@ -39,10 +39,6 @@ Install and update using [pip](https://pypi.org/) for 1) core library and 2) ser
 
 `$ pip install -U pytreedb`
 
-To install extra dependencies needed for the visualisation for some of the [notebooks](https://github.com/3dgeo-heidelberg/pytreedb/tree/dev/notebooks), use:
-
-`$ pip install -U pytreedb[nb_vis]`
-
 **2) Server library**
 
 `$ pip install -U pytreedb-server`
@@ -58,12 +54,23 @@ To install the current unstable development version from the `dev` branch to you
 
 #### b) Clone this Repo and Use Anaconda Environment
 
+Clone this repository with `git clone` and use it as your working directory. You may work in the stable `main` branch or the `dev` development branch.
+
 Simply use the given `Anaconda` environment file [environment.yml](environment.yml) provided in this distribution, which contains all dependencies to run and build resources.
 
 `$ conda env create --file environment.yml --force`
 
-Then clone this repository with `git clone` and use it as your working directory. You may work in the stable `main` branch or the `dev` development branch.
+Instead, you can also install just the dependencies from the requirements file with pip.
 
+`$ python -m pip install -r requirements.txt`
+
+or the entire package:
+
+`$ python -m pip install .`
+
+Finally, if you want to contribute to the library's development you should also install its additional Python dependencies for testing and documentation building:
+
+`$ python -m pip install -r requirements-dev.txt`
 
 ### Connect to MongoDB (localhost / server / Atlas cloud)
 `pytreedb` requires a working connection to a `MongoDB` database. It does not matter where the MongoDB is running as connection is simply made via `pymongo` (see code in [examples](examples) and our [Jupyter notebooks](notebooks)). We successfully tested localhost, server and [MongoDB Atlas cloud](https://www.mongodb.com/basics/mongodb-atlas-tutorial) connections. For your own MongoDB installation, just follow the [official installation instructions](https://docs.mongodb.com/manual/installation/)).

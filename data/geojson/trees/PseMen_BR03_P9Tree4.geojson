@@ -36,7 +36,7 @@
         ],
         "measurements_metadata": [
             {
-                "reference-url": "https://doi.org/10.5194/essd-2022-39"
+                "reference-url": "https://doi.org/10.5194/essd-14-2989-2022"
             }
         ],
         "data": [
@@ -49,7 +49,7 @@
                 "point_count": 3602,
                 "crs": "epsg:25832",
                 "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PseMen_BR03_P9Tree4_2019-07-05_q3_ALS-on.laz",
-                "metadata-url": "https://doi.org/10.5194/essd-2022-39",
+                "metadata-url": "https://doi.org/10.5194/essd-14-2989-2022",
                 "quality": 3
             }
         ]

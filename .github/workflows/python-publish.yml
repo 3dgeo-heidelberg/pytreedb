@@ -27,7 +27,7 @@ jobs:
       - name: Build SDist (pytreedb)
         run: pipx run build --sdist
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: artifact
           path: dist/*.tar.gz
@@ -36,7 +36,7 @@ jobs:
         working-directory: ./webserver
         run: pipx run build --sdist
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: artifact
           path: ./webserver/dist/*.tar.gz
@@ -59,12 +59,12 @@ jobs:
         with: 
           path: main
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         name: Install Python
         with:
           python-version: "3.9"
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: dist
@@ -120,12 +120,12 @@ jobs:
         with: 
           path: ./webserver/main      
       
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         name: Install Python
         with:
           python-version: "3.9"
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: ./webserver/dist
@@ -193,7 +193,7 @@ jobs:
     runs-on: ubuntu-20.04
     if: github.repository_owner == '3dgeo-heidelberg'
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: dist
@@ -206,7 +206,7 @@ jobs:
           password: ${{ secrets.TESTPYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: ./webserver/dist
@@ -225,7 +225,7 @@ jobs:
     runs-on: ubuntu-20.04
     if: github.repository_owner == '3dgeo-heidelberg'
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: dist
@@ -237,7 +237,7 @@ jobs:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: ./webserver/dist

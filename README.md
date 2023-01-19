@@ -3,6 +3,7 @@
 [![License](https://img.shields.io/badge/license-GPLv3%2C%20LGPLv3-blue)](https://github.com/3dgeo-heidelberg/pytreedb/blob/main/LICENSE.md)
 [![Documentation Status](https://readthedocs.org/projects/pytreedb/badge/)](https://pytreedb.readthedocs.io)
 [![GitHub Workflow Status](https://github.com/3dgeo-heidelberg/pytreedb/actions/workflows/python-app.yml/badge.svg)](https://github.com/3dgeo-heidelberg/pytreedb/actions)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7551310.svg)](https://doi.org/10.5281/zenodo.7551310)
 
 `pytreedb` is a `Python` software package providing an object-based library to provide a simple database interface and REST API of vegetation tree objects that were captured as 3D point clouds. The main objective is to provide a Python library for the storage and sharing of single tree-based point clouds and all relevant (forest inventory) tree measurements. The tree data include all tree related information, measurements, metadata, geoinformation and also links to the 3D point clouds linked in any file format (e.g. LAS/LAZ). `GeoJSON` including all tree-related information is used as data format  for data exchange and visualization with other software (e.g. direct import into most GIS). Thereby view and modification of the tree datasets (*.geojson) is straightforward.
 
@@ -125,17 +126,26 @@ The test data is provided in [`data`](data) as 1) single [GeoJSON files and as Z
 ## Citation
 Please cite the following publication when using pytreedb in your research and reference the appropriate release version. All releases of pytreedb are listed on Zenodo where you will find the citation information including DOI. 
 
+Höfle, Bernhard, Qu, Jiani, Winiwarter, Lukas, Weiser, Hannah, Zahs, Vivien, Schäfer, Jannika, & Fassnacht, Fabian E. (2023). pytreedb - library for point clouds of tree vegetation objects. (1.0.0). Zenodo. https://doi.org/10.5281/zenodo.7551310
+
 ```
-article{pytreedb,
-author = {Bernhard Höfle and Jiani Qu and Lukas Winiwarter and Hannah Weiser and Vivien Zahs and Jannika Schäfer and Fabian E. Fassnacht}
-title = {pytreedb: library for point clouds of tree vegetation objects},
-journal = {},
-year = {2022},
-number = {},
-volume = {-},
-doi = {-},
-url = {https://github.com/3dgeo-heidelberg/pytreedb},
-} 
+@software{hofle_bernhard_2023_7551310,
+  author       = {Höfle, Bernhard and
+                  Qu, Jiani and
+                  Winiwarter, Lukas and
+                  Weiser, Hannah and
+                  Zahs, Vivien and
+                  Schäfer, Jannika and
+                  Fassnacht, Fabian E.},
+  title        = {{pytreedb - library for point clouds of tree 
+                   vegetation objects}},
+  month        = jan,
+  year         = 2023,
+  publisher    = {Zenodo},
+  version      = {1.0.0},
+  doi          = {10.5281/zenodo.7551310},
+  url          = {https://doi.org/10.5281/zenodo.7551310}
+}
  ```
 ## Funding / Acknowledgements
 The initial software development was supported by the **DFG - German Research Foundation** (Grant no. 411263134) within the research project [SYSSIFOSS](https://uni-heidelberg.de/syssifoss).

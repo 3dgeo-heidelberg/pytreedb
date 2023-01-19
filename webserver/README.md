@@ -2,7 +2,7 @@
 
 This package provides a webserver as a frontend to a `pytreedb` instance.
 
-<img src="../doc/_static/pytreedb_webserver_home.png" width="85%">
+<img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/pytreedb_webserver_home.png?raw=true" width="85%">
 
 ## Prerequisites
 - Python packages:
@@ -203,4 +203,4 @@ POST methods:
 
 Note: all \<query> parameters in GET methods should be encoded with base64.
 
-See [example_queries](../examples/example_queries.py) for more examples on how to query.
+See [example_queries](https://github.com/3dgeo-heidelberg/pytreedb/blob/main/examples/example_queries.py) for more examples on how to query.

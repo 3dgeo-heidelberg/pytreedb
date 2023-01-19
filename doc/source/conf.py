@@ -19,11 +19,11 @@ sys.path.insert(0, os.path.abspath("../../"))
 # -- Project information -----------------------------------------------------
 
 project = "pytreedb"
-copyright = "2022, Jiani Qu, Lukas Winiwarter, Hannah Weiser, Jannika Schäfer, Bernhard Höfle"
+copyright = "2023, Jiani Qu, Lukas Winiwarter, Hannah Weiser, Jannika Schäfer, Bernhard Höfle"
 author = "Jiani Qu, Lukas Winiwarter, Hannah Weiser, Jannika Schäfer, Bernhard Höfle"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1"
+release = "1.0.0"
 
 
 # -- General configuration ---------------------------------------------------

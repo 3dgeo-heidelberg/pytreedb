@@ -46,7 +46,7 @@
         ],
         "measurements_metadata": [
             {
-                "reference-url": "https://doi.org/10.5194/essd-2022-39"
+                "reference-url": "https://doi.org/10.5194/essd-14-2989-2022"
             }
         ],
         "data": [
@@ -59,7 +59,7 @@
                 "point_count": 12649,
                 "crs": "epsg:25832",
                 "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PseMen_KA09_T027_2019-07-05_q4_ALS-on.laz",
-                "metadata-url": "https://doi.org/10.5194/essd-2022-39",
+                "metadata-url": "https://doi.org/10.5194/essd-14-2989-2022",
                 "quality": 4
             },
             {
@@ -71,7 +71,7 @@
                 "point_count": 108960,
                 "crs": "epsg:25832",
                 "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PseMen_KA09_T027_2019-09-13_q3_ULS-on.laz",
-                "metadata-url": "https://doi.org/10.5194/essd-2022-39",
+                "metadata-url": "https://doi.org/10.5194/essd-14-2989-2022",
                 "quality": 3
             },
             {
@@ -83,7 +83,7 @@
                 "point_count": 145900,
                 "crs": "epsg:25832",
                 "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PseMen_KA09_T027_2019-12-10_q4_ULS-off.laz",
-                "metadata-url": "https://doi.org/10.5194/essd-2022-39",
+                "metadata-url": "https://doi.org/10.5194/essd-14-2989-2022",
                 "quality": 4
             }
         ]

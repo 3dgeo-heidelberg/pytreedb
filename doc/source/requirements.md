@@ -2,19 +2,15 @@
 
 python==3.9
 
-- pip
-- notebook
-- jupyter
 - numpy
-- pandas
-- pytest
-- flask
-- requests
 - pymongo[srv]
 - python-dotenv
+- flask
 
 For contributors:
 
+- pytest
+- requests
 - sphinx
 - myst-parser
 - sphinxcontrib-napoleon

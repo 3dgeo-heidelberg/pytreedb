@@ -1,4 +1,6 @@
-# <img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/pytreedb_logo_low.png?raw=true" alt="logo" style="width:200px;"/>
+# Introduction to pytreedb
+
+<img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/pytreedb_logo_low.png?raw=true" alt="logo" style="width:200px;"/>
 
 `pytreedb` is a `Python` software package providing an object-based library to provide a simple database interface and REST API of vegetation tree objects that were captured as 3D point clouds. The main objective is to provide a Python library for the storage and sharing of single tree-based point clouds and all relevant (forest inventory) tree measurements. The tree data include all tree related information, measurements, metadata, geoinformation and also links to the 3D point clouds linked in any file format (e.g. LAS/LAZ). `GeoJSON` including all tree-related information is used as data format  for data exchange and visualization with other software (e.g. direct import into most GIS). Thereby view and modification of the tree datasets (*.geojson) is straightforward.
 
@@ -91,11 +93,11 @@ All dependencies (i.e. required third-party Python packages) are listed in the A
 
 ## Documentation of Software Usage
 
-### `PyTreeDB` class :snake:
+### `PyTreeDB` class 🐍
 As a starting point, please have a look to the [examples](https://github.com/3dgeo-heidelberg/pytreedb/tree/main/examples) and [Jupyter Notebooks](https://github.com/3dgeo-heidelberg/pytreedb/tree/main/notebooks) available in the repository. Further, each of the subfolders contains a README.md with respective details on the repository section.
 
 
-### Run it as a API server :computer:
+### Run it as a API server 💻
 In order to provide a REST API to share your tree data you can use `pytreedb` in server mode. After installation of the `pytreedb-server` Python package you can follow the instructions here [webserver/README.md](https://github.com/3dgeo-heidelberg/pytreedb/tree/main/webserver#readme).
 
 ### Run it as a web server and frontend

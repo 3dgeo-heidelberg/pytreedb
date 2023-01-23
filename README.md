@@ -28,6 +28,10 @@ The [`PyTreeDB`](https://github.com/3dgeo-heidelberg/pytreedb/blob/main/pytreedb
 
 The `Python` REST interface and all clients, such as the web frontend, simply use the methods and functionality of the Python class.
 
+The main concept of the `pytreedb` software was explained in a <a href="https://youtu.be/tUBoLCXkpV0?list=PLjb7Qrh6QTH0xh9qTmida6jZEWd938dEO&t=446" target="_blank">scientific talk</a> by Bernhard Höfle at the <a href="https://3dforecotech.eu/">3DForEcoTech</a> Workshop in Prague in 2022:
+
+<a href="https://youtu.be/tUBoLCXkpV0?list=PLjb7Qrh6QTH0xh9qTmida6jZEWd938dEO&t=446" target="_blank"><img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/dev/doc/_static/pytreedb_3dforecotech2022_youtube_screenshot.png?raw=true" alt="" width="400" /></a>
+
 
 ## 💻 Download and Installation
 
@@ -96,11 +100,11 @@ All dependencies (i.e. required third-party Python packages) are listed in the A
 
 ## Documentation of Software Usage
 
-### `PyTreeDB` class :snake:
+### `PyTreeDB` class 🐍
 As a starting point, please have a look to the [examples](https://github.com/3dgeo-heidelberg/pytreedb/tree/main/examples) and [Jupyter Notebooks](https://github.com/3dgeo-heidelberg/pytreedb/tree/main/notebooks) available in the repository. Further, each of the subfolders contains a README.md with respective details on the repository section.
 
 
-### Run it as a API server :computer:
+### Run it as a API server 💻
 In order to provide a REST API to share your tree data you can use `pytreedb` in server mode. After installation of the `pytreedb-server` Python package you can follow the instructions here [webserver/README.md](https://github.com/3dgeo-heidelberg/pytreedb/tree/main/webserver#readme).
 
 ### Run it as a web server and frontend

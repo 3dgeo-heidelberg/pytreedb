@@ -46,22 +46,15 @@ Install and update using [pip](https://pypi.org/) for 1) core library and 2) ser
 
 ### Alternative Installation
 
-#### a) Install the Development Version with pip
+**Clone this Repo and Use Anaconda Environment**
 
-To install the current unstable development version from the `dev` branch to your Python installation use:
-
-`pip install git+https://github.com/3dgeo-heidelberg/pytreedb@dev`
-
-
-#### b) Clone this Repo and Use Anaconda Environment
-
-Clone this repository with `git clone` and use it as your working directory. You may work in the stable `main` branch or the `dev` development branch.
+Clone this repository with `git clone` and use it as your working directory.
 
 Simply use the given `Anaconda` environment file [environment.yml](https://github.com/3dgeo-heidelberg/pytreedb/blob/main/environment.yml) provided in this distribution, which contains all dependencies to run and build resources.
 
 `$ conda env create --file environment.yml --force`
 
-Instead, you can also install just the dependencies from the requirements file with pip.
+Instead, you can also install the dependencies from the requirements file with pip.
 
 `$ python -m pip install -r requirements.txt`
 

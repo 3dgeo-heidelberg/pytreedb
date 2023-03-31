@@ -1,0 +1,55 @@
+{
+  "type": "Feature",
+  "properties": {
+    "id": "QueRob_HD_01_2023-03-21_q2_TLS-off",
+    "species": "Quercus robur",
+    "source": "", 
+    "measurements": [
+      {
+        "source": "TLS",
+        "date": "2023-03-21",
+        "canopy_condition": "leaf-off",
+        "height_m": 23.731,
+        "crown_base_height_m": 10.96,
+        "crown_projection_area_convex_hull_m2": 169.34,
+        "crown_projection_area_concave_hull_m2": 101.02,
+        "mean_crown_diameter_m": 11.47
+      },
+      {
+        "crs": "epsg:25832",
+        "position_xyz": [
+          479666.726375,
+          5475446.696125,
+          491.273500
+        ]
+      }
+    ],
+    "measurements_metadata": [
+      {
+        "reference-url": "" 
+      }
+    ],
+    "data": [
+      {
+        "type": "pointcloud",
+        "mode": "TLS",
+        "date": "2023-03-21",
+        "canopy_condition": "leaf-off",
+        "sensor": "RIEGL VZ-2000i",
+        "point_count": 10622018,
+        "crs": "epsg:25832",
+        "file": "https://3dweb.geog.uni-heidelberg.de/treedb/QueRob_HD_01_2023-03-21_q2_TLS-off.laz", 
+        "metadata-url": "", 
+        "quality": 2
+      }
+    ]
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      8.7196703,
+      49.4313408,
+      491.273500
+    ]
+  }
+}

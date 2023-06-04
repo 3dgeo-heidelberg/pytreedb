@@ -3,7 +3,7 @@ var speciesList, n_trees, jsonOutput, previewTrees = [], getEverySec, pcUrls = [
 var numFilters = 0;
 var nthEntrySet = 0, elemMatch = false, maxPreviewLimit = 10, previewLimit = 3;
 var currNumRes, prevNumRes;
-var lazDlLimit = 1000;
+var lazDlLimit = 20;
 var currReq = {
     "url": '',
     "filters": [],

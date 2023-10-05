@@ -21,7 +21,8 @@ var filterKeys = {
     "source": "properties.measurements.source",
     "dbh": "properties.measurements.DBH_cm",
     "height": "properties.measurements.height_m",
-    "crowndia.": "properties.measurements.mean_crown_diameter_m"
+    "crowndia.": "properties.measurements.mean_crown_diameter_m",
+    "labels": "properties.data.has_labels"
 }
 // Init leaflet map
 var map = L.map('mapContainer').fitWorld();
@@ -774,6 +775,14 @@ updateAvailableVals = (newFilterID, field) => {
             break;
         case "Quality":
             break;
+        case "Labels":
+            var has_labels = ['true', 'false'];
+            has_labels.forEach(cond => {
+                $(availableValuesEl).append(
+                    '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + cond + '</a></li>'
+                );
+            })
+            break;
         default:
             break;
     }
@@ -986,4 +995,3 @@ cleanMap = () => {
     map.invalidateSize();  // Make sure tiles render correctly
     markers.clearLayers();  // Remove previous markers
 }
-

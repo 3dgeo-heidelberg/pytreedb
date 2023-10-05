@@ -94,6 +94,19 @@
             },
             {
                 "type": "pointcloud",
+                "mode": "TLS",
+                "date": "2019-08-20",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL VZ-400",
+                "point_count": 3936054,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/PinSyl_KA09_T048_2019-08-20_q1_TLS-on_c.laz",
+                "metadata-url": "https://doi.org/10.11588/data/UUMEDI",
+                "quality": 1,
+                "has_labels": "true"
+            },
+            {
+                "type": "pointcloud",
                 "mode": "ULS",
                 "date": "2019-09-13",
                 "canopy_condition": "leaf-on",

@@ -1,4 +1,4 @@
-flask==2.1.2
+flask==3.0.0
 folium==0.12.1.post1
 laspy[laszip]==2.1.2
 matplotlib==3.5.2

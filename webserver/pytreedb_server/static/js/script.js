@@ -267,6 +267,9 @@ collectFilterParams = () => {
             label = 'canopy_condition';
             qvalue = value.toLowerCase();
         };
+        if (label == 'labels') {
+            qvalue = value.toLowerCase();
+        };
         // Read checked quality values correctly
         if (label == 'quality') {
             value = [], qvalue = [];
@@ -776,7 +779,7 @@ updateAvailableVals = (newFilterID, field) => {
         case "Quality":
             break;
         case "Labels":
-            var has_labels = ['true', 'false'];
+            var has_labels = ['True', 'False'];
             has_labels.forEach(cond => {
                 $(availableValuesEl).append(
                     '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + cond + '</a></li>'

@@ -2,6 +2,7 @@
     "type": "Feature",
     "properties": {
         "id": "SeqGig_HD_02",
+        "source": "",
         "species": "Sequoiadendron giganteum",
         "measurements": [
             {

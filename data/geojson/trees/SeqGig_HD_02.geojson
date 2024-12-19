@@ -80,7 +80,7 @@
                 "crs": "epsg:25832",
                 "file": "https://3dweb.geog.uni-heidelberg.de/treedb/SeqGig_HD_02_2021-06-18_q1_TLS-on_VZ-2000i.laz",
                 "metadata-url": "", 
-                "quality": "1"
+                "quality": 1
             },
             {
                 "type": "pointcloud",
@@ -92,7 +92,7 @@
                 "crs": "epsg:25832",
                 "file": "https://3dweb.geog.uni-heidelberg.de/treedb/SeqGig_HD_02_2021-06-18_q1_TLS-on_VZ-400.laz",
                 "metadata-url": "", 
-                "quality": "1"
+                "quality": 1
             },
             {
                 "type": "pointcloud",
@@ -104,7 +104,7 @@
                 "crs": "epsg:25832",
                 "file": "https://3dweb.geog.uni-heidelberg.de/treedb/SeqGig_HD_02_2021-08-17_q2_ULS-on.laz",
                 "metadata-url": "", 
-                "quality": "2"
+                "quality": 2
             }
         ]
     },

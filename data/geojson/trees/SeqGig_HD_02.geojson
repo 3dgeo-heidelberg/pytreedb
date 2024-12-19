@@ -1,0 +1,119 @@
+{
+    "type": "Feature",
+    "properties": {
+        "id": "SeqGig_HD_02",
+        "source": "",
+        "species": "Sequoiadendron giganteum",
+        "measurements": [
+            {
+                "source": "TLS",
+                "date": "2021-06-18",
+                "canopy_condition": "leaf-on",
+                "height_m": 41.169,
+                "crown_base_height_m": 2.550,
+                "crown_projection_area_convex_hull_m2": 283.628,
+                "crown_projection_area_concave_hull_m2": 243.351,
+                "mean_crown_diameter_m": 19.241
+            },
+            {
+                "source": "TLS",
+                "date": "2021-06-18",
+                "canopy_condition": "leaf-on",
+                "DBH_cm": 240.8
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    49.400367,
+                    8.709656,
+                    388.02
+                ]
+            },
+            {
+                "crs": "epsg:25832",
+                "position_xyz": [
+                    478934.243915,
+                    5472004.782077,
+                    388.02
+                ]
+            },
+            {
+                "source": "TLS",
+                "date": "2021-06-18",
+                "canopy_condition": "leaf-on",
+                "height_m": 41.180,
+                "crown_base_height_m": 2.550,
+                "crown_projection_area_convex_hull_m2": 281.901,
+                "crown_projection_area_concave_hull_m2": 239.584,
+                "mean_crown_diameter_m": 19.153
+            },
+            {
+                "source": "TLS",
+                "date": "2021-06-18",
+                "canopy_condition": "leaf-on",
+                "DBH_cm": 239.4
+            },
+            {
+                "source": "ULS",
+                "date": "2021-08-17",
+                "canopy_condition": "leaf-on",
+                "height_m": 41.077,
+                "crown_base_height_m": 2.850,
+                "crown_projection_area_convex_hull_m2": 284.781,
+                "crown_projection_area_concave_hull_m2": 242.326,
+                "mean_crown_diameter_m": 19.625
+            }
+        ],
+        "measurements_metadata": [
+        {
+            "reference-url": "" 
+        }
+        ],
+        "data": [
+            {
+                "type": "pointcloud",
+                "mode": "TLS",
+                "date": "2021-06-18",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL VZ-2000i",
+                "point_count": 10204102,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/SeqGig_HD_02_2021-06-18_q1_TLS-on_VZ-2000i.laz",
+                "metadata-url": "", 
+                "quality": 1
+            },
+            {
+                "type": "pointcloud",
+                "mode": "TLS",
+                "date": "2021-06-18",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL VZ-400",
+                "point_count": 27724496,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/SeqGig_HD_02_2021-06-18_q1_TLS-on_VZ-400.laz",
+                "metadata-url": "", 
+                "quality": 1
+            },
+            {
+                "type": "pointcloud",
+                "mode": "ULS",
+                "date": "2021-08-17",
+                "canopy_condition": "leaf-on",
+                "sensor": "RIEGL miniVUX-1UAV",
+                "point_count": 123181,
+                "crs": "epsg:25832",
+                "file": "https://3dweb.geog.uni-heidelberg.de/treedb/SeqGig_HD_02_2021-08-17_q2_ULS-on.laz",
+                "metadata-url": "", 
+                "quality": 2
+            }
+        ]
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            8.709656,
+            49.400367,
+            388.02
+        ]
+    }
+}

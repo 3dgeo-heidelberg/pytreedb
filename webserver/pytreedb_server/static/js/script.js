@@ -93,7 +93,7 @@ getItem = () => {
             currReq.url = '/getitem/' + idx;
             var jsonObj = data['item'];
             // Update jsonOutput
-            jsonOutput = JSON.stringify(data['item'], null, 2);
+            jsonOutput = JSON.stringify(jsonObj, null, 2);
             // Clear previous results
             $('#jsonViewerContainer').empty();
             // Write new result

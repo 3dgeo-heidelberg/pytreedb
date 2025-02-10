@@ -3,7 +3,7 @@
   "properties": {
     "id": "13965",
     "source": "https://www.maanmittauslaitos.fi/en/research/mapping-and-change-analysis-applications-multiple-scale-remote-sensing",
-    "species": "norway_spruce",
+    "species": "Picea abies",
     "measurements": [
       {
         "source": "TLS",

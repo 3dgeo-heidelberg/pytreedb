@@ -3,7 +3,7 @@
   "properties": {
     "id": "12115",
     "source": "https://www.maanmittauslaitos.fi/en/research/mapping-and-change-analysis-applications-multiple-scale-remote-sensing",
-    "species": "scots_pine",
+    "species": "Pinus sylvestris",
     "measurements": [
       {
         "source": "TLS",

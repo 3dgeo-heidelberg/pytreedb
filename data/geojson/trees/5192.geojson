@@ -3,7 +3,7 @@
   "properties": {
     "id": "5192",
     "source": "https://www.maanmittauslaitos.fi/en/research/mapping-and-change-analysis-applications-multiple-scale-remote-sensing",
-    "species": "silver_birch",
+    "species": "Betula pendula",
     "measurements": [
       {
         "source": "TLS",

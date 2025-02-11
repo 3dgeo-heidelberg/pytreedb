@@ -22,12 +22,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Build SDist (pytreedb)
         run: pipx run build --sdist
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: artifact
           path: dist/*.tar.gz
@@ -36,7 +36,7 @@ jobs:
         working-directory: ./webserver
         run: pipx run build --sdist
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: artifact
           path: ./webserver/dist/*.tar.gz
@@ -50,21 +50,21 @@ jobs:
       max-parallel: 1
       matrix:
         os:
-          - ubuntu-20.04
-          - windows-2022
-        mongodb-version: ['4.2', '4.4', '5.0']
+          - ubuntu-latest
+          - windows-latest
+        mongodb-version: ['5.0', '6.0', '7.0', '8.0']
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with: 
           path: main
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         name: Install Python
         with:
           python-version: "3.9"
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: artifact
           path: dist
@@ -80,7 +80,7 @@ jobs:
 
       - name: MongoDB in GitHub Actions
         if: runner.os == 'Linux'
-        uses: supercharge/mongodb-github-action@1.7.0
+        uses: supercharge/mongodb-github-action@1.12.0
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
 
@@ -111,21 +111,21 @@ jobs:
       max-parallel: 1
       matrix:
         os:
-          - ubuntu-20.04
-          - windows-2022
-        mongodb-version: ['4.2', '4.4', '5.0']
+          - ubuntu-latest
+          - windows-latest
+        mongodb-version: ['5.0', '6.0', '7.0', '8.0']
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with: 
           path: ./webserver/main      
       
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         name: Install Python
         with:
           python-version: "3.9"
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: artifact
           path: ./webserver/dist
@@ -142,7 +142,7 @@ jobs:
 
       - name: MongoDB in GitHub Actions
         if: runner.os == 'Linux'
-        uses: supercharge/mongodb-github-action@1.7.0
+        uses: supercharge/mongodb-github-action@1.12.0
         with:
           mongodb-version: ${{ matrix.mongodb-version }}
 
@@ -190,10 +190,10 @@ jobs:
           
   upload_testpypi:
     needs: [build, test-pytreedb, test-webserver]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: github.repository_owner == '3dgeo-heidelberg'
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: artifact
           path: dist
@@ -206,7 +206,7 @@ jobs:
           password: ${{ secrets.TESTPYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: artifact
           path: ./webserver/dist
@@ -222,10 +222,10 @@ jobs:
 
   upload_pypi:
     needs: [build, test-pytreedb, test-webserver, upload_testpypi]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: github.repository_owner == '3dgeo-heidelberg'
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: artifact
           path: dist
@@ -237,7 +237,7 @@ jobs:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: artifact
           path: ./webserver/dist

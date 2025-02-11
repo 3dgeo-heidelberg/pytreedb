@@ -16,18 +16,18 @@ jobs:
       fail-fast: true
       max-parallel: 1
       matrix:
-        python-version: ['3.8', '3.9']
-        mongodb-version: ['4.2', '4.4', '5.0']
+        python-version: ['3.9', '3.10', '3.11']
+        mongodb-version: ['5.0', '6.0', '7.0', '8.0']
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: MongoDB in GitHub Actions
-      uses: supercharge/mongodb-github-action@1.7.0
+      uses: supercharge/mongodb-github-action@1.12.0
       with:
         mongodb-version: ${{ matrix.mongodb-version }}
     - name: Install dependencies

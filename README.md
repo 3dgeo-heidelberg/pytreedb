@@ -113,16 +113,40 @@ An example tree is given in [data/geojson/AbiAlb_BR03_01.geojson](https://github
 The single tree information (incl. URLs to the point clouds) has to be provided as `GeoJSON` file per tree. We use a straightforward format that is a valid GeoJSON and can be opened with any GIS software. The main idea of the pytreedb GeoJSON format is to define a minimum set of tree metadata, which can be extended by any further data that is needed by the user. Thus, it is just required that your GeoJSON file complies with the minimum set to enable import into the database. The [`PyTreeDB`](https://github.com/3dgeo-heidelberg/pytreedb/blob/main/pytreedb/db.py) class offers the method `validate_json` to check the validity of the file. Also the import of files checks the validity automatically and will only import tree objects that are conformal with the defined template. The used [GeoJSON template](https://github.com/3dgeo-heidelberg/pytreedb/blob/main/pytreedb/db_conf.py) can also be modified for your use case and application. Note that modification (e.g. removal of mandatory fields from our template) will - most probably - require modifications for the API and web frontend component. 
 
 ## Published Test Data
-In this repository we provide metadata (incl. links to point clouds) of 1481 trees that have been captured with airborne (ALS), UAV-borne (ULS) and terrestrial (TLS) laser scanning as well as field inventory data. Please check our data publication by *Weiser et al. 2022* in *Earth System Science Data* ([https://doi.org/10.5194/essd-14-2989-2022](https://doi.org/10.5194/essd-14-2989-2022)) for full details.
 
 The test data is provided in [`data`](https://github.com/3dgeo-heidelberg/pytreedb/tree/main/data) as 1) single [GeoJSON files and as ZIP archive](https://github.com/3dgeo-heidelberg/pytreedb/tree/main/data/geojson), and 2) also as serialized and zipped [pytreedb database dump](https://github.com/3dgeo-heidelberg/pytreedb/tree/main/data/db_dump) files that can be directly imported and used to start the API server.
 
+### 1) SYSSIFOSS-Data
+
+In this repository we provide metadata (incl. links to point clouds) of 1481 trees that have been captured with airborne (ALS), UAV-borne (ULS) and terrestrial (TLS) laser scanning as well as field inventory data. This data was acquired and processed as part of the DFG project [syssifoss](https://www.geog.uni-heidelberg.de/gis/SYSSIFOSS_en.html) and is located in the forests of Bretten and Karlsruhe (Germany). Please check our data publication for full details:
+
+> Weiser, H., Schäfer, J., Winiwarter, L., Krašovec, N., Fassnacht, F.E. & Höfle, B. (2022): Individual tree point clouds and tree measurements from multi-platform laser scanning in German forests. Earth System Science Data. Vol. 14 (7), pp. 2989-3012. https://doi.org/10.5194/essd-14-2989-2022
+
+The data can be downloaded from PANGAEA: https://doi.org/10.1594/PANGAEA.942856
+
 [<img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/syssifoss_data_figure_pc_viz.png?raw=true" width="50%">](https://doi.org/10.5194/essd-14-2989-2022)
+
+### 2) Landmark trees in Heidelberg, Germany
+
+Over time, we additionally added two landmark trees scanned in Heidelberg, Germany:
+- [Holdermannseiche](https://pytreedb.geog.uni-heidelberg.de/query/eyJiYWNrZW5kUXVlcnkiOnsiJGFuZCI6W3sicHJvcGVydGllcy5tZWFzdXJlbWVudHMuaGVpZ2h0X20iOnsiJGx0IjoyNCwiJGd0IjoyM319LHsicHJvcGVydGllcy5kYXRhLm1vZGUiOiJUTFMifSx7InByb3BlcnRpZXMuc3BlY2llcyI6IlF1ZXJjdXMgcm9idXIifV19LCJmaWx0ZXJzIjpbInNwZWNpZXM6UXVlcmN1cyByb2J1ciIsImhlaWdodDoyMy0yNCIsIm1vZGU6VExTIl0sIm9wZXJhbmRzIjpbIi4iLCJBTkQiLCJBTkQiXSwiYnJhY2tldHMiOlswLDAsMF0sInByZXZpZXdTdHJpbmciOiJcInNwZWNpZXM6UXVlcmN1cyByb2J1clwiIEFORCBcImhlaWdodDoyMy0yNFwiIEFORCBcIm1vZGU6VExTXCIiLCJlbGVtTWF0Y2giOmZhbHNlLCJwcmV2aWV3TGltaXQiOjMsInJlbmRlck1hcmtlcnMiOnRydWV9) (*Quercus robur*), Heiligenberg
+- [Giant sequoia](https://pytreedb.geog.uni-heidelberg.de/query/eyJiYWNrZW5kUXVlcnkiOnsicHJvcGVydGllcy5zcGVjaWVzIjoiU2VxdW9pYWRlbmRyb24gZ2lnYW50ZXVtIn0sImZpbHRlcnMiOlsic3BlY2llczpTZXF1b2lhZGVuZHJvbiBnaWdhbnRldW0iXSwib3BlcmFuZHMiOlsiLiJdLCJicmFja2V0cyI6WzBdLCJwcmV2aWV3U3RyaW5nIjoiXCJzcGVjaWVzOlNlcXVvaWFkZW5kcm9uIGdpZ2FudGV1bVwiIiwiZWxlbU1hdGNoIjpmYWxzZSwicHJldmlld0xpbWl0IjozLCJyZW5kZXJNYXJrZXJzIjp0cnVlfQ==) (*Sequoiadendron giganteum*), Arboretum 1
+
+Quick tutorial:
+<a href="[https://youtu.be/tUBoLCXkpV0?list=PLjb7Qrh6QTH0xh9qTmida6jZEWd938dEO&t=446](https://www.youtube.com/watch?v=8SBi5mwDUVU)" target="_blank"><img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/pytreedb_youtube_tutorial_giant_sequoia.png?raw=true" alt="" width="400" /></a>
+
+### 3) LiPheStream catalogue
+
+LiPheStream is the first external tree dataset that we added to `pytreedb`. LiPheStream is a time series tree dataset from a permanent laser scanning (PLS) system in Finland. 
+
+> Wittke, S., Campos, M., Ruoppa, L., Echrit, R., Wang, Y., Gołoś, A., Kukko, A., Hyyppä, J. & Puttonen, E. (2024): LiPheStream - A 18-month high spatiotemporal resolution point cloud time series of Boreal trees from Finland. Scientific Data, Vol. 11, 1281. https://doi.org/10.1038/s41597-024-04143-w.
+
+For now, point clouds are not accessible via direct URLs, but `pytreedb` contains the relative URLs within the LiPheStream dataset as downloaded from the Finnish Fairdata service: https://doi.org/10.23729/cf81f7f3-faaa-4729-aa1c-aa4dd38951aa
 
 ## Citation
 Please cite the following publication when using pytreedb in your research and reference the appropriate release version. All releases of pytreedb are listed on Zenodo where you will find the citation information including DOI. 
 
-Höfle, B., Qu, J., Winiwarter, L., Weiser, H., Zahs, V., Schäfer, J. & Fassnacht, F. E. (2023). pytreedb - library for point clouds of tree vegetation objects (1.0.0). Zenodo. https://doi.org/10.5281/zenodo.7551310
+> Höfle, B., Qu, J., Winiwarter, L., Weiser, H., Zahs, V., Schäfer, J. & Fassnacht, F. E. (2023). pytreedb - library for point clouds of tree vegetation objects (1.0.0). Zenodo. https://doi.org/10.5281/zenodo.7551310
 
 ```
 @software{hofle_bernhard_2023_7551310,

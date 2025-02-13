@@ -312,7 +312,7 @@ class PyTreeDB:
         """
         # Validate input file first
         if self.validate_json(filenamepath) is False:
-            raise ValueError(f"File '{filenamepath}' is not a valid format for pytreedb." f"See template in db_conf.py")
+            raise ValueError(f"File '{filenamepath}' is not a valid format for pytreedb. See template in db_conf.py")
         # Add data
         with open(filenamepath, "r") as f_json:
             json_string = json.loads(f_json.read())

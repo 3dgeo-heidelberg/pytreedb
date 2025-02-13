@@ -1,4 +1,5 @@
 _pytree.db
+syssifoss.db
 */.pylint.d/
 dist/
 

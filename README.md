@@ -137,7 +137,7 @@ Quick tutorial:
 
 ### 3) LiPheStream catalogue
 
-LiPheStream is the first external tree dataset that we added to `pytreedb`. LiPheStream is a time series tree dataset from a permanent laser scanning (PLS) system in Finland. 
+LiPheStream is the first external dataset that we added to `pytreedb`. LiPheStream is a time series tree dataset from a permanent laser scanning (PLS) system in Finland. 
 
 > Wittke, S., Campos, M., Ruoppa, L., Echrit, R., Wang, Y., Gołoś, A., Kukko, A., Hyyppä, J. & Puttonen, E. (2024): LiPheStream - A 18-month high spatiotemporal resolution point cloud time series of Boreal trees from Finland. Scientific Data, Vol. 11, 1281. https://doi.org/10.1038/s41597-024-04143-w.
 

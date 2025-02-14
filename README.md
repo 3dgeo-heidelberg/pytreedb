@@ -133,7 +133,8 @@ Over time, we additionally added two landmark trees scanned in Heidelberg, Germa
 - [Giant sequoia](https://pytreedb.geog.uni-heidelberg.de/query/eyJiYWNrZW5kUXVlcnkiOnsicHJvcGVydGllcy5zcGVjaWVzIjoiU2VxdW9pYWRlbmRyb24gZ2lnYW50ZXVtIn0sImZpbHRlcnMiOlsic3BlY2llczpTZXF1b2lhZGVuZHJvbiBnaWdhbnRldW0iXSwib3BlcmFuZHMiOlsiLiJdLCJicmFja2V0cyI6WzBdLCJwcmV2aWV3U3RyaW5nIjoiXCJzcGVjaWVzOlNlcXVvaWFkZW5kcm9uIGdpZ2FudGV1bVwiIiwiZWxlbU1hdGNoIjpmYWxzZSwicHJldmlld0xpbWl0IjozLCJyZW5kZXJNYXJrZXJzIjp0cnVlfQ==) (*Sequoiadendron giganteum*), Arboretum 1
 
 Quick tutorial:
-<a href="[https://youtu.be/tUBoLCXkpV0?list=PLjb7Qrh6QTH0xh9qTmida6jZEWd938dEO&t=446](https://www.youtube.com/watch?v=8SBi5mwDUVU)" target="_blank"><img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/pytreedb_youtube_tutorial_giant_sequoia.png?raw=true" alt="" width="400" /></a>
+
+<a href="https://www.youtube.com/watch?v=8SBi5mwDUVU" target="_blank"><img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/pytreedb_youtube_tutorial_giant_sequoia.png?raw=true" alt="" width="400" /></a>
 
 ### 3) LiPheStream catalogue
 

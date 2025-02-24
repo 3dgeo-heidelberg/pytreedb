@@ -22,7 +22,11 @@ var filterKeys = {
     "dbh": "properties.measurements.DBH_cm",
     "height": "properties.measurements.height_m",
     "crowndia.": "properties.measurements.mean_crown_diameter_m",
-    "labels": "properties.data.has_labels"
+    "labels": "properties.data.has_labels",
+    "date_range": {
+        "measurements": "properties.measurements.date",
+        "data": "properties.data.date"
+    }
 }
 // Init leaflet map
 var map = L.map('mapContainer').fitWorld();
@@ -271,7 +275,39 @@ collectFilterParams = () => {
             qvalue = value.toLowerCase();
         };
         // Read checked quality values correctly
-        if (label == 'quality') {
+        if (label === 'date_range') {
+            let startDate = $(e).find('.dateRangeInput.start').val();
+            let endDate = $(e).find('.dateRangeInput.end').val();
+            value = startDate + ' to ' + endDate;
+            
+            // Build query for nested date arrays
+            qvalue = {
+                $or: [
+                    { 
+                        "properties.measurements": {
+                            $elemMatch: {
+                                date: {
+                                    $gte: new Date(startDate),
+                                    $lte: new Date(endDate)
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "properties.data": {
+                            $elemMatch: {
+                                date: {
+                                    $gte: new Date(startDate),
+                                    $lte: new Date(endDate)
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+        }
+        // Quality checkboxes
+        else if (label == 'quality') {
             value = [], qvalue = [];
             for (let i = 0; i < 5; i++) {
                 let checkbox = $(e).find('.qualityCheckInput')[i];
@@ -283,7 +319,7 @@ collectFilterParams = () => {
             qvalue = {'$or': qvalue};
         }
         // Read ranged values correctly
-        if (['dbh', 'height', 'crowndia.'].includes(label)) {
+        else if (['dbh', 'height', 'crowndia.'].includes(label)) {
             let lb = $(e).find('.rangeInput')[0].value == '' ? 0 : $(e).find('.rangeInput')[0].value,
                 gb = $(e).find('.rangeInput')[1].value == '' ? 10000 : $(e).find('.rangeInput')[1].value;
             value = lb + '-' + gb;
@@ -291,10 +327,14 @@ collectFilterParams = () => {
         }
         
         let obj = {};
-        obj[filterKeys[label]] = qvalue;
+        if (label !== 'date_range' && label !== 'quality') {
+            obj[filterKeys[label]] = qvalue;
+        } else {
+            obj = qvalue;
+        }
         currReq.filters.push(label + ':' + value);
-        if (label == 'quality') { currReq.qfilters.push(qvalue); } 
-        else { currReq.qfilters.push(obj); }
+        // if (label == 'quality') { currReq.qfilters.push(qvalue); } 
+        currReq.qfilters.push(obj);
         currReq.operands.push(op);
         currReq.brackets.push( inBracket3 ? 3 : ( inBracket2 ? 2 : ( inBracket1 ? 1 : 0 ) ) );
     });
@@ -503,7 +543,7 @@ replicateQuery = query => {
     for (let i = 0; i < query.filters.length; i++) {
         // Styling
         let [lab, val] = capitalizeFirstLetter(query.filters[i].split(':'));
-        if (lab === 'Mode' || lab === 'Source') {val = val.toUpperCase();}
+        if (lab === 'Mode' || lab === 'Source' || lab === 'Labels') {val = val.toUpperCase();}
         if (lab.startsWith('Canopy')) {lab = 'Canopy';}
         if (lab === 'Dbh') {lab = 'DBH';}
         // Add filter to page
@@ -679,6 +719,15 @@ addSearchFilter = e => {
                 '<input type="text" class="rangeInput"><span class="mx-2px">-</span><input type="text" class="rangeInput">' + 
             '</div>'+
         '</div>';
+        var dateRangeFVSnippet = 
+        `<div class="fvWrapper" style="display: inline-block; width: calc(100% - 4rem);">
+            <span class="fieldLabel Date_range">Date Range</span>
+            <div class="btn-light fieldValue" style="display: inline-block; color: #606060">
+                <input type="text" class="dateRangeInput start" placeholder="Start date" raedonly>
+                <span class="mx-2">to</span>
+                <input type="text" class="dateRangeInput end" placeholder="End date" readonly>
+            </div>
+        </div>`;
     
     if ($('[id^="paramPair"]').length == 0) {  // If no filter exists yet
         // Insert the first filter
@@ -686,6 +735,8 @@ addSearchFilter = e => {
             $('.addFilter:first').before(addWholeFilterSnippet(qualityFilterFVSnippet, newFilterID, andOp));  
         } else if (field === 'DBH' || field === 'Height' || field === 'CrownDia.') {
             $('.addFilter:first').before(addWholeFilterSnippet(rangeFilterFVSnippet, newFilterID, andOp));
+        } else if (field === 'Date_range') {
+            $('.addFilter:first').before(addWholeFilterSnippet(dateRangeFVSnippet, newFilterID, andOp));
         } else {
             $('.addFilter:first').before(addWholeFilterSnippet(normalFilterFVSnippet, newFilterID, andOp));
             // Update available values in the dropdown according to the added field filter
@@ -697,12 +748,26 @@ addSearchFilter = e => {
             $('[id^="paramPair"]:last').after(addWholeFilterSnippet(qualityFilterFVSnippet, newFilterID, andOp));
         } else if (field === 'DBH' || field === 'Height' || field === 'CrownDia.') {
             $('[id^="paramPair"]:last').after(addWholeFilterSnippet(rangeFilterFVSnippet, newFilterID, andOp));
+        } else if (field === 'Date Range') {
+            $('[id^="paramPair"]:last').after(addWholeFilterSnippet(dateRangeFVSnippet, newFilterID, andOp));
         } else {
             $('[id^="paramPair"]:last').after(addWholeFilterSnippet(normalFilterFVSnippet, newFilterID, andOp));
             updateAvailableVals(newFilterID, field);
         }
+        // Initialize date picker if added
+        if (field === 'Date Range') {
+        flatpickr('.dateRangeInput', {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            static: true,
+            allowInput: true,
+            onReady: function(selectedDates, dateStr, instance) {
+                instance.element.classList.add('flatpickr-input');
+            }
+        });
     }
     
+}
 }
 // Remove filter
 removeSearchFilter = e => {
@@ -779,7 +844,7 @@ updateAvailableVals = (newFilterID, field) => {
         case "Quality":
             break;
         case "Labels":
-            var has_labels = ['True', 'False'];
+            var has_labels = ['True', 'False', 'Not_set'];
             has_labels.forEach(cond => {
                 $(availableValuesEl).append(
                     '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + cond + '</a></li>'

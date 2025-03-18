@@ -15,7 +15,7 @@
 
 1. **Python library**: In case you need to access the tree database in your Python scripts during runtime of data processing and analysis. 
 2. **REST API**: In case you want to provide your datasets to any software over a REST API. The `pytreedb` server application is using the [Flask](https://pypi.org/project/Flask/) framework for local(host) usage and we provide instructions to setup for production deployment with [Apache WGSI](https://github.com/3dgeo-heidelberg/pytreedb/tree/main/webserver#deployment-for-production). Further info on the REST API of `pytreedb` can be found [here](https://github.com/3dgeo-heidelberg/pytreedb/tree/main/webserver#deployment-for-local-dev), e.g. including setup of server and usage of API keys.
-3. **Web frontend**: In case you want to share your valuable tree data to the community. Based on the REST API we showcase in this repository how a Web frontend can be easily implemented, which provides several query options, data export and also map views of query results. A showcase presenting the tree data of [Weiser et al. 2022](https://doi.org/10.5194/essd-14-2989-2022) is given on http://pytreedb.geog.uni-heidelberg.de/.
+3. **Web frontend**: In case you want to share your valuable tree data to the community. Based on the REST API we showcase in this repository how a Web frontend can be easily implemented, which provides several query options, data export and also map views of query results. A showcase presenting the tree data of [Weiser et al. 2022](https://doi.org/10.5194/essd-14-2989-2022) and further [datasets](https://github.com/3dgeo-heidelberg/pytreedb?tab=readme-ov-file#published-test-data) is given on http://pytreedb.geog.uni-heidelberg.de/.
 
 
 <img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/pytreedb_components_details.png?raw=true" alt="overview of the components of pytreedb" width="45%">
@@ -24,7 +24,7 @@
 
 The [`PyTreeDB`](https://github.com/3dgeo-heidelberg/pytreedb/blob/main/pytreedb/db.py) class is the starting point and the core component. It is responsible, e.g., for 
 - data **import**, data **export**, data validation, automatic sync with MongoDB
-- all kind of **queries**. 
+- all kind of **queries*#published-test-data*. 
 
 The `Python` REST interface and all clients, such as the web frontend, simply use the methods and functionality of the Python class.
 

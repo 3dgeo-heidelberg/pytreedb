@@ -55,12 +55,17 @@
 
                     <p>The test data is provided in <a class="inPLink" href="https://github.com/3dgeo-heidelberg/pytreedb/tree/main/data"><code>data</code></a> as 1) single <a class="inPLink" href="https://github.com/3dgeo-heidelberg/pytreedb/tree/main/data/geojson">GeoJSON files and as ZIP archive</a>, and 2) also as serialized and zipped <a class="inPLink" href="https://github.com/3dgeo-heidelberg/pytreedb/tree/main/data/db_dump">pytreedb database dump</a> files that can be directly imported and used to start the API server.</p>
                     <h2 class="secondaryTitle">1) SYSSIFOSS-Data</h3>
-                    <p>In this repository we provide metadata (incl. links to point clouds) of 1481 trees that have been captured with airborne (ALS), UAV-borne (ULS) and terrestrial (TLS) laser scanning as well as field inventory data. This data was acquired and processed as part of the DFG project <a class="inPLink" href="https://www.geog.uni-heidelberg.de/gis/SYSSIFOSS_en.html">syssifoss</a> and is located in the forests of Bretten and Karlsruhe (Germany). Please check our data publication for full details:</p>
+                    <p>We provide metadata (incl. links to point clouds) of 1481 trees that have been captured with airborne (ALS), UAV-borne (ULS) and terrestrial (TLS) laser scanning as well as field inventory data. This data was acquired and processed as part of the DFG project <a class="inPLink" href="https://www.geog.uni-heidelberg.de/gis/SYSSIFOSS_en.html">syssifoss</a> and the trees are located in the forests of Bretten and Karlsruhe (Germany). Please check our data publication for full details:</p>
                     <blockquote>
                     <p>Weiser, H., Schäfer, J., Winiwarter, L., Krašovec, N., Fassnacht, F.E. &amp; Höfle, B. (2022): Individual tree point clouds and tree measurements from multi-platform laser scanning in German forests. Earth System Science Data. Vol. 14 (7), pp. 2989-3012. <a class="inPLink" href="https://doi.org/10.5194/essd-14-2989-2022">https://doi.org/10.5194/essd-14-2989-2022</a></p>
                     </blockquote>
                     <p>The data can be downloaded from PANGAEA: <a class="inPLink" href="https://doi.org/10.1594/PANGAEA.942856">https://doi.org/10.1594/PANGAEA.942856</a></p>
                     <p><a class="inPLink" href="https://doi.org/10.5194/essd-14-2989-2022"><img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/syssifoss_data_figure_pc_viz.png?raw=true" width="50%"></a></p>
+                    <p>For 11 trees, this dataset was extended by labelled versions of the TLS point clouds which have pointwise annotations for the semantic classes leaf and wood. The point clouds can be filtered using the "Labels" filter and are also available from heiDATA.</p>
+                    <blockquote>
+                        <p>Weiser, H., Ulrich, V., Winiwarter, L., Esmorís, A, M. &amp; Höfle, B. (2024): Manually labeled terrestrial laser scanning point clouds of individual trees for leaf-wood separation. heiDATA, V1, <a class="inPLink" href="https://doi.org/10.11588/DATA/UUMEDI">https://doi.org/10.5194/essd-14-2989-2022</a>.</p>
+                    </blockquote>
+                    <p><a class="inPLink" href="https://doi.org/10.5194/essd-14-2989-2022"><img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/syssifoss_trees_labelled.png?raw=true" width="600"></a></p>
                     <h2 class="secondaryTitle">2) Landmark trees in Heidelberg, Germany</h3>
                     <p>Over time, we additionally added two landmark trees scanned in Heidelberg, Germany:</p>
                     <ul>
@@ -75,6 +80,7 @@
                     <p>Wittke, S., Campos, M., Ruoppa, L., Echrit, R., Wang, Y., Gołoś, A., Kukko, A., Hyyppä, J. &amp; Puttonen, E. (2024): LiPheStream - A 18-month high spatiotemporal resolution point cloud time series of Boreal trees from Finland. Scientific Data, Vol. 11, 1281. <a href="https://doi.org/10.1038/s41597-024-04143-w">https://doi.org/10.1038/s41597-024-04143-w</a>.</p>
                     </blockquote>
                     <p>For now, point clouds are not accessible via direct URLs, but <code>pytreedb</code> contains the relative URLs within the LiPheStream dataset as downloaded from the Finnish Fairdata service: <a href="https://doi.org/10.23729/cf81f7f3-faaa-4729-aa1c-aa4dd38951aa">https://doi.org/10.23729/cf81f7f3-faaa-4729-aa1c-aa4dd38951aa</a></p>
+                    <br>
                 </div>
             </div>
         </section>

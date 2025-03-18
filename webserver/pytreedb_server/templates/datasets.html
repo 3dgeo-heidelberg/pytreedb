@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/3dgeo.ico') }}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+        <link href="{{ url_for('static', filename='styles/style.css') }}" rel= "stylesheet">
+        <link href="{{ url_for('static', filename='styles/jquery.json-viewer.css') }}" rel= "stylesheet">
+        <title>pytreedb-Datasets</title>
+    </head>
+    <body class="d-flex flex-column">
+        <nav id="navbar" class="navbar navbar-expand-lg navbar-light justify-content-end fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-brand">
+                    <a target="_blank" rel="noopener noreferrer" href="https://www.geog.uni-heidelberg.de/3dgeo/index.html" style="padding-right: 10px; text-decoration: none">
+                        <img src="{{ url_for('static', filename='img/3dgeo_logo.jpg') }}" alt="3DGEO" height="30" class="d-inline-block align-text-middle">
+                    </a>
+                    <a target="_blank" rel="noopener noreferrer" href="https://www.ifgg.kit.edu/" style="padding-right: 10px; text-decoration: none">
+                        <img src="{{ url_for('static', filename='img/IFGG_short_fat3.png') }}" alt="IFGG" height="30" class="d-inline-block align-text-middle"/>
+                    </a>
+                    <a href="/">
+                        <img src="{{ url_for('static', filename='img/pytreedb_logo_low.png') }}" alt="pytreedb" height="30" class="d-inline-block align-text-middle"/>
+                    </a>
+                </div>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#hamburgerContent" aria-controls="hamburgerContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end flex-grow-0" id="hamburgerContent">
+                    <div class="navbar-nav text-end">
+                        <a class="nav-item nav-link" href="/" >HOME</a>
+                        <a class="nav-item nav-link" href="/about">ABOUT</a>
+                        <a class="nav-item nav-link" aria-current="page" href="#">DATASETS</a>
+                        <a class="nav-item nav-link" href="/contact">CONTACT</a>
+                        <!-- <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                EN
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="langDropdown">
+                                <li><a class="dropdown-item" href="#">Deutsch</a></li>
+                                <li><a class="dropdown-item" href="#">English</a></li>
+                            </ul>
+                        </div> -->
+                    </div>
+                </div>  
+            </div>
+        </nav>
+
+        <section>
+            <div class="container">
+                <div style="width: 80%;margin: 0 auto;">
+                    <h1 class="pageTitle">Published Test Data</h1>
+
+                    <p>The test data is provided in <a class="inPLink" href="https://github.com/3dgeo-heidelberg/pytreedb/tree/main/data"><code>data</code></a> as 1) single <a class="inPLink" href="https://github.com/3dgeo-heidelberg/pytreedb/tree/main/data/geojson">GeoJSON files and as ZIP archive</a>, and 2) also as serialized and zipped <a class="inPLink" href="https://github.com/3dgeo-heidelberg/pytreedb/tree/main/data/db_dump">pytreedb database dump</a> files that can be directly imported and used to start the API server.</p>
+                    <h2 class="secondaryTitle">1) SYSSIFOSS-Data</h3>
+                    <p>In this repository we provide metadata (incl. links to point clouds) of 1481 trees that have been captured with airborne (ALS), UAV-borne (ULS) and terrestrial (TLS) laser scanning as well as field inventory data. This data was acquired and processed as part of the DFG project <a class="inPLink" href="https://www.geog.uni-heidelberg.de/gis/SYSSIFOSS_en.html">syssifoss</a> and is located in the forests of Bretten and Karlsruhe (Germany). Please check our data publication for full details:</p>
+                    <blockquote>
+                    <p>Weiser, H., Schäfer, J., Winiwarter, L., Krašovec, N., Fassnacht, F.E. &amp; Höfle, B. (2022): Individual tree point clouds and tree measurements from multi-platform laser scanning in German forests. Earth System Science Data. Vol. 14 (7), pp. 2989-3012. <a class="inPLink" href="https://doi.org/10.5194/essd-14-2989-2022">https://doi.org/10.5194/essd-14-2989-2022</a></p>
+                    </blockquote>
+                    <p>The data can be downloaded from PANGAEA: <a class="inPLink" href="https://doi.org/10.1594/PANGAEA.942856">https://doi.org/10.1594/PANGAEA.942856</a></p>
+                    <p><a class="inPLink" href="https://doi.org/10.5194/essd-14-2989-2022"><img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/syssifoss_data_figure_pc_viz.png?raw=true" width="50%"></a></p>
+                    <h2 class="secondaryTitle">2) Landmark trees in Heidelberg, Germany</h3>
+                    <p>Over time, we additionally added two landmark trees scanned in Heidelberg, Germany:</p>
+                    <ul>
+                    <li><a class="inPLink" href="https://pytreedb.geog.uni-heidelberg.de/query/eyJiYWNrZW5kUXVlcnkiOnsiJGFuZCI6W3sicHJvcGVydGllcy5tZWFzdXJlbWVudHMuaGVpZ2h0X20iOnsiJGx0IjoyNCwiJGd0IjoyM319LHsicHJvcGVydGllcy5kYXRhLm1vZGUiOiJUTFMifSx7InByb3BlcnRpZXMuc3BlY2llcyI6IlF1ZXJjdXMgcm9idXIifV19LCJmaWx0ZXJzIjpbInNwZWNpZXM6UXVlcmN1cyByb2J1ciIsImhlaWdodDoyMy0yNCIsIm1vZGU6VExTIl0sIm9wZXJhbmRzIjpbIi4iLCJBTkQiLCJBTkQiXSwiYnJhY2tldHMiOlswLDAsMF0sInByZXZpZXdTdHJpbmciOiJcInNwZWNpZXM6UXVlcmN1cyByb2J1clwiIEFORCBcImhlaWdodDoyMy0yNFwiIEFORCBcIm1vZGU6VExTXCIiLCJlbGVtTWF0Y2giOmZhbHNlLCJwcmV2aWV3TGltaXQiOjMsInJlbmRlck1hcmtlcnMiOnRydWV9">Holdermannseiche</a> (<em>Quercus robur</em>), Heiligenberg</li>
+                    <li><a class="inPLink" href="https://pytreedb.geog.uni-heidelberg.de/query/eyJiYWNrZW5kUXVlcnkiOnsicHJvcGVydGllcy5zcGVjaWVzIjoiU2VxdW9pYWRlbmRyb24gZ2lnYW50ZXVtIn0sImZpbHRlcnMiOlsic3BlY2llczpTZXF1b2lhZGVuZHJvbiBnaWdhbnRldW0iXSwib3BlcmFuZHMiOlsiLiJdLCJicmFja2V0cyI6WzBdLCJwcmV2aWV3U3RyaW5nIjoiXCJzcGVjaWVzOlNlcXVvaWFkZW5kcm9uIGdpZ2FudGV1bVwiIiwiZWxlbU1hdGNoIjpmYWxzZSwicHJldmlld0xpbWl0IjozLCJyZW5kZXJNYXJrZXJzIjp0cnVlfQ==">Giant sequoia</a> (<em>Sequoiadendron giganteum</em>), Arboretum 1</li>
+                    </ul>
+                    <p>Quick tutorial:</p>
+                    <p><a href="https://www.youtube.com/watch?v=8SBi5mwDUVU" target="_blank"><img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/pytreedb_youtube_tutorial_giant_sequoia.png?raw=true" alt="" width="400" /></a></p>
+                    <h2 class="secondaryTitle">3) LiPheStream catalogue</h3>
+                    <p>LiPheStream is the first external dataset that we added to <code>pytreedb</code>. LiPheStream is a time series tree dataset from a permanent laser scanning (PLS) system in Finland. </p>
+                    <blockquote>
+                    <p>Wittke, S., Campos, M., Ruoppa, L., Echrit, R., Wang, Y., Gołoś, A., Kukko, A., Hyyppä, J. &amp; Puttonen, E. (2024): LiPheStream - A 18-month high spatiotemporal resolution point cloud time series of Boreal trees from Finland. Scientific Data, Vol. 11, 1281. <a href="https://doi.org/10.1038/s41597-024-04143-w">https://doi.org/10.1038/s41597-024-04143-w</a>.</p>
+                    </blockquote>
+                    <p>For now, point clouds are not accessible via direct URLs, but <code>pytreedb</code> contains the relative URLs within the LiPheStream dataset as downloaded from the Finnish Fairdata service: <a href="https://doi.org/10.23729/cf81f7f3-faaa-4729-aa1c-aa4dd38951aa">https://doi.org/10.23729/cf81f7f3-faaa-4729-aa1c-aa4dd38951aa</a></p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="mt-auto">
+            <div class="container">
+                <div class="row"
+                    style="padding: 50px;color: #fff; border-top-width: medium; border-right-width: medium; border-bottom-width: medium; border-left-width: medium;">
+                    <div style="border: dotted #fff; border-width: 0 1px 0 0;" class="col-8">
+                        <div id="pytreedbLogo" style="font-size: xx-large; padding: 50px 0 50px 0; color: #fff;">
+                            <img src="{{ url_for('static', filename='img/pytreedb_logo_low_w.png') }}" height="100px" alt="pytreedb"/>
+                        </div>
+                        <div style="font-size: small; padding-bottom: 50px; padding-right: 50px; color: #ddd;">
+                            Funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) in the frame of the
+                            project SYSSIFOSS – 411263134 / 2019-2022.
+                        </div>
+                    </div>
+                    <div style="padding-left: 70px;" class="col-4">
+                        <h4 style="margin: 20px 0;">Links</h4>
+                        <a target="_blank" class="links"
+                            href="https://www.geog.uni-heidelberg.de/gis/SYSSIFOSS_en.html">SYSSIFOSS Project</a>
+                        <a target="_blank" class="links" href="http://k1z.blog.uni-heidelberg.de/?s=syssifoss">GIScience News
+                            Blog</a>
+                        <a target="_blank" class="links"
+                            href="https://www.researchgate.net/project/SYSSIFOSS-Synthetic-structural-remote-sensing-data-for-improved-forest-inventory-models">Research
+                            Gate</a>
+                        <a id="twitter-link" target="_blank" href="https://twitter.com/search?q=syssifoss&amp;src=typed_query">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-twitter"
+                                viewBox="0 0 16 16" style="margin-left: 5px;" width="20" height="20">
+                                <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"></path>
+                            </svg></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    </body>
+</html>

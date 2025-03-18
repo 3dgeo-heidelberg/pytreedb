@@ -128,7 +128,7 @@ The data can be downloaded from PANGAEA: https://doi.org/10.1594/PANGAEA.942856
 
 For 11 trees, this dataset was extended by labelled versions of the TLS point clouds which have pointwise annotations for the semantic classes leaf and wood. The point clouds can be filtered using the "Labels" filter and are also available from heiDATA.
 
-> Weiser, H., Ulrich, V., Winiwarter, L., Esmorís, A, M. & Höfle, B. (2024): Manually labeled terrestrial laser scanning point clouds of individual trees for leaf-wood separation. heiDATA, V1, https://doi.org/10.11588/DATA/UUMEDI, heiDATA, V1.
+> Weiser, H., Ulrich, V., Winiwarter, L., Esmorís, A, M. & Höfle, B. (2024): Manually labeled terrestrial laser scanning point clouds of individual trees for leaf-wood separation. heiDATA, V1, https://doi.org/10.11588/DATA/UUMEDI.
 
 [<img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/syssifoss_trees_labelled.png?raw=true" width="600">](https://doi.org/10.11588/DATA/UUMEDI)
 

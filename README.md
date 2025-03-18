@@ -24,7 +24,7 @@
 
 The [`PyTreeDB`](https://github.com/3dgeo-heidelberg/pytreedb/blob/main/pytreedb/db.py) class is the starting point and the core component. It is responsible, e.g., for 
 - data **import**, data **export**, data validation, automatic sync with MongoDB
-- all kind of **queries*#published-test-data*. 
+- all kind of **queries**. 
 
 The `Python` REST interface and all clients, such as the web frontend, simply use the methods and functionality of the Python class.
 
@@ -118,13 +118,19 @@ The test data is provided in [`data`](https://github.com/3dgeo-heidelberg/pytree
 
 ### 1) SYSSIFOSS-Data
 
-In this repository we provide metadata (incl. links to point clouds) of 1481 trees that have been captured with airborne (ALS), UAV-borne (ULS) and terrestrial (TLS) laser scanning as well as field inventory data. This data was acquired and processed as part of the DFG project [syssifoss](https://www.geog.uni-heidelberg.de/gis/SYSSIFOSS_en.html) and is located in the forests of Bretten and Karlsruhe (Germany). Please check our data publication for full details:
+We provide metadata (incl. links to point clouds) of 1481 trees that have been captured with airborne (ALS), UAV-borne (ULS) and terrestrial (TLS) laser scanning as well as field inventory data. This data was acquired and processed as part of the DFG project [syssifoss](https://www.geog.uni-heidelberg.de/gis/SYSSIFOSS_en.html) and the trees are located in the forests of Bretten and Karlsruhe (Germany). Please check our data publication for full details:
 
 > Weiser, H., Schäfer, J., Winiwarter, L., Krašovec, N., Fassnacht, F.E. & Höfle, B. (2022): Individual tree point clouds and tree measurements from multi-platform laser scanning in German forests. Earth System Science Data. Vol. 14 (7), pp. 2989-3012. https://doi.org/10.5194/essd-14-2989-2022
 
 The data can be downloaded from PANGAEA: https://doi.org/10.1594/PANGAEA.942856
 
 [<img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/syssifoss_data_figure_pc_viz.png?raw=true" width="50%">](https://doi.org/10.5194/essd-14-2989-2022)
+
+For 11 trees, this dataset was extended by labelled versions of the TLS point clouds which have pointwise annotations for the semantic classes leaf and wood. The point clouds can be filtered using the "Labels" filter and are also available from heiDATA.
+
+> Weiser, H., Ulrich, V., Winiwarter, L., Esmorís, A, M. & Höfle, B. (2024): Manually labeled terrestrial laser scanning point clouds of individual trees for leaf-wood separation. heiDATA, V1, https://doi.org/10.11588/DATA/UUMEDI, heiDATA, V1.
+
+[<img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/syssifoss_trees_labelled.png?raw=true" width="50%">](https://doi.org/10.11588/DATA/UUMEDI)
 
 ### 2) Landmark trees in Heidelberg, Germany
 

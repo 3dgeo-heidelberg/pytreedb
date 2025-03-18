@@ -156,6 +156,7 @@ In the "Search the DB" area, we predefined following filters:
 | DBH     | properties.measurements.DBH_cm |
 | Height  | properties.measurements.height_m |
 | CrownDia. | properties.measurements.mean_crown_diameter_m |
+| Labels | properties.data.has_labels |
 
 The filters have the default logic operator AND. You can toggle it between AND/OR by clicking on the preceding button of each filter.
 

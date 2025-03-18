@@ -268,7 +268,11 @@ collectFilterParams = () => {
             qvalue = value.toLowerCase();
         };
         if (label == 'labels') {
-            qvalue = value.toLowerCase();
+            if (value == "Not set") {
+                qvalue = {'$nin': ["true", "false"]}
+            } else {
+                qvalue = value.toLowerCase();
+            }
         };
         // Read checked quality values correctly
         if (label == 'quality') {
@@ -779,7 +783,7 @@ updateAvailableVals = (newFilterID, field) => {
         case "Quality":
             break;
         case "Labels":
-            var has_labels = ['True', 'False'];
+            var has_labels = ['True', 'False', "Not set"];
             has_labels.forEach(cond => {
                 $(availableValuesEl).append(
                     '<li><a class="dropdown-item" onclick="fieldValueSelected(this)">' + cond + '</a></li>'

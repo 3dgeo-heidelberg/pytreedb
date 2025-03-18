@@ -130,7 +130,7 @@ For 11 trees, this dataset was extended by labelled versions of the TLS point cl
 
 > Weiser, H., Ulrich, V., Winiwarter, L., Esmorís, A, M. & Höfle, B. (2024): Manually labeled terrestrial laser scanning point clouds of individual trees for leaf-wood separation. heiDATA, V1, https://doi.org/10.11588/DATA/UUMEDI, heiDATA, V1.
 
-[<img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/syssifoss_trees_labelled.png?raw=true" width="50%">](https://doi.org/10.11588/DATA/UUMEDI)
+[<img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/syssifoss_trees_labelled.png?raw=true" width="600">](https://doi.org/10.11588/DATA/UUMEDI)
 
 ### 2) Landmark trees in Heidelberg, Germany
 
@@ -140,7 +140,7 @@ Over time, we additionally added two landmark trees scanned in Heidelberg, Germa
 
 Quick tutorial:
 
-<a href="https://www.youtube.com/watch?v=8SBi5mwDUVU" target="_blank"><img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/pytreedb_youtube_tutorial_giant_sequoia.png?raw=true" alt="" width="400" /></a>
+<a href="https://www.youtube.com/watch?v=8SBi5mwDUVU" target="_blank"><img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/pytreedb_youtube_tutorial_giant_sequoia.png?raw=true" alt="" width="500" /></a>
 
 ### 3) LiPheStream catalogue
 

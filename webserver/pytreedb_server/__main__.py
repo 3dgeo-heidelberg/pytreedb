@@ -92,6 +92,10 @@ def index():
 def about():
     return render_template(r"about.html")
 
+@app.route("/datasets")
+def datasets():
+    return render_template(r"datasets.html")
+
 
 @app.route("/contact")
 def contact():

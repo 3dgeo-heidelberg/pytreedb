@@ -148,7 +148,7 @@ LiPheStream is the first external dataset that we added to `pytreedb`. LiPheStre
 
 > Wittke, S., Campos, M., Ruoppa, L., Echrit, R., Wang, Y., Gołoś, A., Kukko, A., Hyyppä, J. & Puttonen, E. (2024): LiPheStream - A 18-month high spatiotemporal resolution point cloud time series of Boreal trees from Finland. Scientific Data, Vol. 11, 1281. https://doi.org/10.1038/s41597-024-04143-w.
 
-For now, point clouds are not accessible via direct URLs, but `pytreedb` contains the relative URLs within the LiPheStream dataset as downloaded from the Finnish Fairdata service: https://doi.org/10.23729/cf81f7f3-faaa-4729-aa1c-aa4dd38951aa
+The entire LiPheStream dataset is available from the Finnish Fairdata service: https://doi.org/10.23729/cf81f7f3-faaa-4729-aa1c-aa4dd38951aa
 
 ## Citation
 Please cite the following publication when using pytreedb in your research and reference the appropriate release version. All releases of pytreedb are listed on Zenodo where you will find the citation information including DOI. 

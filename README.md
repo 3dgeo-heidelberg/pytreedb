@@ -9,6 +9,8 @@
 
 [MongoDB](https://www.mongodb.com/) is used as database backend via the [PyMongo](https://pypi.org/project/pymongo/) driver. This enables scaling to large global datasets, e.g. connecting to [MongoDB Atlas Cloud](https://www.mongodb.com/cloud/atlas) for big datasets. Working only locally using a local MongoDB installation is also possible, if the database is only needed during runtime of data processing and sharing on the Web is not required.
 
+> :warning: Due to a recent massive cyberattack on the Heidelberg University, most web services of the university had to be taken offline. http://pytreedb.geog.uni-heidelberg.de/ was also affected. Our university is working very hard to restore all services as soon as possible. We apologize for any inconvenience.
+
 ## Main Features
 
 `pytreedb` has three main components and usage directions:
@@ -16,7 +18,6 @@
 1. **Python library**: In case you need to access the tree database in your Python scripts during runtime of data processing and analysis. 
 2. **REST API**: In case you want to provide your datasets to any software over a REST API. The `pytreedb` server application is using the [Flask](https://pypi.org/project/Flask/) framework for local(host) usage and we provide instructions to setup for production deployment with [Apache WGSI](https://github.com/3dgeo-heidelberg/pytreedb/tree/main/webserver#deployment-for-production). Further info on the REST API of `pytreedb` can be found [here](https://github.com/3dgeo-heidelberg/pytreedb/tree/main/webserver#deployment-for-local-dev), e.g. including setup of server and usage of API keys.
 3. **Web frontend**: In case you want to share your valuable tree data to the community. Based on the REST API we showcase in this repository how a Web frontend can be easily implemented, which provides several query options, data export and also map views of query results. A showcase presenting the tree data of [Weiser et al. 2022](https://doi.org/10.5194/essd-14-2989-2022) and further [datasets](https://github.com/3dgeo-heidelberg/pytreedb?tab=readme-ov-file#published-test-data) is given on http://pytreedb.geog.uni-heidelberg.de/.
-
 
 <img src="https://github.com/3dgeo-heidelberg/pytreedb/blob/main/doc/_static/pytreedb_components_details.png?raw=true" alt="overview of the components of pytreedb" width="45%">
 

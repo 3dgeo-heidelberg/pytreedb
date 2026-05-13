@@ -9,8 +9,6 @@
 
 [MongoDB](https://www.mongodb.com/) is used as database backend via the [PyMongo](https://pypi.org/project/pymongo/) driver. This enables scaling to large global datasets, e.g. connecting to [MongoDB Atlas Cloud](https://www.mongodb.com/cloud/atlas) for big datasets. Working only locally using a local MongoDB installation is also possible, if the database is only needed during runtime of data processing and sharing on the Web is not required.
 
-> :warning: Due to a recent massive cyberattack on the Heidelberg University, most web services of the university had to be taken offline. http://pytreedb.geog.uni-heidelberg.de/ was also affected. Our university is working very hard to restore all services as soon as possible. We apologize for any inconvenience.
-
 ## Main Features
 
 `pytreedb` has three main components and usage directions:

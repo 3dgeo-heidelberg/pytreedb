@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/kynan/nbstripout
-    rev: 0.5.0
+    rev: 0.9.1
     hooks:
       - id: nbstripout
         files: ".ipynb"
@@ -12,16 +12,21 @@ repos:
 
   - repo: https://github.com/s-weigand/flake8-nb
 
-    rev: v0.3.1
+    rev: v0.5.3
     hooks:
       - id: flake8-nb
 
   - repo: https://github.com/pycqa/flake8
-    rev: 4.0.1 
+    rev: 7.4.1 
     hooks:
       - id: flake8
 
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 26.10.0
     hooks:
       - id: black
+  
+  - repo: https://github.com/betterleaks/betterleaks
+    rev: v1.9.0
+    hooks:
+      - id: betterleaks

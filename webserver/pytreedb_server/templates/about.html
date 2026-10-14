@@ -15,7 +15,7 @@
         <nav id="navbar" class="navbar navbar-expand-lg navbar-light justify-content-end fixed-top">
             <div class="container-fluid">
                 <div class="navbar-brand">
-                    <a target="_blank" rel="noopener noreferrer" href="https://www.geog.uni-heidelberg.de/3dgeo/index.html" style="padding-right: 10px; text-decoration: none">
+                    <a target="_blank" rel="noopener noreferrer" href="https://www.geog.uni-heidelberg.de/en/3dgeo" style="padding-right: 10px; text-decoration: none">
                         <img src="{{ url_for('static', filename='img/3dgeo_logo.jpg') }}" alt="3DGEO" height="30" class="d-inline-block align-text-middle">
                     </a>
                     <a target="_blank" rel="noopener noreferrer" href="https://www.ifgg.kit.edu/" style="padding-right: 10px; text-decoration: none">
@@ -55,7 +55,7 @@
                     <p>Laser scanning data is gaining increasing importance in forest research and management. Improved tree detection and segmentation algorithms allow for analysing the properties of single trees and reconstructing their 3D structure. This creates the need for laser scanning tree databases to manage this data and make it openly accessible for others. </p>
                     <p>pytreedb is a file- and object-based database for managing laser scanning and inventory data of single trees.</p>
                     <p>Trees are imported from GeoJSON files which contain information on tree location, species, and tree properties, and link to one or multiple point clouds. These single tree 3D datasets may be extracted from airborne, UAV-borne or terrestrial laser scanning data.</p>
-                    <p>All trees submitted to pytreedbmust adhere to the following format. Individual additions depending on the available data are possible because of the object-based, NOSQL format.</p>
+                    <p>All trees submitted to pytreedb must adhere to the following format. Individual additions depending on the available data are possible because of the object-based, NOSQL format.</p>
                     <br>
                     <iframe id="geojson-template" src="{{ url_for('static', filename='PicAbi_KA09_P2T2_indent2.json.html') }}" style="width: 100%; height: 800px;"></iframe>
                     <br>
@@ -63,7 +63,7 @@
                     <p>pytreedb allows filtering the data, e.g., by location, tree properties, linked data types or acquisition dates. Selected data can be viewed on a map and exported in different formats: GeoJSON files ("Save JSON”), CSV files of tree properties and metadata ("Export to CSV”), and LAS point cloud files ("Point Clouds”).</p>
                     <p>The database may be used to populate synthetic forest stands of given species composition and stand density for laser scanning simulations or radiative transfer models. For example, tree point clouds can be loaded as voxel models in HELIOS++, 3DGeo’s general purpose LiDAR simulator, with the “xyzloader” and virtually scanned in a simulation. For more information on the LiDAR simulator, please visit <a class="inPLink" href="https://uni-heidelberg.de/helios">https://uni-heidelberg.de/helios</a>. </p>
                     <p>In another application, the database may be used to select trees to insert to a 3D city model for analyses of solar potential or urban heat. </p>
-                    <p>pytreedb was developed in the SYSSIFOSS project by the 3DGeo Research Group of Heidelberg University and the Institute of Geography and Geoecology (IFGG) of Karlsruhe Institute of Technology (KIT). The project is funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - 411263134 / 2019-2022.</p>
+                    <p>pytreedb was developed in the SYSSIFOSS project by the 3DGeo Research Group of Heidelberg University and the Institute of Geography and Geoecology (IFGG) of Karlsruhe Institute of Technology (KIT). The project was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - 411263134 / 2019-2022.</p>
 
                     <h2 class="secondaryTitle">Adding Your Data</h2>
                     <p>If you are in possession of laser scanning data of trees and are able to fulfil the minimal requirements of the GeoJSON shown above, we welcome you to contribute your data to the database. We do not provide a hosting service, but allow integration of your metadata into the database, so that query results may come from multiple sources. This way, you have full control over the data at all times. You can also use this website as template to implement your own web frontend for your own dataset. Check out pytreedb on GitHub and learn how to deploy your webserver.</p>
@@ -95,17 +95,7 @@
                     <div style="padding-left: 70px;" class="col-4">
                         <h4 style="margin: 20px 0;">Links</h4>
                         <a target="_blank" class="links"
-                            href="https://www.geog.uni-heidelberg.de/gis/SYSSIFOSS_en.html">SYSSIFOSS Project</a>
-                        <a target="_blank" class="links" href="http://k1z.blog.uni-heidelberg.de/?s=syssifoss">GIScience News
-                            Blog</a>
-                        <a target="_blank" class="links"
-                            href="https://www.researchgate.net/project/SYSSIFOSS-Synthetic-structural-remote-sensing-data-for-improved-forest-inventory-models">Research
-                            Gate</a>
-                        <a id="twitter-link" target="_blank" href="https://twitter.com/search?q=syssifoss&amp;src=typed_query">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-twitter"
-                                viewBox="0 0 16 16" style="margin-left: 5px;" width="20" height="20">
-                                <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"></path>
-                            </svg></a>
+                            href="https://syssifoss.geog.uni-heidelberg.de/">SYSSIFOSS Project</a>
                     </div>
                 </div>
             </div>

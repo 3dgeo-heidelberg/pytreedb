@@ -57,7 +57,28 @@
                     <p>Trees are imported from GeoJSON files which contain information on tree location, species, and tree properties, and link to one or multiple point clouds. These single tree 3D datasets may be extracted from airborne, UAV-borne or terrestrial laser scanning data.</p>
                     <p>All trees submitted to pytreedb must adhere to the following format. Individual additions depending on the available data are possible because of the object-based, NOSQL format.</p>
                     <br>
-                    <iframe id="geojson-template" src="{{ url_for('static', filename='PicAbi_KA09_P2T2_indent2.json.html') }}" style="width: 100%; height: 800px;"></iframe>
+                    <div id="inhalt-box">Load content ...</div>
+                    <!-- iframe replaced by Javascript for security -->
+                    <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                        const ziel = document.getElementById('inhalt-box');
+ 
+                        fetch('{{ url_for('static', filename='PicAbi_KA09_P2T2_indent2.json.html') }}')
+                           .then(response => {
+                                if (!response.ok) throw new Error('Error');
+                                    return response.text();
+                            })
+                            .then(html => {
+                            ziel.innerHTML = html;
+                        })
+                        .catch(error => {
+                            ziel.innerHTML = 'Error loading.';
+                            console.error(error);
+                        });
+                    });
+                    </script>
+                    <br style="clear: both;">
+                    <br>
                     <br>
                     <p>While there are some mandatory fields (id, tree species, tree position), custom tree properties can be defined according to the dataset and the use case and an arbitrary number of measurements and data entries can be added.</p>
                     <p>pytreedb allows filtering the data, e.g., by location, tree properties, linked data types or acquisition dates. Selected data can be viewed on a map and exported in different formats: GeoJSON files ("Save JSON”), CSV files of tree properties and metadata ("Export to CSV”), and LAS point cloud files ("Point Clouds”).</p>
